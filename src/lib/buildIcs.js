@@ -1,4 +1,5 @@
 import { getAffiliateHint } from '../config/affiliateHints.js';
+import { clampInterval, normalizeUnit } from './tasks.js';
 
 export function escapeIcalText(text) {
   return String(text)
@@ -46,8 +47,10 @@ export function buildIcsContent(tasks, options = {}) {
   ];
 
   tasks.forEach((task) => {
-    const freq = freqForUnit(task.unit);
-    let description = `Recurring NeatClock task. Repeats every ${task.interval} ${task.unit}.`;
+    const unit = normalizeUnit(task.unit);
+    const interval = clampInterval(task.interval);
+    const freq = freqForUnit(unit);
+    let description = `Recurring NeatClock task. Repeats every ${interval} ${unit}.`;
 
     if (includeAffiliateHints) {
       const hint = getAffiliateHint(task.name);
@@ -62,7 +65,7 @@ export function buildIcsContent(tasks, options = {}) {
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`SUMMARY:${escapeIcalText(task.name)}`);
     lines.push(`DESCRIPTION:${escapeIcalText(description)}`);
-    lines.push(`RRULE:FREQ=${freq};INTERVAL=${task.interval}`);
+    lines.push(`RRULE:FREQ=${freq};INTERVAL=${interval}`);
     lines.push('END:VEVENT');
   });
 

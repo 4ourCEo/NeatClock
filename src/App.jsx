@@ -3,6 +3,14 @@ import { Plus, Trash2, Download, Printer, Sparkles, X, Calendar, GripVertical, U
 import { buildIcsContent } from './lib/buildIcs.js';
 import { createBackupPayload, validateBackup } from './lib/backup.js';
 import { downloadText } from './lib/download.js';
+import { storageGet, storageSet } from './lib/storage.js';
+import {
+  clampInterval,
+  createTaskId,
+  normalizeTasks,
+  parseNaturalLanguage,
+  resolveActivePreset,
+} from './lib/tasks.js';
 import { features } from './config/features.js';
 import { ExportExtras, PremiumThemesBanner, PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
 import { MonetizationPreviewBanner } from './components/FeatureGate.jsx';
@@ -43,47 +51,6 @@ function presetCardLabel(presetName) {
   return PRESET_CARD_LABELS[presetName] ?? presetName;
 }
 
-function createTaskId() {
-  return `custom-${crypto.randomUUID()}`;
-}
-
-function normalizeTask(task) {
-  if (!task || typeof task !== 'object') return null;
-  return {
-    id: task.id || createTaskId(),
-    name: task.name || 'New Custom Task',
-    interval: parseInt(task.interval, 10) || 1,
-    unit: task.unit || 'months',
-  };
-}
-
-function parseNaturalLanguage(input) {
-  const clean = input.trim();
-  if (!clean) return null;
-
-  const regex = /(.*?)\s+(?:every|each)\s+(\d*)\s*(week|month|year)s?/i;
-  const match = clean.match(regex);
-
-  if (match) {
-    const name = match[1].trim();
-    const intervalVal = match[2].trim();
-    const interval = intervalVal ? parseInt(intervalVal, 10) : 1;
-    const unit = match[3].toLowerCase() + 's';
-
-    return {
-      name: name || 'New Custom Task',
-      interval: isNaN(interval) || interval <= 0 ? 1 : interval,
-      unit,
-    };
-  }
-
-  return {
-    name: clean,
-    interval: 1,
-    unit: 'months',
-  };
-}
-
 function isRhythmHighlighted(task, monthNum) {
   const interval = parseInt(task.interval, 10) || 1;
 
@@ -99,15 +66,12 @@ function isRhythmHighlighted(task, monthNum) {
 function App() {
   // Main Tasks List State
   const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem('neatclock_tasks');
+    const saved = storageGet('neatclock_tasks');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Filter out null/invalid entries and normalize legacy tasks to have correct properties
-          return parsed
-            .map(normalizeTask)
-            .filter(Boolean);
+          return normalizeTasks(parsed);
         }
       } catch (e) {
         console.error('Failed to parse saved tasks', e);
@@ -117,20 +81,8 @@ function App() {
   });
 
   // Active Preset Tracking
-  const [activePreset, setActivePreset] = useState(() => {
-    const savedPreset = localStorage.getItem('neatclock_active_preset');
-    const brokenIdFix = {
-      'home-sentinel': "Homeowner's Sentinel",
-      gearhead: 'Preventive Gearhead',
-      cfo: 'Automated CFO',
-    };
-    if (savedPreset && brokenIdFix[savedPreset]) return brokenIdFix[savedPreset];
-    return savedPreset || "Homeowner's Sentinel";
-  });
-
-  // Custom Presets List State
   const [customPresets, setCustomPresets] = useState(() => {
-    const saved = localStorage.getItem('neatclock_custom_presets');
+    const saved = storageGet('neatclock_custom_presets');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -144,12 +96,29 @@ function App() {
     return {};
   });
 
+  const [activePreset, setActivePreset] = useState(() => {
+    let custom = {};
+    const savedCustom = storageGet('neatclock_custom_presets');
+    if (savedCustom) {
+      try {
+        const parsed = JSON.parse(savedCustom);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          custom = parsed;
+        }
+      } catch {
+        // ignore corrupt custom presets during preset resolution
+      }
+    }
+    const savedPreset = storageGet('neatclock_active_preset');
+    return resolveActivePreset(savedPreset || "Homeowner's Sentinel", custom);
+  });
+
   // UI Modes & Aesthetic Themes
   const [printPreview, setPrintPreview] = useState(false);
   const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('neatclock_theme');
+    const savedTheme = storageGet('neatclock_theme');
     if (savedTheme) return savedTheme;
-    const legacyDark = localStorage.getItem('neatclock_dark_mode') === 'true';
+    const legacyDark = storageGet('neatclock_dark_mode') === 'true';
     return legacyDark ? 'theme-obsidian' : 'theme-warm-sand';
   });
   const [notification, setNotification] = useState(null);
@@ -161,9 +130,9 @@ function App() {
   const [interestOpen, setInterestOpen] = useState(false);
   const [interestSource, setInterestSource] = useState('footer');
   const [showExportPreview, setShowExportPreview] = useState(() => {
-    const saved = localStorage.getItem('neatclock_show_export_preview');
+    const saved = storageGet('neatclock_show_export_preview');
     if (saved !== null) return saved === 'true';
-    const legacy = localStorage.getItem('neatclock_show_agenda');
+    const legacy = storageGet('neatclock_show_agenda');
     return legacy === 'true';
   });
 
@@ -176,7 +145,7 @@ function App() {
 
   // Seasonal Offset State
   const [startOffsetWeeks, setStartOffsetWeeks] = useState(() => {
-    const saved = localStorage.getItem('neatclock_start_offset');
+    const saved = storageGet('neatclock_start_offset');
     const parsed = saved ? parseInt(saved, 10) : 0;
     return Number.isNaN(parsed) ? 0 : Math.min(12, Math.max(0, parsed));
   });
@@ -184,24 +153,24 @@ function App() {
   const importInputRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem('neatclock_start_offset', String(startOffsetWeeks));
+    storageSet('neatclock_start_offset', String(startOffsetWeeks));
   }, [startOffsetWeeks]);
 
   // Sync state to localStorage
   useEffect(() => {
-    localStorage.setItem('neatclock_tasks', JSON.stringify(tasks));
+    storageSet('neatclock_tasks', JSON.stringify(tasks));
   }, [tasks]);
 
   useEffect(() => {
-    localStorage.setItem('neatclock_show_export_preview', showExportPreview);
+    storageSet('neatclock_show_export_preview', String(showExportPreview));
   }, [showExportPreview]);
 
   useEffect(() => {
-    localStorage.setItem('neatclock_active_preset', activePreset);
+    storageSet('neatclock_active_preset', activePreset);
   }, [activePreset]);
 
   useEffect(() => {
-    localStorage.setItem('neatclock_custom_presets', JSON.stringify(customPresets));
+    storageSet('neatclock_custom_presets', JSON.stringify(customPresets));
   }, [customPresets]);
 
   useEffect(() => {
@@ -213,7 +182,7 @@ function App() {
     document.body.classList.remove(...themeClasses);
     document.documentElement.classList.add(theme);
     document.body.classList.add(theme);
-    localStorage.setItem('neatclock_theme', theme);
+    storageSet('neatclock_theme', theme);
   }, [theme]);
 
   // Add Natural Language Task
@@ -383,9 +352,8 @@ function App() {
   };
 
   const handleUpdateTaskInterval = (id, newInterval) => {
-    const val = parseInt(newInterval, 10);
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, interval: isNaN(val) ? 1 : Math.max(1, val) } : task
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, interval: clampInterval(newInterval) } : task
     ));
   };
 
@@ -522,7 +490,7 @@ function App() {
           title: 'Restore backup?',
           message: 'This replaces your current schedule, custom presets, and preferences with the backup file.',
           onConfirm: () => {
-            setTasks(data.tasks.map(normalizeTask).filter(Boolean));
+            setTasks(data.tasks);
             setActivePreset(data.activePreset);
             setCustomPresets(data.customPresets);
             if (data.preferences?.theme) setTheme(data.preferences.theme);
@@ -1211,7 +1179,10 @@ function App() {
                 min="0"
                 max="12"
                 value={startOffsetWeeks}
-                onChange={(e) => setStartOffsetWeeks(parseInt(e.target.value, 10))}
+                onChange={(e) => {
+                  const parsed = parseInt(e.target.value, 10);
+                  setStartOffsetWeeks(Number.isNaN(parsed) ? 0 : Math.min(12, Math.max(0, parsed)));
+                }}
                 className="offset-slider w-full max-w-xs mx-auto mt-4 block"
                 aria-label="Weeks to offset calendar export start date"
               />

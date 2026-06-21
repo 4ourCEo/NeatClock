@@ -1,3 +1,5 @@
+import { normalizeTasks, resolveActivePreset } from './tasks.js';
+
 export const BACKUP_VERSION = 1;
 
 export function createBackupPayload(state) {
@@ -32,5 +34,16 @@ export function validateBackup(data) {
   if (!data.customPresets || typeof data.customPresets !== 'object' || Array.isArray(data.customPresets)) {
     return { ok: false, error: 'Backup is missing custom presets.' };
   }
-  return { ok: true, data };
+
+  const tasks = normalizeTasks(data.tasks);
+  const activePreset = resolveActivePreset(data.activePreset, data.customPresets);
+
+  return {
+    ok: true,
+    data: {
+      ...data,
+      tasks,
+      activePreset,
+    },
+  };
 }

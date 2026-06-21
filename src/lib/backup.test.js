@@ -16,16 +16,20 @@ describe('backup', () => {
     expect(payload.preferences.startOffsetWeeks).toBe(2);
   });
 
-  it('validates good backups', () => {
+  it('normalizes tasks and active preset', () => {
     const payload = createBackupPayload({
-      tasks: [],
-      activePreset: 'Home',
+      tasks: [{ name: 'Test', interval: 999, unit: 'invalid' }],
+      activePreset: 'home-sentinel',
       customPresets: {},
       theme: 'theme-warm-sand',
       showExportPreview: true,
       startOffsetWeeks: 0,
     });
-    expect(validateBackup(payload).ok).toBe(true);
+    const result = validateBackup(payload);
+    expect(result.ok).toBe(true);
+    expect(result.data.tasks[0].interval).toBe(120);
+    expect(result.data.tasks[0].unit).toBe('months');
+    expect(result.data.activePreset).toBe("Homeowner's Sentinel");
   });
 
   it('rejects invalid backups', () => {

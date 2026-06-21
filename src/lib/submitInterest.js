@@ -1,4 +1,5 @@
 import { interestFormEndpoint } from '../config/monetization.js';
+import { storageGet, storageSet, storageRemove } from './storage.js';
 
 export async function submitInterestForm(payload) {
   if (!interestFormEndpoint) {
@@ -13,7 +14,9 @@ export async function submitInterestForm(payload) {
     },
     body: JSON.stringify({
       ...payload,
-      _subject: 'NeatClock — product interest',
+      _subject: payload._subject || 'NeatClock — product interest',
+      _template: 'table',
+      _captcha: 'false',
     }),
   });
 
@@ -27,25 +30,13 @@ export async function submitInterestForm(payload) {
 const DISMISS_KEY = 'neatclock_interest_export_dismissed';
 
 export function isExportInterestDismissed() {
-  try {
-    return localStorage.getItem(DISMISS_KEY) === 'true';
-  } catch {
-    return false;
-  }
+  return storageGet(DISMISS_KEY) === 'true';
 }
 
 export function dismissExportInterest() {
-  try {
-    localStorage.setItem(DISMISS_KEY, 'true');
-  } catch {
-    // ignore quota errors
-  }
+  storageSet(DISMISS_KEY, 'true');
 }
 
 export function resetExportInterestDismissal() {
-  try {
-    localStorage.removeItem(DISMISS_KEY);
-  } catch {
-    // ignore
-  }
+  storageRemove(DISMISS_KEY);
 }
