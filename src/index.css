@@ -1,0 +1,547 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+  
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-card: var(--theme-card);
+  --color-theme-border: var(--theme-border);
+  --color-theme-text: var(--theme-text);
+  --color-theme-text-muted: var(--theme-text-muted);
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-accent-hover: var(--theme-accent-hover);
+  --color-theme-highlight: var(--theme-highlight);
+
+  --color-sand: #FAF9F6;
+  --color-charcoal: #1C1C1C;
+  --color-sage: #D8E2DC;
+  --color-terracotta: #E07A5F;
+  
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-slide-up: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-toast-in: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { transform: translateY(12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes toast-in {
+    from { transform: translateY(16px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+}
+
+/* Curated theme tokens — on html so Tailwind theme utilities resolve correctly */
+html.theme-warm-sand {
+  color-scheme: light;
+  --theme-bg: #F3F1EA;
+  --theme-card: #FFFFFF;
+  --theme-border: #E5E2D9;
+  --theme-text: #1C1C1C;
+  --theme-text-muted: #78716C;
+  --theme-accent: #E07A5F;
+  --theme-accent-hover: #C9654B;
+  --theme-highlight: #D8E2DC;
+  --theme-shadow-sm: 0 1px 2px rgba(28, 28, 28, 0.04);
+  --theme-shadow-md: 0 4px 14px -2px rgba(28, 28, 28, 0.08), 0 2px 6px -2px rgba(28, 28, 28, 0.04);
+  --theme-shadow-lg: 0 16px 48px -12px rgba(28, 28, 28, 0.14), 0 4px 16px -4px rgba(28, 28, 28, 0.06);
+  --theme-shadow-inset: inset 0 1px 2px rgba(28, 28, 28, 0.06);
+}
+
+html.theme-sage-garden {
+  color-scheme: light;
+  --theme-bg: #EAF0EB;
+  --theme-card: #F4F8F5;
+  --theme-border: #D1DDD4;
+  --theme-text: #1A2F21;
+  --theme-text-muted: #556E5D;
+  --theme-accent: #78907A;
+  --theme-accent-hover: #5A725C;
+  --theme-highlight: #C8DACF;
+  --theme-shadow-sm: 0 1px 2px rgba(26, 47, 33, 0.05);
+  --theme-shadow-md: 0 4px 14px -2px rgba(26, 47, 33, 0.09), 0 2px 6px -2px rgba(26, 47, 33, 0.04);
+  --theme-shadow-lg: 0 16px 48px -12px rgba(26, 47, 33, 0.15), 0 4px 16px -4px rgba(26, 47, 33, 0.06);
+  --theme-shadow-inset: inset 0 1px 2px rgba(26, 47, 33, 0.07);
+}
+
+html.theme-obsidian {
+  color-scheme: dark;
+  --theme-bg: #0C0C0B;
+  --theme-card: #1A1A18;
+  --theme-border: #3A3A36;
+  --theme-text: #FAF9F6;
+  --theme-text-muted: #B8B4AC;
+  --theme-accent: #FF8A65;
+  --theme-accent-hover: #FF7043;
+  --theme-highlight: #3D3834;
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --theme-shadow-lg: 0 20px 50px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --theme-shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+html.theme-forest-moss {
+  color-scheme: dark;
+  --theme-bg: #141C16;
+  --theme-card: #1F2B22;
+  --theme-border: #3A5040;
+  --theme-text: #FAF7F2;
+  --theme-text-muted: #A8BCAA;
+  --theme-accent: #F4A261;
+  --theme-accent-hover: #E76F51;
+  --theme-highlight: #354839;
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --theme-shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --theme-shadow-lg: 0 20px 50px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --theme-shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+html.theme-ink-stone {
+  color-scheme: dark;
+  --theme-bg: #1A1B2E;
+  --theme-card: #252640;
+  --theme-border: #454868;
+  --theme-text: #F0F0F5;
+  --theme-text-muted: #AEB0C8;
+  --theme-accent: #7986CB;
+  --theme-accent-hover: #5C6BC0;
+  --theme-highlight: #353760;
+  --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --theme-shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --theme-shadow-lg: 0 20px 50px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --theme-shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+html.theme-blush-linen {
+  color-scheme: light;
+  --theme-bg: #F9F0EE;
+  --theme-card: #FFFBFA;
+  --theme-border: #E8D5D0;
+  --theme-text: #3D2C2C;
+  --theme-text-muted: #8B7373;
+  --theme-accent: #C48B9F;
+  --theme-accent-hover: #A86B82;
+  --theme-highlight: #F0DDD8;
+  --theme-shadow-sm: 0 1px 2px rgba(61, 44, 44, 0.05);
+  --theme-shadow-md: 0 4px 14px -2px rgba(61, 44, 44, 0.09), 0 2px 6px -2px rgba(61, 44, 44, 0.04);
+  --theme-shadow-lg: 0 16px 48px -12px rgba(61, 44, 44, 0.14), 0 4px 16px -4px rgba(61, 44, 44, 0.06);
+  --theme-shadow-inset: inset 0 1px 2px rgba(61, 44, 44, 0.07);
+}
+
+/* Re-bind Tailwind @theme color tokens to active palette (fixes dark themes) */
+html[class*="theme-"] {
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-card: var(--theme-card);
+  --color-theme-border: var(--theme-border);
+  --color-theme-text: var(--theme-text);
+  --color-theme-text-muted: var(--theme-text-muted);
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-accent-hover: var(--theme-accent-hover);
+  --color-theme-highlight: var(--theme-highlight);
+}
+
+/* Custom baseline styling */
+:root {
+  font-family: "Outfit", system-ui, sans-serif;
+}
+
+html {
+  background-color: var(--theme-bg, #F3F1EA);
+  color: var(--theme-text, #1C1C1C);
+}
+
+html:not([class*="theme-"]) {
+  --theme-bg: #F3F1EA;
+  --theme-card: #FFFFFF;
+  --theme-border: #E5E2D9;
+  --theme-text: #1C1C1C;
+  --theme-text-muted: #78716C;
+  --theme-accent: #E07A5F;
+  --theme-accent-hover: #C9654B;
+  --theme-highlight: #D8E2DC;
+  --theme-shadow-sm: 0 1px 2px rgba(28, 28, 28, 0.04);
+  --theme-shadow-md: 0 4px 14px -2px rgba(28, 28, 28, 0.08), 0 2px 6px -2px rgba(28, 28, 28, 0.04);
+  --theme-shadow-lg: 0 16px 48px -12px rgba(28, 28, 28, 0.14), 0 4px 16px -4px rgba(28, 28, 28, 0.06);
+  --theme-shadow-inset: inset 0 1px 2px rgba(28, 28, 28, 0.06);
+}
+
+body {
+  min-height: 100vh;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* Ambient page depth — soft color pools behind the main card */
+.app-canvas {
+  background-color: var(--theme-bg);
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -15%, color-mix(in srgb, var(--theme-accent) 11%, transparent), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 80%, color-mix(in srgb, var(--theme-highlight) 55%, transparent), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 0% 60%, color-mix(in srgb, var(--theme-highlight) 35%, transparent), transparent 45%);
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Raised surfaces */
+.surface-panel {
+  background-color: var(--theme-card);
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  border-radius: 1rem;
+  box-shadow: var(--theme-shadow-md);
+}
+
+.surface-well {
+  background-color: color-mix(in srgb, var(--theme-card) 92%, var(--theme-bg));
+  border: 1px solid var(--theme-border);
+  border-radius: 1rem;
+  box-shadow: var(--theme-shadow-inset), var(--theme-shadow-sm);
+}
+
+.main-card {
+  background-color: var(--theme-card);
+  border: 1px solid color-mix(in srgb, var(--theme-border) 90%, transparent);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+/* Range slider — visible track on any theme */
+.offset-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--theme-border) 70%, var(--theme-bg));
+  box-shadow: var(--theme-shadow-inset);
+  cursor: pointer;
+}
+
+.offset-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--theme-accent);
+  border: 2px solid var(--theme-card);
+  box-shadow: var(--theme-shadow-md);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.offset-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.08);
+}
+
+.offset-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--theme-accent);
+  border: 2px solid var(--theme-card);
+  box-shadow: var(--theme-shadow-md);
+  cursor: pointer;
+}
+
+.offset-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--theme-border) 70%, var(--theme-bg));
+}
+
+/* Primary actions — theme vars + forced paint (Safari/modal-safe) */
+.btn-primary {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--theme-accent, #e07a5f);
+  color: #ffffff;
+  border: 1px solid var(--theme-accent-hover, #c9654b);
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.btn-primary:hover {
+  background-color: var(--theme-accent-hover, #c9654b);
+  border-color: var(--theme-accent-hover, #c9654b);
+  color: #ffffff;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal overlay — blur on backdrop only (avoids button paint bugs in Safari) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-panel-wrap {
+  position: relative;
+  display: flex;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding:
+    max(1rem, env(safe-area-inset-top, 0px))
+    max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px))
+    max(1rem, env(safe-area-inset-left, 0px));
+  pointer-events: none;
+}
+
+.modal-panel {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 85%, transparent);
+  background-color: var(--theme-card);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+.modal-panel-lg {
+  max-width: 32rem;
+}
+
+/* ── Mobile + desktop coexistence ─────────────────────────────────────────── */
+
+.app-canvas button,
+.app-canvas a,
+.app-canvas input,
+.app-canvas select,
+.app-canvas textarea {
+  touch-action: manipulation;
+}
+
+/* Theme swatches: centered row on phones, top-right pill on md+ */
+.theme-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+}
+
+@media (min-width: 768px) {
+  .theme-picker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0;
+    flex-wrap: nowrap;
+    gap: 0.625rem;
+    padding: 0.375rem;
+  }
+}
+
+.theme-swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .theme-swatch {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Task row: hover-reveal on desktop, always visible on touch */
+.task-row-actions {
+  opacity: 1;
+}
+
+.task-drag-handle {
+  opacity: 0.35;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .task-row-actions {
+    opacity: 0.4;
+  }
+
+  .group:hover .task-row-actions,
+  .task-row-actions:focus-within {
+    opacity: 1;
+  }
+
+  .task-drag-handle {
+    opacity: 0;
+  }
+
+  .group:hover .task-drag-handle {
+    opacity: 1;
+  }
+}
+
+/* Drag column hidden on touch — use up/down buttons instead */
+@media (pointer: coarse) {
+  .task-drag-col {
+    display: none;
+  }
+}
+
+/* 44px minimum tap targets on touch devices only */
+@media (pointer: coarse) {
+  .touch-target {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.toast-fixed {
+  bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
+  right: max(1.5rem, env(safe-area-inset-right, 0px));
+}
+
+.footer-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Keyboard focus — visible on tab, hidden on click */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .print-paper-3d,
+  .print-paper-3d:hover {
+    transform: none !important;
+  }
+}
+
+/* Tactile 3D Print Card Preview */
+.print-paper-3d {
+  transform: perspective(1500px) rotateX(4deg) rotateY(-2deg) rotateZ(0.5deg);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease, border-radius 0.6s ease;
+  box-shadow: -15px 30px 45px -10px rgba(0, 0, 0, 0.18), -5px 15px 20px -10px rgba(0, 0, 0, 0.1);
+}
+
+.print-paper-3d:hover {
+  transform: perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-8px);
+  box-shadow: 0 45px 70px -15px rgba(0, 0, 0, 0.25), 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+}
+
+/* Print CSS */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: portrait;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    font-family: serif;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  .print-table th, 
+  .print-table td {
+    border-bottom: 1.5px solid #000000 !important;
+    padding: 8px 4px !important;
+    color: #000000 !important;
+  }
+
+  .print-table th {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 10pt !important;
+  }
+
+  .print-checkbox {
+    display: inline-block !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 2px solid #000000 !important;
+    margin-right: 12px !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* Simulated printer-friendly screen preview */
+.print-preview-mode {
+  font-family: Georgia, serif !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  max-width: 800px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid #e5e4e7 !important;
+  border-radius: 6px !important;
+  padding: 3.5rem !important;
+}
+
+.print-preview-mode .no-print-preview {
+  display: none !important;
+}
+
+/* Custom scrollbars to blend in with active theme colors */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text-muted);
+}
