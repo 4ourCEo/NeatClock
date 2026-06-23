@@ -1,0 +1,21 @@
+{
+  "name": "NeatClock",
+  "short_name": "NeatClock",
+  "description": "Generate recurring iCalendar (.ics) files and clean checklists for homeowner maintenance, gearhead auto-checks, and quarterly bookkeeping without friction.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#F3F1EA",
+  "background_color": "#F3F1EA",
+  "display": "standalone",
+  "start_url": "/"
+}
