@@ -1,22 +1,30 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Plus, Trash2, Download, Printer, Sparkles, X, Calendar, GripVertical, Upload, ChevronUp, ChevronDown } from 'lucide-react';
 import { buildIcsContent } from './lib/buildIcs.js';
-import { createBackupPayload, validateBackup } from './lib/backup.js';
+import { createBackupPayload, normalizeCustomPresets, validateBackup } from './lib/backup.js';
 import { downloadText } from './lib/download.js';
-import { storageGet, storageSet } from './lib/storage.js';
+import { storageGet, persistState } from './lib/storage.js';
 import {
   clampInterval,
   createTaskId,
   normalizeTasks,
+  normalizeUnit,
   parseNaturalLanguage,
   resolveActivePreset,
+  TASK_NAME_MAX,
 } from './lib/tasks.js';
+import { ALLOWED_THEMES, resolveTheme, THEME_CLASSES } from './lib/themes.js';
 import { features } from './config/features.js';
 import { ExportExtras, PremiumThemesBanner, PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
 import { MonetizationPreviewBanner } from './components/FeatureGate.jsx';
 import InterestModal from './components/InterestModal.jsx';
 import { InterestExportSection } from './components/InterestInvite.jsx';
 import { getAvailableThemes } from './config/monetization.js';
+
+const LOGO_DARK_THEMES = new Set(['theme-obsidian', 'theme-forest-moss', 'theme-ink-stone']);
+
+const MAX_BACKUP_BYTES = 512 * 1024;
+const STORAGE_SAVE_MESSAGE = 'Could not save your schedule in this browser. Export a backup JSON.';
 
 const PRESETS = {
   "Homeowner's Sentinel": [
@@ -63,6 +71,27 @@ function isRhythmHighlighted(task, monthNum) {
   return monthNum % interval === 0;
 }
 
+function calculateFirstOccurrence(task) {
+  const baseDateStr = new Date().toISOString().split('T')[0];
+  const parts = baseDateStr.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // 0-indexed month
+  const day = parseInt(parts[2], 10);
+
+  const baseDate = new Date(year, month, day, 12, 0, 0); // Local noon, browser-agnostic
+  const interval = parseInt(task.interval, 10) || 1;
+
+  if (task.unit === 'weeks') {
+    baseDate.setDate(baseDate.getDate() + (interval * 7));
+  } else if (task.unit === 'years') {
+    baseDate.setFullYear(baseDate.getFullYear() + interval);
+  } else {
+    // months
+    baseDate.setMonth(baseDate.getMonth() + interval);
+  }
+  return baseDate;
+}
+
 function App() {
   // Main Tasks List State
   const [tasks, setTasks] = useState(() => {
@@ -87,7 +116,7 @@ function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-          return parsed;
+          return normalizeCustomPresets(parsed);
         }
       } catch (e) {
         console.error('Failed to parse custom presets', e);
@@ -103,7 +132,7 @@ function App() {
       try {
         const parsed = JSON.parse(savedCustom);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-          custom = parsed;
+          custom = normalizeCustomPresets(parsed);
         }
       } catch {
         // ignore corrupt custom presets during preset resolution
@@ -117,9 +146,8 @@ function App() {
   const [printPreview, setPrintPreview] = useState(false);
   const [theme, setTheme] = useState(() => {
     const savedTheme = storageGet('neatclock_theme');
-    if (savedTheme) return savedTheme;
     const legacyDark = storageGet('neatclock_dark_mode') === 'true';
-    return legacyDark ? 'theme-obsidian' : 'theme-warm-sand';
+    return resolveTheme(savedTheme, legacyDark);
   });
   const [notification, setNotification] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
@@ -151,39 +179,51 @@ function App() {
   });
 
   const importInputRef = useRef(null);
+  const notificationTimeoutRef = useRef(null);
+
+  const scheduleStorageFailureNotice = () => {
+    queueMicrotask(() => setNotification(STORAGE_SAVE_MESSAGE));
+  };
 
   useEffect(() => {
-    storageSet('neatclock_start_offset', String(startOffsetWeeks));
+    persistState('neatclock_start_offset', String(startOffsetWeeks), scheduleStorageFailureNotice);
   }, [startOffsetWeeks]);
 
-  // Sync state to localStorage
+  // Sync state to localStorage (tasks debounced to avoid write storms)
   useEffect(() => {
-    storageSet('neatclock_tasks', JSON.stringify(tasks));
+    const timeoutId = setTimeout(() => {
+      persistState('neatclock_tasks', JSON.stringify(tasks), scheduleStorageFailureNotice);
+    }, 300);
+    return () => clearTimeout(timeoutId);
   }, [tasks]);
 
   useEffect(() => {
-    storageSet('neatclock_show_export_preview', String(showExportPreview));
+    persistState('neatclock_show_export_preview', String(showExportPreview), scheduleStorageFailureNotice);
   }, [showExportPreview]);
 
   useEffect(() => {
-    storageSet('neatclock_active_preset', activePreset);
+    persistState('neatclock_active_preset', activePreset, scheduleStorageFailureNotice);
   }, [activePreset]);
 
   useEffect(() => {
-    storageSet('neatclock_custom_presets', JSON.stringify(customPresets));
+    persistState('neatclock_custom_presets', JSON.stringify(customPresets), scheduleStorageFailureNotice);
   }, [customPresets]);
 
   useEffect(() => {
-    const themeClasses = [
-      'theme-warm-sand', 'theme-sage-garden', 'theme-obsidian', 'theme-forest-moss',
-      'theme-ink-stone', 'theme-blush-linen',
-    ];
-    document.documentElement.classList.remove(...themeClasses);
-    document.body.classList.remove(...themeClasses);
+    document.documentElement.classList.remove(...THEME_CLASSES);
+    document.body.classList.remove(...THEME_CLASSES);
     document.documentElement.classList.add(theme);
     document.body.classList.add(theme);
-    storageSet('neatclock_theme', theme);
+    persistState('neatclock_theme', theme, scheduleStorageFailureNotice);
   }, [theme]);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Add Natural Language Task
   const handleAddNlTask = () => {
@@ -247,9 +287,13 @@ function App() {
 
   // Toast notifications trigger
   const showNotification = (message) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
     setNotification(message);
-    setTimeout(() => {
+    notificationTimeoutRef.current = setTimeout(() => {
       setNotification(null);
+      notificationTimeoutRef.current = null;
     }, 3000);
   };
 
@@ -347,7 +391,7 @@ function App() {
 
   const handleUpdateTaskName = (id, newName) => {
     setTasks(tasks.map(task => 
-      task.id === id ? { ...task, name: newName } : task
+      task.id === id ? { ...task, name: newName.slice(0, TASK_NAME_MAX) } : task
     ));
   };
 
@@ -359,7 +403,7 @@ function App() {
 
   const handleUpdateTaskUnit = (id, newUnit) => {
     setTasks(tasks.map(task => 
-      task.id === id ? { ...task, unit: newUnit } : task
+      task.id === id ? { ...task, unit: normalizeUnit(newUnit) } : task
     ));
   };
 
@@ -378,30 +422,7 @@ function App() {
     });
   };
 
-  // First occurrence if exported today (preview only — not tracked completions)
-  const calculateFirstOccurrence = (task) => {
-    const baseDateStr = new Date().toISOString().split('T')[0];
-    const parts = baseDateStr.split('-');
-    const year = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; // 0-indexed month
-    const day = parseInt(parts[2], 10);
-
-    const baseDate = new Date(year, month, day, 12, 0, 0); // Local noon, browser-agnostic
-    const interval = parseInt(task.interval, 10) || 1;
-
-    if (task.unit === 'weeks') {
-      baseDate.setDate(baseDate.getDate() + (interval * 7));
-    } else if (task.unit === 'years') {
-      baseDate.setFullYear(baseDate.getFullYear() + interval);
-    } else {
-      // months
-      baseDate.setMonth(baseDate.getMonth() + interval);
-    }
-    return baseDate;
-  };
-
-  // Chronological preview for export sidebar
-  const getExportPreview = () => {
+  const exportPreview = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -429,7 +450,7 @@ function App() {
 
     occurrences.sort((a, b) => a.firstDate - b.firstDate);
     return occurrences.slice(0, 10);
-  };
+  }, [tasks]);
 
   // .ics File Generator Engine (all-day dates — calendar-friendly)
   const handleExportICS = () => {
@@ -475,7 +496,15 @@ function App() {
     event.target.value = '';
     if (!file) return;
 
+    if (file.size > MAX_BACKUP_BYTES) {
+      showNotification('Backup file is too large.');
+      return;
+    }
+
     const reader = new FileReader();
+    reader.onerror = () => {
+      showNotification('Could not read backup file.');
+    };
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result));
@@ -493,12 +522,15 @@ function App() {
             setTasks(data.tasks);
             setActivePreset(data.activePreset);
             setCustomPresets(data.customPresets);
-            if (data.preferences?.theme) setTheme(data.preferences.theme);
+            if (ALLOWED_THEMES.has(data.preferences?.theme)) {
+              setTheme(data.preferences.theme);
+            }
             if (typeof data.preferences?.showExportPreview === 'boolean') {
               setShowExportPreview(data.preferences.showExportPreview);
             }
             if (typeof data.preferences?.startOffsetWeeks === 'number') {
-              setStartOffsetWeeks(data.preferences.startOffsetWeeks);
+              const offset = data.preferences.startOffsetWeeks;
+              setStartOffsetWeeks(Number.isNaN(offset) ? 0 : Math.min(12, Math.max(0, offset)));
             }
             showNotification('Schedule restored from backup');
             setConfirmModal(null);
@@ -524,8 +556,6 @@ function App() {
     setInterestSource(source);
     setInterestOpen(true);
   };
-
-  const exportPreview = getExportPreview();
 
   return (
     <div className="app-canvas min-h-screen py-6 md:py-12 transition-colors duration-500 relative text-theme-text font-sans">
@@ -703,8 +733,15 @@ function App() {
         
         {/* Header Section */}
         <header className="relative flex flex-col items-center justify-center mb-8 md:mb-10 border-b pb-6 md:pb-8 border-theme-border/60">
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-2 md:mb-3 text-center text-theme-text">
-            NeatClock
+          <h1 className="mb-2 md:mb-3 flex justify-center">
+            <img
+              src={LOGO_DARK_THEMES.has(theme) ? '/logo-light.png' : '/logo.png'}
+              alt="NeatClock"
+              width={2003}
+              height={299}
+              className="h-10 sm:h-12 md:h-14 w-auto max-w-[min(100%,22rem)]"
+              decoding="async"
+            />
           </h1>
           <p className="font-serif italic text-base md:text-lg text-theme-text-muted text-center px-2 max-w-md">
             A minimalist, zero-friction recurring calendar generator.

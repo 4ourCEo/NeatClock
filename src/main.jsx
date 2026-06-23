@@ -4,16 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { storageGet } from './lib/storage.js'
+import { resolveTheme, THEME_CLASSES } from './lib/themes.js'
 
-const themeClasses = [
-  'theme-warm-sand', 'theme-sage-garden', 'theme-obsidian', 'theme-forest-moss',
-  'theme-ink-stone', 'theme-blush-linen',
-];
+const themeClasses = THEME_CLASSES;
 
 function applyInitialTheme() {
   const savedTheme = storageGet('neatclock_theme');
   const legacyDark = storageGet('neatclock_dark_mode') === 'true';
-  const theme = savedTheme || (legacyDark ? 'theme-obsidian' : 'theme-warm-sand');
+  const theme = resolveTheme(savedTheme, legacyDark);
   document.documentElement.classList.remove(...themeClasses);
   document.body.classList.remove(...themeClasses);
   document.documentElement.classList.add(theme);

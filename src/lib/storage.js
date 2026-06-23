@@ -25,3 +25,12 @@ export function storageRemove(key) {
     return false;
   }
 }
+
+/** Persist a value; invoke onFailure when localStorage rejects the write (quota, private mode). */
+export function persistState(key, value, onFailure) {
+  const ok = storageSet(key, value);
+  if (!ok && typeof onFailure === 'function') {
+    onFailure();
+  }
+  return ok;
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   clampInterval,
   normalizeTask,
+  normalizeTasks,
   normalizeUnit,
   parseNaturalLanguage,
   resolveActivePreset,
@@ -20,6 +21,17 @@ describe('normalizeUnit', () => {
   it('accepts valid units only', () => {
     expect(normalizeUnit('weeks')).toBe('weeks');
     expect(normalizeUnit('bogus')).toBe('months');
+  });
+});
+
+describe('normalizeTasks', () => {
+  it('coerces invalid units via normalizeUnit', () => {
+    const tasks = normalizeTasks([
+      { name: 'Weekly', interval: 2, unit: 'weeks' },
+      { name: 'Bad unit', interval: 1, unit: 'fortnights' },
+    ]);
+    expect(tasks[0].unit).toBe('weeks');
+    expect(tasks[1].unit).toBe('months');
   });
 });
 
