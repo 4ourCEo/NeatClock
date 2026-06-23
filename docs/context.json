@@ -11,17 +11,17 @@
     "backend": "none"
   },
   "lastDeploy": {
-    "summary": "Production hardening pass plus brand asset integration and review tooling",
+    "summary": "BRIDGE workflow adoption: vertical slices, Playwright E2E, requirements traceability",
     "highlights": [
-      "Hardened localStorage persistence with quota/error recovery (persistState, onFailure callbacks)",
-      "Task validation and backup normalization on restore",
-      "Brand logos (PNG transparent), favicons, OG image, and lockscreen wallpaper wired into public/",
-      "Code review prompt and .cursor/rules/code-review.mdc for pre-deploy audits",
-      "Excluded local env files from Vercel CLI uploads"
+      "Extracted App.jsx into hooks and components (vertical slices)",
+      "Playwright schedule-flow E2E: preset switch, ICS export, backup download",
+      "docs/requirements.json and docs/context.json for BRIDGE traceability",
+      "docs/decisions.md ADR-lite for architectural choices",
+      "Vitest isolated from E2E via separate test configs",
+      "docs/BRIDGE-GATE.md pre-deploy checklist"
     ],
     "recentCommits": [
-      "5814814 Harden persistence, integrate brand assets, and add review tooling",
-      "5823075 Harden persistence, validation, and error recovery for production"
+      "46ba19b Adopt BRIDGE workflow: docs, E2E gate, and App vertical slices."
     ]
   },
   "completed": [
@@ -40,7 +40,11 @@
     "Playwright E2E smoke test: preset select → edit task → ICS export → backup download",
     "Interest form UI built (modal + footer card) — awaiting endpoint activation",
     "Print upsell UI built but feature-flagged off",
-    "Owner preview mode (?preview=monetization) for gated UI testing"
+    "Owner preview mode (?preview=monetization) for gated UI testing",
+    "BRIDGE pre-deploy gate (docs/BRIDGE-GATE.md)",
+    "docs/requirements.json acceptance-test traceability with vitest/e2e/manual verify fields",
+    "App.jsx vertical slices: AppHeader, TaskTable, useSchedulePersistence, useNotifications, schedulePreview",
+    "E2E coverage mapped in requirements.json (schedule-flow)"
   ],
   "blocked": [
     {
@@ -71,10 +75,8 @@
   "nextSession": [
     "Purchase neatclock.app and wire via Vercel Domains",
     "Activate Formspree/FormSubmit endpoint and set VITE_INTEREST_FORM_ENDPOINT on Vercel",
-    "Validate print demand via interest form before building Gumroad deliverables",
     "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
-    "Upgrade Vercel to Pro, then enable VITE_FEATURE_NEATCLOCK_PRINTS with product URLs",
-    "Run npm run lint && npm run test && npm run test:e2e && npm run build before each deploy"
+    "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
     "unit": 36,
