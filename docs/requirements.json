@@ -29,6 +29,11 @@
           "id": "preset-ui",
           "description": "User can select a built-in or custom preset in the one-page UI",
           "verify": "manual:Open app, click each preset card, confirm tasks load and active preset persists after reload"
+        },
+        {
+          "id": "preset-e2e-switch",
+          "description": "E2E selects Preventive Gearhead preset and confirms active view label",
+          "verify": "e2e:schedule-flow preset switch"
         }
       ]
     },
@@ -67,6 +72,16 @@
           "id": "ics-download",
           "description": "Export button downloads a valid `.ics` file",
           "verify": "manual:Export calendar, import file into Apple/Google Calendar, confirm recurring events appear"
+        },
+        {
+          "id": "ics-e2e-download",
+          "description": "E2E exports ICS and downloads neatclock-schedule.ics",
+          "verify": "e2e:schedule-flow ICS download"
+        },
+        {
+          "id": "print-e2e-preview",
+          "description": "E2E toggles print preview and asserts read-only task names (slice 14)",
+          "verify": "e2e:pending print-preview"
         }
       ]
     },
@@ -100,6 +115,16 @@
           "id": "backup-roundtrip",
           "description": "Full backup/restore roundtrip preserves user data",
           "verify": "manual:Customize tasks, export backup JSON, clear storage, import backup, confirm state restored"
+        },
+        {
+          "id": "backup-e2e-download",
+          "description": "E2E downloads neatclock-backup.json via Backup button",
+          "verify": "e2e:schedule-flow backup download"
+        },
+        {
+          "id": "backup-e2e-roundtrip",
+          "description": "E2E exports backup, clears storage, imports, and restores tasks (slice 12)",
+          "verify": "e2e:pending backup-roundtrip"
         }
       ]
     },
@@ -128,6 +153,11 @@
           "id": "storage-reload",
           "description": "State survives page reload",
           "verify": "manual:Edit tasks, reload page, confirm changes persisted"
+        },
+        {
+          "id": "storage-e2e-failure",
+          "description": "E2E surfaces storage failure message when localStorage quota exceeded (slice 13)",
+          "verify": "e2e:pending storage-failure toast"
         }
       ]
     },
@@ -161,6 +191,11 @@
           "id": "theme-ui",
           "description": "Theme selector updates UI and header logo variant",
           "verify": "manual:Switch themes, confirm colors and logo swap for dark themes"
+        },
+        {
+          "id": "theme-e2e-swap",
+          "description": "E2E switches to dark theme and confirms light logo variant (slice 11)",
+          "verify": "e2e:pending theme-swap"
         }
       ]
     },
@@ -278,6 +313,11 @@
           "id": "brand-header-swap",
           "description": "Header swaps logo variant for dark themes",
           "verify": "manual:Switch to Obsidian theme, confirm light logo variant displayed"
+        },
+        {
+          "id": "brand-e2e-logo-swap",
+          "description": "E2E confirms header logo variant swaps on dark theme (slice 11)",
+          "verify": "e2e:pending theme-swap logo variant"
         }
       ]
     },
