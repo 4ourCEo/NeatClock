@@ -1,0 +1,91 @@
+{
+  "asOf": "2026-06-23",
+  "productionUrl": "https://neatclock.vercel.app",
+  "github": "4ourCEo/NeatClock",
+  "targetDomain": "neatclock.app",
+  "targetDomainStatus": "not purchased",
+  "stack": {
+    "framework": "React 19 + Vite 8 + Tailwind v4",
+    "hosting": "Vercel (Hobby plan)",
+    "persistence": "browser localStorage",
+    "backend": "none"
+  },
+  "lastDeploy": {
+    "summary": "Production hardening pass plus brand asset integration and review tooling",
+    "highlights": [
+      "Hardened localStorage persistence with quota/error recovery (persistState, onFailure callbacks)",
+      "Task validation and backup normalization on restore",
+      "Brand logos (PNG transparent), favicons, OG image, and lockscreen wallpaper wired into public/",
+      "Code review prompt and .cursor/rules/code-review.mdc for pre-deploy audits",
+      "Excluded local env files from Vercel CLI uploads"
+    ],
+    "recentCommits": [
+      "5814814 Harden persistence, integrate brand assets, and add review tooling",
+      "5823075 Harden persistence, validation, and error recovery for production"
+    ]
+  },
+  "completed": [
+    "Public one-page generator SPA deployed to Vercel",
+    "Three built-in presets plus save-your-own custom presets",
+    "ICS calendar export (core, free forever)",
+    "Print-friendly checklist view",
+    "Export Preview sidebar (first-occurrence simulation, not a to-do list)",
+    "JSON backup and restore with normalization",
+    "Theme system with legacy dark-mode migration",
+    "Task validation, clamping, and natural-language parsing",
+    "Feature-flag infrastructure for monetization (VITE_FEATURE_*)",
+    "Monetization catalog in src/config/monetization.js",
+    "Brand assets in public/ (logo.png, logo-light.png, favicons, og-image.png, lockscreen SVG)",
+    "36 Vitest unit tests across 5 lib modules (buildIcs, backup, storage, themes, tasks)",
+    "Playwright E2E smoke test: preset select → edit task → ICS export → backup download",
+    "Interest form UI built (modal + footer card) — awaiting endpoint activation",
+    "Print upsell UI built but feature-flagged off",
+    "Owner preview mode (?preview=monetization) for gated UI testing"
+  ],
+  "blocked": [
+    {
+      "item": "Custom domain neatclock.app",
+      "reason": "Domain not purchased; production serves from neatclock.vercel.app"
+    },
+    {
+      "item": "Interest form live submissions",
+      "reason": "VITE_INTEREST_FORM_ENDPOINT not set on production; Formspree/FormSubmit account activation pending"
+    },
+    {
+      "item": "NeatClock Prints Gumroad CTAs",
+      "reason": "Gumroad products, ZIP deliverables, and VITE_PRINTS_* URLs not created; VITE_FEATURE_NEATCLOCK_PRINTS remains off"
+    },
+    {
+      "item": "Commercial monetization on Vercel",
+      "reason": "Vercel Hobby plan is non-commercial only; upgrade to Pro before enabling live Gumroad print CTAs"
+    },
+    {
+      "item": "Premium themes paywall",
+      "reason": "VITE_FEATURE_PREMIUM_THEMES off; optional launch tied to print bundle"
+    },
+    {
+      "item": "Sponsor footer and affiliate hints",
+      "reason": "Flags off; Amazon Associates tag and sponsor outreach not started"
+    }
+  ],
+  "nextSession": [
+    "Purchase neatclock.app and wire via Vercel Domains",
+    "Activate Formspree/FormSubmit endpoint and set VITE_INTEREST_FORM_ENDPOINT on Vercel",
+    "Validate print demand via interest form before building Gumroad deliverables",
+    "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
+    "Upgrade Vercel to Pro, then enable VITE_FEATURE_NEATCLOCK_PRINTS with product URLs",
+    "Run npm run lint && npm run test && npm run test:e2e && npm run build before each deploy"
+  ],
+  "testCounts": {
+    "unit": 36,
+    "e2e": 1
+  },
+  "testFiles": [
+    "src/lib/buildIcs.test.js",
+    "src/lib/backup.test.js",
+    "src/lib/storage.test.js",
+    "src/lib/themes.test.js",
+    "src/lib/tasks.test.js",
+    "e2e/schedule-flow.spec.js"
+  ]
+}

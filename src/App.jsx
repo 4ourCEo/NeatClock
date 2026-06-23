@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Plus, Trash2, Download, Printer, Sparkles, X, Calendar, GripVertical, Upload, ChevronUp, ChevronDown } from 'lucide-react';
+import { useState, useMemo, useRef } from 'react';
+import { Plus, Download, Printer, Sparkles, X, Calendar, Upload } from 'lucide-react';
 import { buildIcsContent } from './lib/buildIcs.js';
 import { createBackupPayload, normalizeCustomPresets, validateBackup } from './lib/backup.js';
 import { downloadText } from './lib/download.js';
-import { storageGet, persistState } from './lib/storage.js';
+import { storageGet } from './lib/storage.js';
 import {
   clampInterval,
   createTaskId,
@@ -13,84 +13,20 @@ import {
   resolveActivePreset,
   TASK_NAME_MAX,
 } from './lib/tasks.js';
-import { ALLOWED_THEMES, resolveTheme, THEME_CLASSES } from './lib/themes.js';
+import { ALLOWED_THEMES, resolveTheme } from './lib/themes.js';
+import { calculateFirstOccurrence } from './lib/schedulePreview.js';
 import { features } from './config/features.js';
-import { ExportExtras, PremiumThemesBanner, PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
+import { PRESETS, presetCardLabel } from './config/presets.js';
+import { ExportExtras, PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
 import { MonetizationPreviewBanner } from './components/FeatureGate.jsx';
 import InterestModal from './components/InterestModal.jsx';
 import { InterestExportSection } from './components/InterestInvite.jsx';
-import { getAvailableThemes } from './config/monetization.js';
-
-const LOGO_DARK_THEMES = new Set(['theme-obsidian', 'theme-forest-moss', 'theme-ink-stone']);
+import AppHeader from './components/AppHeader.jsx';
+import TaskTable from './components/TaskTable.jsx';
+import { useNotifications } from './hooks/useNotifications.js';
+import { useSchedulePersistence } from './hooks/useSchedulePersistence.js';
 
 const MAX_BACKUP_BYTES = 512 * 1024;
-const STORAGE_SAVE_MESSAGE = 'Could not save your schedule in this browser. Export a backup JSON.';
-
-const PRESETS = {
-  "Homeowner's Sentinel": [
-    { id: 'hs-1', name: 'HVAC Filter Replacement', interval: 3, unit: 'months' },
-    { id: 'hs-2', name: 'Smoke Detector Check', interval: 6, unit: 'months' },
-    { id: 'hs-3', name: 'Gutter Clearance', interval: 6, unit: 'months' },
-    { id: 'hs-4', name: 'Water Heater Flush', interval: 12, unit: 'months' },
-    { id: 'hs-5', name: 'Dryer Vent Vacuuming', interval: 12, unit: 'months' },
-  ],
-  'Preventive Gearhead': [
-    { id: 'pg-1', name: 'Engine Oil Change', interval: 6, unit: 'months' },
-    { id: 'pg-2', name: 'Tire Rotation', interval: 6, unit: 'months' },
-    { id: 'pg-3', name: 'Air Filter Check', interval: 12, unit: 'months' },
-    { id: 'pg-4', name: 'Wiper Blades', interval: 12, unit: 'months' },
-    { id: 'pg-5', name: 'Brake Fluid Inspection', interval: 12, unit: 'months' },
-  ],
-  'Automated CFO': [
-    { id: 'cfo-1', name: 'Quarterly Estimated Taxes', interval: 3, unit: 'months' },
-    { id: 'cfo-2', name: 'Monthly Bookkeeping', interval: 1, unit: 'months' },
-    { id: 'cfo-3', name: 'Security Audit', interval: 6, unit: 'months' },
-    { id: 'cfo-4', name: 'Subscription Review', interval: 6, unit: 'months' },
-    { id: 'cfo-5', name: 'Domain Renewals', interval: 12, unit: 'months' },
-  ],
-};
-
-/** Shorter card title only — storage / modals keep full preset names */
-const PRESET_CARD_LABELS = {
-  "Homeowner's Sentinel": 'Home Sentinel',
-};
-
-function presetCardLabel(presetName) {
-  return PRESET_CARD_LABELS[presetName] ?? presetName;
-}
-
-function isRhythmHighlighted(task, monthNum) {
-  const interval = parseInt(task.interval, 10) || 1;
-
-  if (task.unit === 'years') {
-    return monthNum === 1;
-  }
-  if (task.unit === 'weeks') {
-    return monthNum % Math.max(1, Math.round(interval / 4)) === 0;
-  }
-  return monthNum % interval === 0;
-}
-
-function calculateFirstOccurrence(task) {
-  const baseDateStr = new Date().toISOString().split('T')[0];
-  const parts = baseDateStr.split('-');
-  const year = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // 0-indexed month
-  const day = parseInt(parts[2], 10);
-
-  const baseDate = new Date(year, month, day, 12, 0, 0); // Local noon, browser-agnostic
-  const interval = parseInt(task.interval, 10) || 1;
-
-  if (task.unit === 'weeks') {
-    baseDate.setDate(baseDate.getDate() + (interval * 7));
-  } else if (task.unit === 'years') {
-    baseDate.setFullYear(baseDate.getFullYear() + interval);
-  } else {
-    // months
-    baseDate.setMonth(baseDate.getMonth() + interval);
-  }
-  return baseDate;
-}
 
 function App() {
   // Main Tasks List State
@@ -149,7 +85,7 @@ function App() {
     const legacyDark = storageGet('neatclock_dark_mode') === 'true';
     return resolveTheme(savedTheme, legacyDark);
   });
-  const [notification, setNotification] = useState(null);
+  const { notification, setNotification, showNotification } = useNotifications();
   const [confirmModal, setConfirmModal] = useState(null);
   const [presetModalOpen, setPresetModalOpen] = useState(false);
   const [presetNameInput, setPresetNameInput] = useState('');
@@ -168,9 +104,6 @@ function App() {
   const [nlInput, setNlInput] = useState('');
   const parsedNl = useMemo(() => parseNaturalLanguage(nlInput), [nlInput]);
 
-  // Drag and Drop State
-  const [draggedIdx, setDraggedIdx] = useState(null);
-
   // Seasonal Offset State
   const [startOffsetWeeks, setStartOffsetWeeks] = useState(() => {
     const saved = storageGet('neatclock_start_offset');
@@ -179,51 +112,16 @@ function App() {
   });
 
   const importInputRef = useRef(null);
-  const notificationTimeoutRef = useRef(null);
 
-  const scheduleStorageFailureNotice = () => {
-    queueMicrotask(() => setNotification(STORAGE_SAVE_MESSAGE));
-  };
-
-  useEffect(() => {
-    persistState('neatclock_start_offset', String(startOffsetWeeks), scheduleStorageFailureNotice);
-  }, [startOffsetWeeks]);
-
-  // Sync state to localStorage (tasks debounced to avoid write storms)
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      persistState('neatclock_tasks', JSON.stringify(tasks), scheduleStorageFailureNotice);
-    }, 300);
-    return () => clearTimeout(timeoutId);
-  }, [tasks]);
-
-  useEffect(() => {
-    persistState('neatclock_show_export_preview', String(showExportPreview), scheduleStorageFailureNotice);
-  }, [showExportPreview]);
-
-  useEffect(() => {
-    persistState('neatclock_active_preset', activePreset, scheduleStorageFailureNotice);
-  }, [activePreset]);
-
-  useEffect(() => {
-    persistState('neatclock_custom_presets', JSON.stringify(customPresets), scheduleStorageFailureNotice);
-  }, [customPresets]);
-
-  useEffect(() => {
-    document.documentElement.classList.remove(...THEME_CLASSES);
-    document.body.classList.remove(...THEME_CLASSES);
-    document.documentElement.classList.add(theme);
-    document.body.classList.add(theme);
-    persistState('neatclock_theme', theme, scheduleStorageFailureNotice);
-  }, [theme]);
-
-  useEffect(() => {
-    return () => {
-      if (notificationTimeoutRef.current) {
-        clearTimeout(notificationTimeoutRef.current);
-      }
-    };
-  }, []);
+  useSchedulePersistence({
+    tasks,
+    customPresets,
+    activePreset,
+    theme,
+    showExportPreview,
+    startOffsetWeeks,
+    setNotification,
+  });
 
   // Add Natural Language Task
   const handleAddNlTask = () => {
@@ -237,27 +135,6 @@ function App() {
     setTasks([...tasks, newTask]);
     setNlInput('');
     showNotification(`Added: "${newTask.name}"`);
-  };
-
-  // Drag and Drop Sorting Handlers
-  const handleDragStart = (index) => {
-    setDraggedIdx(index);
-  };
-
-  const handleDragOver = (e, index) => {
-    e.preventDefault();
-    if (draggedIdx === null || draggedIdx === index) return;
-    
-    const updated = [...tasks];
-    const item = updated.splice(draggedIdx, 1)[0];
-    updated.splice(index, 0, item);
-    
-    setDraggedIdx(index);
-    setTasks(updated);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIdx(null);
   };
 
   const moveTask = (index, direction) => {
@@ -283,18 +160,6 @@ function App() {
     if (task.unit === 'weeks') freq = 'WEEKLY';
     if (task.unit === 'years') freq = 'YEARLY';
     return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(task.name)}&rrule=FREQ=${freq};INTERVAL=${task.interval}`;
-  };
-
-  // Toast notifications trigger
-  const showNotification = (message) => {
-    if (notificationTimeoutRef.current) {
-      clearTimeout(notificationTimeoutRef.current);
-    }
-    setNotification(message);
-    notificationTimeoutRef.current = setTimeout(() => {
-      setNotification(null);
-      notificationTimeoutRef.current = null;
-    }, 3000);
   };
 
   // Preset Selection
@@ -362,7 +227,7 @@ function App() {
         const updated = { ...customPresets };
         delete updated[presetName];
         setCustomPresets(updated);
-        
+
         if (activePreset === presetName) {
           setTasks([...PRESETS["Homeowner's Sentinel"]]);
           setActivePreset("Homeowner's Sentinel");
@@ -390,7 +255,7 @@ function App() {
   };
 
   const handleUpdateTaskName = (id, newName) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === id ? { ...task, name: newName.slice(0, TASK_NAME_MAX) } : task
     ));
   };
@@ -402,12 +267,10 @@ function App() {
   };
 
   const handleUpdateTaskUnit = (id, newUnit) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === id ? { ...task, unit: normalizeUnit(newUnit) } : task
     ));
   };
-
-  // Resets checklist and options
 
   const handleReset = () => {
     setConfirmModal({
@@ -560,7 +423,7 @@ function App() {
   return (
     <div className="app-canvas min-h-screen py-6 md:py-12 transition-colors duration-500 relative text-theme-text font-sans">
       <MonetizationPreviewBanner />
-      
+
       {/* Organic Paper Grain Texture Overlay */}
       <div className="pointer-events-none fixed inset-0 opacity-[0.025] mix-blend-overlay z-50 bg-[url('data:image/svg+xml;utf8,<svg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22><filter id=%22noiseFilter%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/></svg>')]"></div>
 
@@ -730,41 +593,8 @@ function App() {
 
       {/* Main Page Layout Wrapper */}
       <main className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}>
-        
-        {/* Header Section */}
-        <header className="relative flex flex-col items-center justify-center mb-8 md:mb-10 border-b pb-6 md:pb-8 border-theme-border/60">
-          <h1 className="mb-2 md:mb-3 flex justify-center">
-            <img
-              src={LOGO_DARK_THEMES.has(theme) ? '/logo-light.png' : '/logo.png'}
-              alt="NeatClock"
-              width={2003}
-              height={299}
-              className="h-10 sm:h-12 md:h-14 w-auto max-w-[min(100%,22rem)]"
-              decoding="async"
-            />
-          </h1>
-          <p className="font-serif italic text-base md:text-lg text-theme-text-muted text-center px-2 max-w-md">
-            A minimalist, zero-friction recurring calendar generator.
-          </p>
 
-          {/* Theme picker — centered on mobile, top-right on desktop */}
-          <div className="theme-picker no-print items-center surface-panel shadow-[var(--theme-shadow-sm)]">
-            {getAvailableThemes().map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTheme(t.id)}
-                className={`theme-swatch touch-target rounded-full cursor-pointer transition-all duration-300 ${t.color} hover:scale-110 ${
-                  theme === t.id ? `ring-2 ring-offset-2 ring-theme-text ${t.ring} scale-110 shadow-sm` : 'opacity-65 hover:opacity-100'
-                }`}
-                title={`Switch to ${t.name}${t.premium ? ' (premium)' : ''}`}
-                aria-label={`Switch to ${t.name}`}
-              />
-            ))}
-          </div>
-
-          <PremiumThemesBanner />
-        </header>
+        <AppHeader theme={theme} setTheme={setTheme} />
 
         {/* Presets and Controls (no-print) */}
         <section className="no-print mb-8">
@@ -779,7 +609,7 @@ function App() {
                 {Object.entries(PRESETS).map(([presetName, presetTasks]) => {
                   const isActive = activePreset === presetName;
                   let Icon = Calendar; // Default
-                  
+
                   if (presetName.includes("Homeowner")) {
                     Icon = (props) => (
                       <svg className={props.className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -906,8 +736,8 @@ function App() {
                   id="btn-print-preview-toggle"
                   onClick={() => setPrintPreview(!printPreview)}
                   className={`px-4 py-2 text-xs font-medium rounded-lg border flex items-center gap-2 transition-all cursor-pointer ${
-                    printPreview 
-                      ? 'bg-theme-accent text-white border-theme-accent hover:bg-theme-accent-hover' 
+                    printPreview
+                      ? 'bg-theme-accent text-white border-theme-accent hover:bg-theme-accent-hover'
                       : 'border-theme-border hover:bg-theme-bg/60 text-theme-text-muted bg-theme-card'
                   }`}
                 >
@@ -928,10 +758,10 @@ function App() {
 
         {/* Responsive Workspace Grid */}
         <div className={`grid grid-cols-1 ${showExportPreview ? 'lg:grid-cols-3' : 'lg:grid-cols-1'} gap-8`}>
-          
+
           {/* Task Sheet Table */}
           <section className={showExportPreview ? 'lg:col-span-2' : 'lg:col-span-1'}>
-            
+
             {/* Natural Language Task Input (no-print) */}
             {!printPreview && (
               <div className="no-print mb-6">
@@ -976,175 +806,18 @@ function App() {
                 </button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left print-table">
-                  <thead>
-                    <tr className="border-b border-theme-border text-xs font-semibold uppercase tracking-wider text-theme-text-muted print:text-black print:border-black">
-                      {!printPreview && <th className="task-drag-col py-3 px-2 w-8 no-print" aria-hidden="true" />}
-                      {printPreview && <th className="py-3 px-2 w-12 text-center">Status</th>}
-                      <th className="py-3 px-2">Recurring Task Name</th>
-                      <th className="py-3 px-2 w-48">Frequency / Unit</th>
-                      <th className="py-3 px-2 w-28 text-center no-print">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tasks.map((task, idx) => {
-                      return (
-                        <tr 
-                          key={task.id}
-                          draggable={!printPreview}
-                          onDragStart={() => handleDragStart(idx)}
-                          onDragOver={(e) => handleDragOver(e, idx)}
-                          onDragEnd={handleDragEnd}
-                          className={`group border-b border-theme-border/30 hover:bg-theme-bg/10 print:border-black print:hover:bg-transparent transition-all duration-300 animate-slide-up ${
-                            draggedIdx === idx ? 'opacity-30 bg-theme-bg border-dashed' : ''
-                          } ${!printPreview ? 'cursor-grab active:cursor-grabbing' : ''}`}
-                        >
-                          {/* Drag handle column */}
-                          {!printPreview && (
-                            <td className="task-drag-col py-4 px-2 w-8 text-center align-middle no-print">
-                              <GripVertical className="task-drag-handle w-3.5 h-3.5 text-theme-text-muted transition-opacity" />
-                            </td>
-                          )}
-
-                          {/* Completion Checkbox Column for Print only */}
-                          {printPreview && (
-                            <td className="py-4 px-2 text-center align-middle">
-                              <span className="print-checkbox border border-black dark:border-white inline-block w-4 h-4 rounded-sm"></span>
-                            </td>
-                          )}
-
-                          {/* Task Name Cell */}
-                          <td className="py-4 px-2">
-                            {printPreview ? (
-                              <span className="font-serif">
-                                {task.name}
-                              </span>
-                            ) : (
-                              <div className="flex flex-col gap-1 w-full">
-                                <input
-                                  type="text"
-                                  value={task.name}
-                                  onChange={(e) => handleUpdateTaskName(task.id, e.target.value)}
-                                  className="w-full bg-transparent border-0 border-b border-transparent focus:border-theme-accent focus:ring-0 py-0 pl-0 pr-2 font-serif text-theme-text placeholder-theme-text-muted/40 focus:outline-none transition-colors"
-                                  placeholder="Describe recurring task..."
-                                />
-                                {/* Rhythm Wave Indicator */}
-                                <div className="flex items-center gap-1 text-[9px] text-theme-text-muted mt-1 h-3 no-print select-none">
-                                  <span className="mr-1 opacity-70">Frequency Rhythm:</span>
-                                  <div className="flex gap-0.5 items-center">
-                                    {Array.from({ length: 12 }).map((_, i) => {
-                                      const monthNum = i + 1;
-                                      const highlighted = isRhythmHighlighted(task, monthNum);
-
-                                      return (
-                                        <div
-                                          key={i}
-                                          className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                                            highlighted
-                                              ? 'bg-theme-accent scale-110'
-                                              : 'bg-theme-border/60 hover:bg-theme-border'
-                                          }`}
-                                          title={`Month ${monthNum}`}
-                                        />
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </td>
-
-                          {/* Interval and Unit Cell */}
-                          <td className="py-4 px-2">
-                            {printPreview ? (
-                              <span className="text-theme-text-muted font-sans text-sm">
-                                Every {task.interval} {task.unit}
-                              </span>
-                            ) : (
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-theme-text-muted text-xs font-sans">Every</span>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  max="120"
-                                  value={task.interval}
-                                  onChange={(e) => handleUpdateTaskInterval(task.id, e.target.value)}
-                                  className="w-12 bg-theme-card border border-theme-border rounded px-1.5 py-1 text-center font-sans text-sm focus:border-theme-accent focus:ring-0 focus:outline-none text-theme-text"
-                                />
-                                <select
-                                  value={task.unit}
-                                  onChange={(e) => handleUpdateTaskUnit(task.id, e.target.value)}
-                                  className="bg-transparent border-0 border-b border-transparent focus:border-theme-accent focus:ring-0 py-1 pl-1 text-xs font-sans text-theme-text-muted focus:outline-none cursor-pointer"
-                                >
-                                  <option value="weeks" className="bg-theme-card text-theme-text">week{task.interval > 1 ? 's' : ''}</option>
-                                  <option value="months" className="bg-theme-card text-theme-text">month{task.interval > 1 ? 's' : ''}</option>
-                                  <option value="years" className="bg-theme-card text-theme-text">year{task.interval > 1 ? 's' : ''}</option>
-                                </select>
-                              </div>
-                            )}
-                          </td>
-
-                          {/* Action Cell */}
-                          <td className="py-4 px-2 text-center no-print">
-                            <div className="task-row-actions flex items-center justify-center gap-0.5 sm:gap-1.5 focus-within:opacity-100 transition-opacity">
-                              <button
-                                type="button"
-                                onClick={() => moveTask(idx, -1)}
-                                disabled={idx === 0}
-                                className="touch-target text-theme-text-muted hover:text-theme-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1 cursor-pointer"
-                                title="Move task up"
-                                aria-label={`Move ${task.name} up`}
-                              >
-                                <ChevronUp className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => moveTask(idx, 1)}
-                                disabled={idx === tasks.length - 1}
-                                className="touch-target text-theme-text-muted hover:text-theme-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1 cursor-pointer"
-                                title="Move task down"
-                                aria-label={`Move ${task.name} down`}
-                              >
-                                <ChevronDown className="w-3.5 h-3.5" />
-                              </button>
-                              <a
-                                href={getGoogleCalLink(task)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="touch-target text-theme-text-muted hover:text-theme-accent transition-colors p-1"
-                                title="Add to Google Calendar"
-                              >
-                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                                </svg>
-                              </a>
-                              <a
-                                href={getOutlookCalLink(task)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="touch-target text-theme-text-muted hover:text-theme-accent transition-colors p-1"
-                                title="Add to Outlook Calendar"
-                              >
-                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                  <path d="M16.5 12c1.38 0 2.5-1.12 2.5-2.5S17.88 7 16.5 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 3-1.34 3-3S10.66 5 9 5 6 6.34 6 8s1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h10v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                                </svg>
-                              </a>
-                              <button
-                                onClick={() => handleDeleteTask(task.id)}
-                                className="touch-target text-theme-text-muted hover:text-red-500 transition-colors p-1 cursor-pointer focus:outline-none"
-                                title="Delete task"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <TaskTable
+                tasks={tasks}
+                setTasks={setTasks}
+                printPreview={printPreview}
+                onUpdateTaskName={handleUpdateTaskName}
+                onUpdateTaskInterval={handleUpdateTaskInterval}
+                onUpdateTaskUnit={handleUpdateTaskUnit}
+                onDeleteTask={handleDeleteTask}
+                onMoveTask={moveTask}
+                getGoogleCalLink={getGoogleCalLink}
+                getOutlookCalLink={getOutlookCalLink}
+              />
             )}
 
             {/* Add custom task row (hidden in print preview/printing) */}

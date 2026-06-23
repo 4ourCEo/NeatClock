@@ -1,0 +1,313 @@
+{
+  "project": "NeatClock",
+  "version": 1,
+  "killCriteria": [
+    "User accounts or cloud sync",
+    "Mark-complete / overdue / task tracking",
+    "Push notifications or come-back-weekly flows",
+    "Backend, API, or database (for the free tool)"
+  ],
+  "decisionTest": "Does this help someone export or print their schedule in under 60 seconds? If no → skip it, or build it behind a feature flag for later.",
+  "features": [
+    {
+      "id": "preset-selection",
+      "title": "Preset selection",
+      "description": "Three built-in starter presets (Homeowner's Sentinel, Preventive Gearhead, Automated CFO) plus user-saved custom presets. Active preset resolves with legacy ID mapping and fallback.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "preset-legacy-map",
+          "description": "Legacy preset IDs map to current preset keys",
+          "verify": "vitest:resolveActivePreset maps legacy ids"
+        },
+        {
+          "id": "preset-fallback",
+          "description": "Missing or invalid preset falls back to a valid default",
+          "verify": "vitest:resolveActivePreset falls back when preset missing"
+        },
+        {
+          "id": "preset-ui",
+          "description": "User can select a built-in or custom preset in the one-page UI",
+          "verify": "manual:Open app, click each preset card, confirm tasks load and active preset persists after reload"
+        }
+      ]
+    },
+    {
+      "id": "ics-export",
+      "title": "ICS calendar export",
+      "description": "Generate RFC 5545 `.ics` files from recurring tasks for import into calendar apps. Core export stays free forever.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "ics-empty",
+          "description": "Empty task list returns null (no file generated)",
+          "verify": "vitest:buildIcsContent returns null for empty task list"
+        },
+        {
+          "id": "ics-allday",
+          "description": "Events use all-day VALUE=DATE for DTSTART",
+          "verify": "vitest:buildIcsContent uses all-day VALUE=DATE for DTSTART"
+        },
+        {
+          "id": "ics-escape",
+          "description": "Special characters in summaries are escaped per iCal rules",
+          "verify": "vitest:buildIcsContent escapes special characters in summaries"
+        },
+        {
+          "id": "ics-affiliate",
+          "description": "Affiliate hints appear in descriptions when feature flag enabled",
+          "verify": "vitest:buildIcsContent includes affiliate hints when enabled"
+        },
+        {
+          "id": "ics-date-format",
+          "description": "Dates format as YYYYMMDD",
+          "verify": "vitest:formatIcalDate formats as YYYYMMDD"
+        },
+        {
+          "id": "ics-download",
+          "description": "Export button downloads a valid `.ics` file",
+          "verify": "manual:Export calendar, import file into Apple/Google Calendar, confirm recurring events appear"
+        }
+      ]
+    },
+    {
+      "id": "backup-restore",
+      "title": "JSON backup and restore",
+      "description": "Versioned JSON export/import of schedules, custom presets, and preferences with normalization on restore.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "backup-version",
+          "description": "Backup payload includes version metadata",
+          "verify": "vitest:backup creates a versioned payload"
+        },
+        {
+          "id": "backup-normalize",
+          "description": "Restore normalizes tasks and active preset",
+          "verify": "vitest:backup normalizes tasks and active preset"
+        },
+        {
+          "id": "backup-reject",
+          "description": "Invalid backup JSON is rejected",
+          "verify": "vitest:backup rejects invalid backups"
+        },
+        {
+          "id": "backup-custom-presets",
+          "description": "Custom preset tasks normalize on restore; empty names filtered; cap at 50",
+          "verify": "vitest:backup normalizes custom preset tasks on restore"
+        },
+        {
+          "id": "backup-roundtrip",
+          "description": "Full backup/restore roundtrip preserves user data",
+          "verify": "manual:Customize tasks, export backup JSON, clear storage, import backup, confirm state restored"
+        }
+      ]
+    },
+    {
+      "id": "localStorage-persistence",
+      "title": "Browser localStorage persistence",
+      "description": "Schedules and preferences persist in browser localStorage with graceful failure when storage is unavailable or quota exceeded.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "storage-set-fail",
+          "description": "storageSet returns false when setItem throws",
+          "verify": "vitest:storage storageSet returns false when setItem throws"
+        },
+        {
+          "id": "storage-get-fallback",
+          "description": "storageGet returns fallback when getItem throws",
+          "verify": "vitest:storage storageGet returns fallback when getItem throws"
+        },
+        {
+          "id": "storage-persist-failure",
+          "description": "persistState invokes onFailure callback when setItem throws",
+          "verify": "vitest:storage persistState invokes onFailure when setItem throws"
+        },
+        {
+          "id": "storage-reload",
+          "description": "State survives page reload",
+          "verify": "manual:Edit tasks, reload page, confirm changes persisted"
+        }
+      ]
+    },
+    {
+      "id": "theme-system",
+      "title": "UI theme system",
+      "description": "Multiple app themes with validation, legacy dark-mode migration, and premium themes gated behind feature flag.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "theme-valid",
+          "description": "Valid saved theme is accepted",
+          "verify": "vitest:resolveTheme accepts a valid saved theme"
+        },
+        {
+          "id": "theme-invalid-fallback",
+          "description": "Invalid theme falls back to warm sand",
+          "verify": "vitest:resolveTheme rejects invalid theme and falls back to warm sand"
+        },
+        {
+          "id": "theme-legacy-dark",
+          "description": "Legacy dark flag migrates to obsidian when saved theme invalid",
+          "verify": "vitest:resolveTheme uses obsidian when legacy dark mode is enabled and saved theme is invalid"
+        },
+        {
+          "id": "theme-allowlist",
+          "description": "THEME_CLASSES matches resolveTheme allowlist",
+          "verify": "vitest:THEME_CLASSES matches allowlist used by resolveTheme"
+        },
+        {
+          "id": "theme-ui",
+          "description": "Theme selector updates UI and header logo variant",
+          "verify": "manual:Switch themes, confirm colors and logo swap for dark themes"
+        }
+      ]
+    },
+    {
+      "id": "task-validation",
+      "title": "Task validation and normalization",
+      "description": "Clamp intervals, normalize units, repair partial tasks, truncate long names, and parse natural-language recurrence input.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "task-clamp",
+          "description": "Interval clamped to 1–120",
+          "verify": "vitest:clampInterval clamps to 1–120"
+        },
+        {
+          "id": "task-unit",
+          "description": "Invalid units coerced to months",
+          "verify": "vitest:normalizeUnit accepts valid units only"
+        },
+        {
+          "id": "task-repair",
+          "description": "Partial task objects are repaired with defaults",
+          "verify": "vitest:normalizeTask repairs partial tasks"
+        },
+        {
+          "id": "task-truncate",
+          "description": "Very long task names are truncated",
+          "verify": "vitest:normalizeTask truncates very long names"
+        },
+        {
+          "id": "task-nlp",
+          "description": "Natural language input parses recurrence (e.g. every N months)",
+          "verify": "vitest:parseNaturalLanguage parses every N months"
+        }
+      ]
+    },
+    {
+      "id": "monetization-flags",
+      "title": "Feature-flagged monetization",
+      "description": "Optional revenue features (prints, lockscreen, premium themes, sponsor footer, affiliate hints) built but hidden until VITE_FEATURE_* env vars enabled. No UI shown when flags off.",
+      "status": "partial",
+      "acceptanceTests": [
+        {
+          "id": "flags-off-clean",
+          "description": "Production with all flags off shows no monetization UI",
+          "verify": "manual:Visit production URL without ?preview=monetization, confirm no print/sponsor CTAs"
+        },
+        {
+          "id": "flags-preview",
+          "description": "Owner preview via ?preview=monetization shows gated UI locally",
+          "verify": "manual:Append ?preview=monetization to URL, confirm print cards and upsell UI visible"
+        },
+        {
+          "id": "flags-affiliate-ics",
+          "description": "Affiliate hints in ICS when VITE_FEATURE_AFFILIATE_LINKS enabled",
+          "verify": "vitest:buildIcsContent includes affiliate hints when enabled"
+        },
+        {
+          "id": "flags-env-deploy",
+          "description": "Enabling flag on host and redeploying unlocks feature without code change",
+          "verify": "manual:Set VITE_FEATURE_NEATCLOCK_PRINTS=true on Vercel, redeploy, confirm print CTAs appear"
+        }
+      ]
+    },
+    {
+      "id": "interest-form",
+      "title": "Print demand interest form",
+      "description": "Native in-app modal and footer card to capture print-pack interest via Formspree/FormSubmit endpoint. Hidden once prints go live.",
+      "status": "blocked",
+      "acceptanceTests": [
+        {
+          "id": "interest-hidden-no-endpoint",
+          "description": "Interest UI hidden when VITE_INTEREST_FORM_ENDPOINT unset",
+          "verify": "manual:Production without endpoint configured — no interest modal or footer card"
+        },
+        {
+          "id": "interest-shows-configured",
+          "description": "Interest UI appears when endpoint configured and prints flag off",
+          "verify": "manual:Set VITE_INTEREST_FORM_ENDPOINT, redeploy, confirm modal and footer card visible"
+        },
+        {
+          "id": "interest-submit",
+          "description": "Form submission reaches configured endpoint",
+          "verify": "manual:Submit test entry, verify receipt in Formspree/FormSubmit inbox"
+        },
+        {
+          "id": "interest-hidden-prints-live",
+          "description": "Interest UI hidden when VITE_FEATURE_NEATCLOCK_PRINTS enabled",
+          "verify": "manual:Enable prints flag, confirm interest form no longer shown"
+        }
+      ]
+    },
+    {
+      "id": "brand-assets",
+      "title": "Brand assets and OG metadata",
+      "description": "Transparent PNG logos (light/dark variants), favicons, PWA icons, OG image, and lockscreen wallpaper in public/. Source assets in design-system/brand-assets/.",
+      "status": "done",
+      "acceptanceTests": [
+        {
+          "id": "brand-logos",
+          "description": "Logo PNGs with transparency served from /public",
+          "verify": "manual:Confirm /logo.png and /logo-light.png load with transparent backgrounds"
+        },
+        {
+          "id": "brand-favicons",
+          "description": "Favicon and apple-touch-icon present",
+          "verify": "manual:Check browser tab icon and bookmark icon on mobile"
+        },
+        {
+          "id": "brand-og",
+          "description": "OG image available for social sharing",
+          "verify": "manual:Share URL in Slack/iMessage, confirm og-image.png preview"
+        },
+        {
+          "id": "brand-header-swap",
+          "description": "Header swaps logo variant for dark themes",
+          "verify": "manual:Switch to Obsidian theme, confirm light logo variant displayed"
+        }
+      ]
+    },
+    {
+      "id": "prints-gumroad",
+      "title": "NeatClock Prints (Gumroad)",
+      "description": "Premium PDF print packs ($5 each, $12 bundle) linked from export success modal and footer. Requires Gumroad products, ZIP deliverables, and VITE_FEATURE_NEATCLOCK_PRINTS.",
+      "status": "blocked",
+      "acceptanceTests": [
+        {
+          "id": "prints-hidden",
+          "description": "Print CTAs hidden in production until flag and URLs configured",
+          "verify": "manual:Production — no Gumroad links on export success modal"
+        },
+        {
+          "id": "prints-preset-match",
+          "description": "Export modal shows preset-specific print pack copy",
+          "verify": "manual:With flag on and URLs set, export from Gearhead preset, confirm garage-ready CTA copy"
+        },
+        {
+          "id": "prints-gumroad-links",
+          "description": "Each preset links to correct Gumroad product URL",
+          "verify": "manual:Click print CTA for each preset, confirm correct Gumroad product opens"
+        },
+        {
+          "id": "prints-bundle",
+          "description": "Bundle option links to all-three pack",
+          "verify": "manual:Confirm bundle CTA uses VITE_PRINTS_BUNDLE_URL"
+        }
+      ]
+    }
+  ]
+}

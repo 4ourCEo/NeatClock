@@ -14,5 +14,9 @@ export default defineConfig({
     hmr: {
       overlay: true
     }
-  }
+  },
+  test: {
+    include: ['src/**/*.test.js'],
+    exclude: ['e2e/**', 'node_modules/**'],
+  },
 })
