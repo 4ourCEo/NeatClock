@@ -81,7 +81,7 @@
         {
           "id": "print-e2e-preview",
           "description": "E2E toggles print preview and asserts read-only task names (slice 14)",
-          "verify": "e2e:pending print-preview"
+          "verify": "e2e:print-preview printer friendly view"
         }
       ]
     },
@@ -124,7 +124,7 @@
         {
           "id": "backup-e2e-roundtrip",
           "description": "E2E exports backup, clears storage, imports, and restores tasks (slice 12)",
-          "verify": "e2e:pending backup-roundtrip"
+          "verify": "e2e:backup-roundtrip restore edited task"
         }
       ]
     },
@@ -157,7 +157,7 @@
         {
           "id": "storage-e2e-failure",
           "description": "E2E surfaces storage failure message when localStorage quota exceeded (slice 13)",
-          "verify": "e2e:pending storage-failure toast"
+          "verify": "e2e:storage-failure-toast quota exceeded toast"
         }
       ]
     },
@@ -195,7 +195,7 @@
         {
           "id": "theme-e2e-swap",
           "description": "E2E switches to dark theme and confirms light logo variant (slice 11)",
-          "verify": "e2e:pending theme-swap"
+          "verify": "e2e:theme-swap Obsidian light logo"
         }
       ]
     },
@@ -317,7 +317,7 @@
         {
           "id": "brand-e2e-logo-swap",
           "description": "E2E confirms header logo variant swaps on dark theme (slice 11)",
-          "verify": "e2e:pending theme-swap logo variant"
+          "verify": "e2e:theme-swap Obsidian light logo"
         }
       ]
     },

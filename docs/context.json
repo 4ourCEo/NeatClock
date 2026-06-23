@@ -80,7 +80,7 @@
   ],
   "testCounts": {
     "unit": 36,
-    "e2e": 1
+    "e2e": 5
   },
   "testFiles": [
     "src/lib/buildIcs.test.js",
@@ -88,6 +88,10 @@
     "src/lib/storage.test.js",
     "src/lib/themes.test.js",
     "src/lib/tasks.test.js",
-    "e2e/schedule-flow.spec.js"
+    "e2e/schedule-flow.spec.js",
+    "e2e/theme-swap.spec.js",
+    "e2e/backup-roundtrip.spec.js",
+    "e2e/storage-failure-toast.spec.js",
+    "e2e/print-preview.spec.js"
   ]
 }
