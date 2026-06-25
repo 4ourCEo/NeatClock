@@ -21,6 +21,24 @@ NeatClock is **not** a task tracker. No completion tracking, overdue states, or 
 
 Your schedule is saved **on your device** in the browser (not on our servers). Clearing site data for neatclock.app removes it. Use **Backup** to download a JSON copy you can restore later.
 
+## Preset deep links
+
+Share or bookmark a preset with URL query params (applied on first visit when no saved tasks exist, or anytime with `fresh=1`):
+
+| Param | Preset |
+|-------|--------|
+| `?preset=home` | Homeowner's Sentinel |
+| `?preset=gearhead` | Preventive Gearhead |
+| `?preset=cfo` | Automated CFO |
+
+Examples: `https://neatclock.vercel.app/?preset=gearhead` · force reload preset: `?preset=home&fresh=1`
+
+SEO landing pages (static HTML, preset CTAs):
+
+- `/home-maintenance-calendar` → `?preset=home`
+- `/car-maintenance-schedule-ics` → `?preset=gearhead`
+- `/freelancer-quarterly-tax-reminders` → `?preset=cfo`
+
 ## Feature flags (launch when ready)
 
 Future monetization features (print shop, lockscreen goodies, sponsor footer) are **built but off by default**. Enable via environment variables — see [FEATURES.md](./FEATURES.md).

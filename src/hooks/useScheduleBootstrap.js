@@ -6,8 +6,14 @@ import {
 } from '../lib/tasks.js';
 import { resolveTheme } from '../lib/themes.js';
 import { PRESETS } from '../config/presets.js';
+import { getDeepLinkBootstrap } from '../lib/deepLink.js';
 
 export function loadInitialTasks() {
+  const deepLink = getDeepLinkBootstrap();
+  if (deepLink) {
+    return [...PRESETS[deepLink.presetName]];
+  }
+
   const saved = storageGet('neatclock_tasks');
   if (saved) {
     try {
@@ -38,6 +44,11 @@ export function loadInitialCustomPresets() {
 }
 
 export function loadInitialActivePreset() {
+  const deepLink = getDeepLinkBootstrap();
+  if (deepLink) {
+    return deepLink.presetName;
+  }
+
   let custom = {};
   const savedCustom = storageGet('neatclock_custom_presets');
   if (savedCustom) {

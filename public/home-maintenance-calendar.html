@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Maintenance Calendar — Recurring ICS Reminders | NeatClock</title>
+    <meta name="description" content="Build a home maintenance calendar in under a minute. HVAC filters, smoke detectors, gutters, and more — export a recurring .ics file for Google, Apple, or Outlook." />
+    <link rel="canonical" href="https://neatclock.vercel.app/home-maintenance-calendar" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://neatclock.vercel.app/home-maintenance-calendar" />
+    <meta property="og:title" content="Home Maintenance Calendar — Recurring ICS Reminders | NeatClock" />
+    <meta property="og:description" content="Build a home maintenance calendar in under a minute. Export recurring .ics reminders for HVAC, smoke detectors, gutters, and more." />
+    <meta property="og:image" content="https://neatclock.vercel.app/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Maintenance Calendar — NeatClock" />
+    <meta name="twitter:description" content="Export a recurring home maintenance .ics calendar in under a minute — no sign-up." />
+    <meta name="twitter:image" content="https://neatclock.vercel.app/og-image.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I add home maintenance reminders to my calendar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open NeatClock, pick the Home Sentinel preset, customize tasks like HVAC filters and gutter cleaning, then export a .ics file and import it into Google Calendar, Apple Calendar, or Outlook."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is NeatClock free for home maintenance schedules?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Core .ics export and all built-in presets are free. Your schedule stays on your device — no account required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What home tasks are included in the default preset?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Home Sentinel preset includes HVAC filter replacement, smoke detector checks, gutter clearance, water heater flush, and dryer vent vacuuming on sensible recurring intervals."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+      :root { --bg: #F3F1EA; --card: #fff; --text: #1C1C1C; --muted: #78716C; --accent: #E07A5F; --accent-hover: #C9654B; --highlight: #D8E2DC; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: "Outfit", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+      .wrap { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+      header { text-align: center; margin-bottom: 2rem; }
+      .logo { width: 48px; height: 48px; margin-bottom: 1rem; }
+      h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(1.75rem, 5vw, 2.25rem); font-weight: 700; line-height: 1.2; margin-bottom: 0.75rem; }
+      .lead { color: var(--muted); font-size: 1.05rem; }
+      .card { background: var(--card); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 14px -2px rgba(28,28,28,.08); margin: 1.5rem 0; }
+      ul { padding-left: 1.25rem; color: var(--muted); }
+      li { margin: 0.35rem 0; }
+      .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; transition: background .15s; }
+      .cta:hover { background: var(--accent-hover); }
+      h2 { font-family: "Playfair Display", Georgia, serif; font-size: 1.25rem; margin-bottom: 0.75rem; }
+      footer { margin-top: 2.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
+      footer a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img class="logo" src="/logo.png" width="48" height="48" alt="NeatClock" />
+        <h1>Home Maintenance Calendar</h1>
+        <p class="lead">Recurring reminders for HVAC, smoke detectors, gutters, and more — export a .ics file in under a minute.</p>
+      </header>
+
+      <div class="card">
+        <h2>What you get</h2>
+        <ul>
+          <li>HVAC filter replacement every 3 months</li>
+          <li>Smoke detector checks twice a year</li>
+          <li>Gutter clearance, water heater flush, dryer vent care</li>
+          <li>Editable tasks — add your own before export</li>
+        </ul>
+        <a class="cta" href="/?preset=home">Open Home Sentinel preset →</a>
+      </div>
+
+      <div class="card">
+        <h2>How it works</h2>
+        <p style="color:var(--muted)">NeatClock is a generator, not a task tracker. Pick the preset, tweak intervals, download your .ics file, and import it into any calendar app. No account. Data stays on your device.</p>
+      </div>
+
+      <footer>
+        <a href="/">NeatClock</a> — minimalist recurring calendar generator
+      </footer>
+    </div>
+  </body>
+</html>

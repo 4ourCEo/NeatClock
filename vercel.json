@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/home-maintenance-calendar", "destination": "/home-maintenance-calendar.html" },
+    { "source": "/car-maintenance-schedule-ics", "destination": "/car-maintenance-schedule-ics.html" },
+    { "source": "/freelancer-quarterly-tax-reminders", "destination": "/freelancer-quarterly-tax-reminders.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

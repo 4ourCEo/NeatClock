@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PRESETS } from '../config/presets.js';
+import * as deepLink from '../lib/deepLink.js';
 import {
   loadInitialTasks,
   loadInitialCustomPresets,
@@ -23,6 +24,7 @@ describe('useScheduleBootstrap loaders', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('loadInitialTasks returns normalized tasks from valid storage JSON', () => {
@@ -51,6 +53,30 @@ describe('useScheduleBootstrap loaders', () => {
     const tasks = loadInitialTasks();
 
     expect(tasks).toEqual(PRESETS["Homeowner's Sentinel"]);
+  });
+
+  it('loadInitialTasks applies deep link preset when storage is empty', () => {
+    storageGet.mockReturnValue(null);
+    vi.spyOn(deepLink, 'getDeepLinkBootstrap').mockReturnValue({
+      presetParam: 'gearhead',
+      presetName: 'Preventive Gearhead',
+      fresh: false,
+    });
+
+    const tasks = loadInitialTasks();
+
+    expect(tasks).toEqual(PRESETS['Preventive Gearhead']);
+  });
+
+  it('loadInitialActivePreset applies deep link preset when storage is empty', () => {
+    storageGet.mockReturnValue(null);
+    vi.spyOn(deepLink, 'getDeepLinkBootstrap').mockReturnValue({
+      presetParam: 'cfo',
+      presetName: 'Automated CFO',
+      fresh: false,
+    });
+
+    expect(loadInitialActivePreset()).toBe('Automated CFO');
   });
 
   it('loadInitialCustomPresets applies normalizeCustomPresets to corrupt entries', () => {

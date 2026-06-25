@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Maintenance Schedule ICS — Oil, Tires &amp; More | NeatClock</title>
+    <meta name="description" content="Generate a car maintenance schedule as a recurring .ics calendar file. Oil changes, tire rotation, brake fluid, and wiper blades — garage-ready reminders for Google, Apple, or Outlook." />
+    <link rel="canonical" href="https://neatclock.vercel.app/car-maintenance-schedule-ics" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://neatclock.vercel.app/car-maintenance-schedule-ics" />
+    <meta property="og:title" content="Car Maintenance Schedule ICS — Oil, Tires &amp; More | NeatClock" />
+    <meta property="og:description" content="Export a recurring car maintenance .ics calendar — oil changes, tire rotation, brake fluid, and more. No sign-up." />
+    <meta property="og:image" content="https://neatclock.vercel.app/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Car Maintenance Schedule ICS — NeatClock" />
+    <meta name="twitter:description" content="Garage-ready car maintenance reminders as a downloadable .ics file." />
+    <meta name="twitter:image" content="https://neatclock.vercel.app/og-image.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I put car maintenance on my calendar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use NeatClock's Preventive Gearhead preset to load oil changes, tire rotation, and other service intervals, then export a .ics file and import it into your calendar app."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the car maintenance schedule work with Google Calendar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. NeatClock exports standard iCalendar (.ics) files with all-day recurring events that import into Google Calendar, Apple Calendar, and Outlook."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I customize oil change and tire rotation intervals?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Every task interval is editable before export. Add tasks like brake pads or coolant checks with natural language input."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+      :root { --bg: #F3F1EA; --card: #fff; --text: #1C1C1C; --muted: #78716C; --accent: #E07A5F; --accent-hover: #C9654B; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: "Outfit", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+      .wrap { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+      header { text-align: center; margin-bottom: 2rem; }
+      .logo { width: 48px; height: 48px; margin-bottom: 1rem; }
+      h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(1.75rem, 5vw, 2.25rem); font-weight: 700; line-height: 1.2; margin-bottom: 0.75rem; }
+      .lead { color: var(--muted); font-size: 1.05rem; }
+      .card { background: var(--card); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 14px -2px rgba(28,28,28,.08); margin: 1.5rem 0; }
+      ul { padding-left: 1.25rem; color: var(--muted); }
+      li { margin: 0.35rem 0; }
+      .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; transition: background .15s; }
+      .cta:hover { background: var(--accent-hover); }
+      h2 { font-family: "Playfair Display", Georgia, serif; font-size: 1.25rem; margin-bottom: 0.75rem; }
+      footer { margin-top: 2.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
+      footer a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img class="logo" src="/logo.png" width="48" height="48" alt="NeatClock" />
+        <h1>Car Maintenance Schedule ICS</h1>
+        <p class="lead">Garage-ready recurring reminders — oil, tires, brakes, and wiper blades as a downloadable calendar file.</p>
+      </header>
+
+      <div class="card">
+        <h2>Preventive Gearhead preset</h2>
+        <ul>
+          <li>Engine oil change every 6 months</li>
+          <li>Tire rotation on the same cadence</li>
+          <li>Air filter, wiper blades, brake fluid inspection</li>
+          <li>Customize intervals or add your own service items</li>
+        </ul>
+        <a class="cta" href="/?preset=gearhead">Open Gearhead preset →</a>
+      </div>
+
+      <div class="card">
+        <h2>Built for calendar apps</h2>
+        <p style="color:var(--muted)">Export once, import anywhere. NeatClock generates clean all-day recurring events — not a subscription service or shop log. Print a checklist for the garage wall if you want a physical backup.</p>
+      </div>
+
+      <footer>
+        <a href="/">NeatClock</a> — minimalist recurring calendar generator
+      </footer>
+    </div>
+  </body>
+</html>
