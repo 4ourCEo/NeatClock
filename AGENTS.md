@@ -20,10 +20,25 @@
 - Production: https://neatclock.pro; GitHub `4ourCEo/NeatClock`; target custom domain `neatclock.pro` (available, not purchased; Vercel Domains recommended).
 - Three built-in presets: Homeowner's Sentinel, Preventive Gearhead, Automated CFO; plus user-saved custom presets.
 - Agenda sidebar was reframed as "Export Preview" (first-occurrence simulation, not a to-do list).
-- 77 Vitest tests (12 files, including hooks), 5 Playwright E2E specs (chromium + webkit), GitHub Actions CI on push/PR; `npm run test:all` before ship; review via `CODE-REVIEW-PROMPT.md`, `DEBUG-RCA-PROMPT.md`, and `.cursor/rules/code-review.mdc`.
+- 85 Vitest tests (15 files, including hooks), 8 Playwright E2E specs (16 runs on chromium + webkit), GitHub Actions CI on push/PR; `npm run test:all` before ship; review via `CODE-REVIEW-PROMPT.md`, `DEBUG-RCA-PROMPT.md`, and `.cursor/rules/code-review.mdc`.
 - BRIDGE workflow (`docs/requirements.json`, `docs/context.json`, `docs/decisions.md`, `docs/BRIDGE-GATE.md`); `App.jsx` ~262-line orchestrator with UI in `src/hooks/` and `src/components/`—keep test counts in sync (docs drift is a known issue).
 - Print pack default pricing is $5 per pack and $12 for the bundle (overridable via `VITE_PRINTS_*_PRICE`).
 - In-app brand assets: source logos in `design-system/brand-assets/` (PNG transparent); web copies in `public/` (`logo.png`, `logo-light.png`, favicons, `og-image.png`); header swaps logo for dark themes. Gumroad print deliverables are separate per `design-system/BRAND-BRIEF.md`.
 - Interest form UI exists; `VITE_INTEREST_FORM_ENDPOINT` not wired until Formspree/FormSubmit is set—validates print demand before Gumroad goes live.
 - Preset cards may use short display labels (e.g. "Home Sentinel") while storage, modals, and monetization keep full preset names.
 - Upgrade Vercel to Pro before enabling live Gumroad print CTAs; Hobby plan is non-commercial only.
+
+## AI-Assisted Engineering Rigor
+
+To prevent "vibe coding" from leading to high-entropy codebases, all AI sessions must strictly adhere to the following principles:
+
+1. **Spec Before Code:** Do not start generating code until a clear spec (inputs, outputs, and definition of "done") is established via Planning Mode.
+2. **First Drafts are Hypotheses:** Treat the model's first generation as a rough draft. Review every line, verify its behavior, and predict failure states before executing.
+3. **Guard the Living Context:** Keep repository metadata, rules, and architecture logs (`AGENTS.md`, `SCOPE.md`, `decisions.md`, `context.json`) in sync to prevent context dilution.
+4. **Surgical Scope Clamping:** Identify and isolate the 20% critical paths (such as the RFC 5545 calendar logic and data persistence) that demand absolute manual scrutiny.
+5. **No Double Standards:** Review AI code with the exact same rigor, linting standards, and test expectations as a junior engineer's human-written pull request.
+6. **Narrow the Debugging Scope:** When code fails, isolate the buggy unit and narrow context rather than re-prompting with broad, conversational commands.
+7. **Optimize for "Why":** Use AI automation to manage syntactic and boilerplate overhead, freeing developer mental bandwidth to focus on architecture, UX, and product decisions.
+8. **Know the Mode:** Strictly distinguish Prototype Mode (fast iteration in scratchpad) from Production Mode (rigorous testing, linting, and gating before staging).
+9. **Mentorship & Learning:** Code walkthroughs and critiques must explain *why* generated patterns succeed or fail to ensure developer understanding never lags behind codebase speed.
+
