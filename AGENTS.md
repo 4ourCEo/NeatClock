@@ -42,3 +42,17 @@ To prevent "vibe coding" from leading to high-entropy codebases, all AI sessions
 8. **Know the Mode:** Strictly distinguish Prototype Mode (fast iteration in scratchpad) from Production Mode (rigorous testing, linting, and gating before staging).
 9. **Mentorship & Learning:** Code walkthroughs and critiques must explain *why* generated patterns succeed or fail to ensure developer understanding never lags behind codebase speed.
 
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in the repo's GitHub Issues (uses the `gh` CLI). PRs are not treated as a request surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Canonical labels mapped to GitHub issue tracker labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo layout at root. See `docs/agents/domain.md`.
