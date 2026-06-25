@@ -151,22 +151,22 @@ export function SiteFooter({ onOpenInterest }) {
         <span>Private & Serverless — Your schedule never leaves your device.</span>
       </div>
 
-      <p className="text-[11px] text-theme-text-muted/80 max-w-md mx-auto leading-relaxed pt-1">
+      <p className="text-[10px] text-theme-text-muted/50 max-w-md mx-auto leading-relaxed pt-1 select-none">
         Free on the web. Your schedule stays on this device — no account required.
-        {' '}
+        {' · '}
         <a
           href="/llms.txt"
-          className="underline underline-offset-2 hover:text-theme-text transition-colors"
+          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
           rel="help"
         >
-          For AI assistants
+          For AI
         </a>
         {' · '}
         <a
           href="/?page=partner"
-          className="underline underline-offset-2 hover:text-theme-text transition-colors"
+          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
         >
-          Co-Brand Scheduler
+          Partner Builder
         </a>
       </p>
     </footer>
