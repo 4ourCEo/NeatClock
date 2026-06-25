@@ -40,7 +40,7 @@ export function NaturalLanguageInput({
 
 export function ExportPreviewAside({ exportPreview }) {
   return (
-    <aside className="lg:col-span-1 print-area">
+    <aside className="lg:col-span-1 no-print">
       <div className="surface-panel p-6 transition-all duration-300">
         <h2 className="font-serif text-lg font-semibold tracking-tight border-b pb-3 mb-2 border-theme-border/60 text-theme-text">
           Export Preview

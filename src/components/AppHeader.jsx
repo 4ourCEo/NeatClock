@@ -5,7 +5,7 @@ const LOGO_DARK_THEMES = new Set(['theme-obsidian', 'theme-forest-moss', 'theme-
 
 export default function AppHeader({ theme, setTheme }) {
   return (
-    <header className="relative flex flex-col items-center justify-center mb-8 md:mb-10 border-b pb-6 md:pb-8 border-theme-border/60">
+    <header className="no-print relative flex flex-col items-center justify-center mb-8 md:mb-10 border-b pb-6 md:pb-8 border-theme-border/60">
       <h1 className="mb-2 md:mb-3 flex justify-center">
         <img
           src={LOGO_DARK_THEMES.has(theme) ? '/logo-light.png' : '/logo.png'}

@@ -57,7 +57,7 @@ export default function TaskTable({
                 onDragStart={() => handleDragStart(idx)}
                 onDragOver={(e) => handleDragOver(e, idx)}
                 onDragEnd={handleDragEnd}
-                className={`group border-b border-theme-border/30 hover:bg-theme-bg/10 print:border-black print:hover:bg-transparent transition-all duration-300 animate-slide-up ${
+                className={`print-task-row group border-b border-theme-border/30 hover:bg-theme-bg/10 print:border-black print:hover:bg-transparent transition-all duration-300 animate-slide-up ${
                   draggedIdx === idx ? 'opacity-30 bg-theme-bg border-dashed' : ''
                 } ${!printPreview ? 'cursor-grab active:cursor-grabbing' : ''}`}
               >

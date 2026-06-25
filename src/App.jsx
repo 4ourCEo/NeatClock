@@ -119,7 +119,7 @@ function App() {
     <div className="app-canvas min-h-screen py-6 md:py-12 transition-colors duration-500 relative text-theme-text font-sans">
       <MonetizationPreviewBanner />
 
-      <div className="pointer-events-none fixed inset-0 opacity-[0.025] mix-blend-overlay z-50 bg-[url('data:image/svg+xml;utf8,<svg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22><filter id=%22noiseFilter%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/></svg>')]"></div>
+      <div className="pointer-events-none fixed inset-0 opacity-[0.025] mix-blend-overlay z-50 no-print bg-[url('data:image/svg+xml;utf8,<svg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22><filter id=%22noiseFilter%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/></svg>')]"></div>
 
       {notification && (
         <div className="toast-fixed fixed bg-theme-text text-theme-bg px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium z-50 animate-toast-in no-print border border-theme-border/20 max-w-[calc(100vw-2rem)]">
@@ -163,7 +163,10 @@ function App() {
         tabIndex={-1}
       />
 
-      <main className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}>
+      <main
+        data-active-preset={activePreset}
+        className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}
+      >
         <AppHeader theme={theme} setTheme={setTheme} />
 
         <section className="no-print mb-8">

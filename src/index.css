@@ -461,18 +461,27 @@ body {
 /* Print CSS */
 @media print {
   @page {
-    margin: 1.5cm;
+    margin: 0.5in;
     size: portrait;
   }
 
-  body {
+  html,
+  body,
+  .app-canvas {
     background-color: #ffffff !important;
     background-image: none !important;
     color: #000000 !important;
-    font-family: serif;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  .no-print {
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  .no-print,
+  .modal-overlay,
+  .toast-fixed {
     display: none !important;
   }
 
@@ -483,6 +492,20 @@ body {
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+
+  .print-area[data-active-preset]::before {
+    content: "NeatClock — " attr(data-active-preset);
+    display: block;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 14pt;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #000000;
+    color: #000000;
   }
 
   .print-table {
@@ -490,7 +513,7 @@ body {
     width: 100% !important;
   }
 
-  .print-table th, 
+  .print-table th,
   .print-table td {
     border-bottom: 1.5px solid #000000 !important;
     padding: 8px 4px !important;
@@ -503,31 +526,72 @@ body {
     font-size: 10pt !important;
   }
 
+  .print-task-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
   .print-checkbox {
     display: inline-block !important;
-    width: 16px !important;
-    height: 16px !important;
+    width: 14px !important;
+    height: 14px !important;
     border: 2px solid #000000 !important;
-    margin-right: 12px !important;
+    border-radius: 2px !important;
+    background: transparent !important;
     vertical-align: middle !important;
     flex-shrink: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
 /* Simulated printer-friendly screen preview */
 .print-preview-mode {
-  font-family: Georgia, serif !important;
+  font-family: Georgia, "Times New Roman", serif !important;
   background-color: #ffffff !important;
   color: #000000 !important;
-  max-width: 800px !important;
+  max-width: 8.5in !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
   border: 1px solid #e5e4e7 !important;
   border-radius: 6px !important;
-  padding: 3.5rem !important;
+  padding: 0.5in !important;
+}
+
+.print-preview-mode[data-active-preset]::before {
+  content: "NeatClock — " attr(data-active-preset);
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #000000;
+  color: #000000;
 }
 
 .print-preview-mode .no-print-preview {
   display: none !important;
+}
+
+.print-preview-mode .print-table th,
+.print-preview-mode .print-table td {
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+.print-preview-mode .print-task-row {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.print-preview-mode .print-checkbox {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #000000;
+  border-radius: 2px;
+  background: transparent;
+  vertical-align: middle;
 }
 
 /* Custom scrollbars to blend in with active theme colors */

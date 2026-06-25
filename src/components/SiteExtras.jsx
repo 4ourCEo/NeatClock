@@ -56,9 +56,11 @@ export function ExportExtras({ onPrint, activePreset }) {
     <div className="mt-6 pt-6 border-t border-theme-border/60 space-y-5">
       <FeatureGate enabled={features.neatclockPrints}>
         <div className="space-y-3">
-          <p className="text-xs text-theme-text-muted flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-theme-accent" />
-            Match your calendar with a print-ready pack
+          <p className="text-xs font-medium text-theme-text">
+            {matchedProduct.ctaHeadline ?? 'Want a print-ready version of this schedule?'}
+          </p>
+          <p className="text-[11px] text-theme-text-muted leading-relaxed">
+            {matchedProduct.description}
           </p>
           <ProductCard product={matchedProduct} />
           <details className="text-xs">

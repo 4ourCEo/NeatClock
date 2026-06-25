@@ -14,5 +14,7 @@ test.describe('print preview', () => {
 
     await expect(page.locator('main')).toHaveClass(/print-preview-mode/);
     await expect(page.getByRole('row').getByRole('textbox')).toHaveCount(0);
+    await expect(page.locator('main')).toHaveAttribute('data-active-preset', "Homeowner's Sentinel");
+    await expect(page.locator('main.print-preview-mode')).toHaveCSS('padding', /48px|0\.5in/);
   });
 });

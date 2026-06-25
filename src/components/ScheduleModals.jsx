@@ -1,6 +1,8 @@
 import { Printer } from 'lucide-react';
 import { ExportExtras } from './SiteExtras.jsx';
-import { InterestExportSection } from './InterestInvite.jsx';
+import { features } from '../config/features.js';
+import { interestFormEnabled } from '../config/monetization.js';
+import { shouldShowMonetization } from '../lib/preview.js';
 
 export default function ScheduleModals({
   confirmModal,
@@ -108,14 +110,12 @@ export default function ScheduleModals({
               <h3 className="font-serif text-xl font-semibold mb-2 text-theme-text">
                 Calendar downloaded
               </h3>
-              <p className="text-sm text-theme-text-muted mb-5 leading-relaxed">
-                Your <strong className="text-theme-text">neatclock-schedule.ics</strong> file is ready. Import it into your calendar app:
+              <p className="text-sm text-theme-text-muted mb-3 leading-relaxed">
+                Your <strong className="text-theme-text">neatclock-schedule.ics</strong> file is ready.
               </p>
-              <ul className="text-xs text-theme-text-muted space-y-2.5 mb-6 leading-relaxed">
-                <li><strong className="text-theme-text">Google Calendar:</strong> Settings → Import &amp; export → Import</li>
-                <li><strong className="text-theme-text">Apple Calendar:</strong> File → Import → select the .ics file</li>
-                <li><strong className="text-theme-text">Outlook:</strong> Add calendar → Upload from file</li>
-              </ul>
+              <p className="text-xs text-theme-text-muted mb-5 leading-relaxed">
+                <strong className="text-theme-text">Import:</strong> Google Calendar → Settings → Import
+              </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={onExportSuccessPrint}
@@ -143,7 +143,17 @@ export default function ScheduleModals({
                 activePreset={activePreset}
                 onPrint={onExportSuccessPrint}
               />
-              <InterestExportSection onOpen={onOpenInterest} />
+              {interestFormEnabled && !shouldShowMonetization(features.neatclockPrints) && (
+                <p className="mt-5 pt-5 border-t border-theme-border/60 text-center">
+                  <button
+                    type="button"
+                    onClick={onOpenInterest}
+                    className="text-xs text-theme-text-muted hover:text-theme-accent transition-colors cursor-pointer"
+                  >
+                    Want a print version?
+                  </button>
+                </p>
+              )}
             </div>
           </div>
         </div>
