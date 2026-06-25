@@ -1,9 +1,15 @@
 import { interestFormEndpoint } from '../config/monetization.js';
 import { storageGet, storageSet, storageRemove } from './storage.js';
 
+export function isInterestFormConfigured() {
+  return Boolean(interestFormEndpoint);
+}
+
 export async function submitInterestForm(payload) {
-  if (!interestFormEndpoint) {
-    throw new Error('Interest form is not configured.');
+  if (!isInterestFormConfigured()) {
+    throw new Error(
+      'Feedback collection is not live yet. The free export tool still works — check back soon.',
+    );
   }
 
   const response = await fetch(interestFormEndpoint, {

@@ -6,8 +6,8 @@ Run this checklist before every production deploy to [neatclock.vercel.app](http
 
 ```bash
 npm run lint
-npm run test        # 36 Vitest unit tests (5 files)
-npm run test:e2e    # Playwright: e2e/schedule-flow.spec.js
+npm run test        # 56 Vitest unit tests (8 files)
+npm run test:e2e    # Playwright: 5 specs (see list below)
 npm run build
 ```
 
@@ -19,15 +19,25 @@ npm run lint
 npm run build
 ```
 
-**Expected counts:** `docs/context.json` → `testCounts.unit` = 36, `testCounts.e2e` = 1. If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
+**E2E spec files:**
+
+| Spec | Covers |
+|------|--------|
+| `e2e/schedule-flow.spec.js` | Preset switch, task edit, ICS export, backup download |
+| `e2e/theme-swap.spec.js` | Theme picker, dark logo swap (Obsidian) |
+| `e2e/backup-roundtrip.spec.js` | JSON backup export and restore |
+| `e2e/storage-failure-toast.spec.js` | Quota failure toast when localStorage throws |
+| `e2e/print-preview.spec.js` | Print-friendly view opens from export success |
+
+**Expected counts:** `docs/context.json` → `testCounts.unit` = 56, `testCounts.e2e` = 5. If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
 
 ## Manual smoke (production or preview URL)
 
 1. **Logo** — Header shows NeatClock logo; dark theme (Obsidian) swaps to the light logo variant.
 2. **Preset** — Click a built-in preset (e.g. Preventive Gearhead); tasks load; active preset label updates; reload persists selection.
 3. **Export** — Edit a task name → **Generate & Export .ics** → download `neatclock-schedule.ics`; success modal appears.
-
-Optional: **Backup** → download `neatclock-backup.json`.
+4. **Theme** — Open theme picker; switch to Sage Garden; page restyles; reload persists theme.
+5. **Backup** (optional) — **Backup schedule** → download `neatclock-backup.json`; restore from file round-trips tasks.
 
 ## Production feature flags
 
@@ -52,13 +62,14 @@ Do **not** enable live Gumroad print CTAs until Vercel is on **Pro** (Hobby is n
 - Acceptance tests: `docs/requirements.json`
 - Session context and blockers: `docs/context.json`
 - Architectural decisions: `docs/decisions.md`
+- Human launch steps: `docs/LAUNCH-CHECKLIST.md`
 
 ## Gate pass criteria
 
 - [ ] `npm run lint` — no errors
-- [ ] `npm run test` — 36/36 passed
-- [ ] `npm run test:e2e` — 1/1 passed
+- [ ] `npm run test` — 56/56 passed
+- [ ] `npm run test:e2e` — 5/5 passed
 - [ ] `npm run build` — succeeds, `dist/` generated
-- [ ] Manual smoke — logo, preset, export OK
+- [ ] Manual smoke — logo, preset, export, theme OK
 - [ ] `docs/context.json` `testCounts` matches actual test run (if changed)
 - [ ] Production `VITE_FEATURE_*` verified off

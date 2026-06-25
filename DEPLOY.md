@@ -84,6 +84,12 @@ See [MONETIZATION.md](./MONETIZATION.md) for product setup.
 
 ---
 
+## Analytics (Plausible)
+
+NeatClock uses [Plausible](https://plausible.io) for privacy-friendly, cookieless page analytics. The script is injected only when `VITE_PLAUSIBLE_DOMAIN` is set in Vercel env vars and the user is not on localhost — no tracking runs in local dev by default. Set the domain to your production hostname (e.g. `neatclock.app`) after the custom domain is live, then redeploy. See [docs/LAUNCH-CHECKLIST.md](./docs/LAUNCH-CHECKLIST.md) for the full human setup steps.
+
+---
+
 ## Pre-launch checklist
 
 - [ ] `npm run lint && npm run test && npm run build` pass

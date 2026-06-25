@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-06-23",
+  "asOf": "2026-06-24",
   "productionUrl": "https://neatclock.vercel.app",
   "github": "4ourCEo/NeatClock",
   "targetDomain": "neatclock.app",
@@ -11,17 +11,21 @@
     "backend": "none"
   },
   "lastDeploy": {
-    "summary": "BRIDGE workflow adoption: vertical slices, Playwright E2E, requirements traceability",
+    "summary": "Week 1 foundation: doc sync, Plausible analytics hook, launch checklist",
     "highlights": [
-      "Extracted App.jsx into hooks and components (vertical slices)",
-      "Playwright schedule-flow E2E: preset switch, ICS export, backup download",
-      "docs/requirements.json and docs/context.json for BRIDGE traceability",
-      "docs/decisions.md ADR-lite for architectural choices",
-      "Vitest isolated from E2E via separate test configs",
-      "docs/BRIDGE-GATE.md pre-deploy checklist"
+      "Doc drift fixed: 56 Vitest unit tests (8 files), 5 Playwright E2E specs",
+      "Hook unit tests for useScheduleBootstrap, useScheduleState, useExportPreview",
+      "Four new E2E specs: theme-swap, backup-roundtrip, storage-failure-toast, print-preview",
+      "App.jsx vertical slices (AppHeader, TaskTable, hooks, schedulePreview)",
+      "CI runs lint + unit + E2E on push/PR",
+      "Plausible analytics wired via VITE_PLAUSIBLE_DOMAIN (opt-in, localhost skipped)",
+      "docs/LAUNCH-CHECKLIST.md for human launch steps"
     ],
     "recentCommits": [
-      "46ba19b Adopt BRIDGE workflow: docs, E2E gate, and App vertical slices."
+      "9a4e4a0 feat(bridge): extract App slices and add E2E coverage for optional gates",
+      "00715d8 test(bridge-10,22): add unit tests for extracted hooks",
+      "481f1b9 docs(bridge-9): map schedule-flow E2E in requirements.json",
+      "bd59fb6 docs(bridge-8): sync context.json post-BRIDGE adoption"
     ]
   },
   "completed": [
@@ -36,15 +40,18 @@
     "Feature-flag infrastructure for monetization (VITE_FEATURE_*)",
     "Monetization catalog in src/config/monetization.js",
     "Brand assets in public/ (logo.png, logo-light.png, favicons, og-image.png, lockscreen SVG)",
-    "36 Vitest unit tests across 5 lib modules (buildIcs, backup, storage, themes, tasks)",
-    "Playwright E2E smoke test: preset select → edit task → ICS export → backup download",
-    "Interest form UI built (modal + footer card) — awaiting endpoint activation",
+    "56 Vitest unit tests across 8 files (5 lib modules + 3 hook modules)",
+    "Playwright E2E: 5 specs — schedule-flow, theme-swap, backup-roundtrip, storage-failure-toast, print-preview",
+    "Interest form UI built (modal + footer card) — graceful handling when endpoint unset",
     "Print upsell UI built but feature-flagged off",
     "Owner preview mode (?preview=monetization) for gated UI testing",
     "BRIDGE pre-deploy gate (docs/BRIDGE-GATE.md)",
     "docs/requirements.json acceptance-test traceability with vitest/e2e/manual verify fields",
     "App.jsx vertical slices: AppHeader, TaskTable, useSchedulePersistence, useNotifications, schedulePreview",
-    "E2E coverage mapped in requirements.json (schedule-flow)"
+    "Hook unit tests: useScheduleBootstrap, useScheduleState, useExportPreview",
+    "GitHub Actions CI: lint, unit tests, Playwright E2E on push/PR",
+    "Plausible analytics hook (src/lib/analytics.js) — opt-in via VITE_PLAUSIBLE_DOMAIN",
+    "docs/LAUNCH-CHECKLIST.md for domain, Formspree, and analytics setup"
   ],
   "blocked": [
     {
@@ -70,16 +77,21 @@
     {
       "item": "Sponsor footer and affiliate hints",
       "reason": "Flags off; Amazon Associates tag and sponsor outreach not started"
+    },
+    {
+      "item": "Plausible analytics live",
+      "reason": "VITE_PLAUSIBLE_DOMAIN not set on production; requires neatclock.app or vercel.app domain decision"
     }
   ],
   "nextSession": [
-    "Purchase neatclock.app and wire via Vercel Domains",
+    "Purchase neatclock.app and wire via Vercel Domains (see docs/LAUNCH-CHECKLIST.md)",
     "Activate Formspree/FormSubmit endpoint and set VITE_INTEREST_FORM_ENDPOINT on Vercel",
+    "Set VITE_PLAUSIBLE_DOMAIN on Vercel after domain is live",
     "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 36,
+    "unit": 56,
     "e2e": 5
   },
   "testFiles": [
@@ -88,6 +100,9 @@
     "src/lib/storage.test.js",
     "src/lib/themes.test.js",
     "src/lib/tasks.test.js",
+    "src/hooks/useScheduleBootstrap.test.js",
+    "src/hooks/useScheduleState.test.js",
+    "src/hooks/useExportPreview.test.js",
     "e2e/schedule-flow.spec.js",
     "e2e/theme-swap.spec.js",
     "e2e/backup-roundtrip.spec.js",
