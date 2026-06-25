@@ -347,6 +347,10 @@ body {
   margin-top: 1rem;
   padding: 0.5rem 0.875rem;
   border-radius: 9999px;
+  /* Explicit surface so swatches are visible on every theme (incl. dark) */
+  background-color: var(--theme-card);
+  border: 1px solid color-mix(in srgb, var(--theme-border) 70%, transparent);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 @media (min-width: 768px) {
@@ -409,6 +413,20 @@ body {
   }
 }
 
+/* Compact frequency cell on xs screens */
+@media (max-width: 479px) {
+  .task-freq-number {
+    width: 2.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+  .task-freq-unit {
+    font-size: 10px;
+    padding-left: 0;
+  }
+}
+
+
 /* 44px minimum tap targets on touch devices only */
 @media (pointer: coarse) {
   .touch-target {
@@ -456,15 +474,37 @@ body {
 }
 
 /* Tactile 3D Print Card Preview */
-.print-paper-3d {
-  transform: perspective(1500px) rotateX(4deg) rotateY(-2deg) rotateZ(0.5deg);
-  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease, border-radius 0.6s ease;
-  box-shadow: -15px 30px 45px -10px rgba(0, 0, 0, 0.18), -5px 15px 20px -10px rgba(0, 0, 0, 0.1);
+@keyframes page-flip {
+  0% {
+    transform: perspective(1500px) rotateY(-90deg) rotateX(10deg) translateZ(0);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1500px) rotateY(-8deg) rotateX(4deg) translateZ(10px);
+    opacity: 1;
+  }
 }
 
-.print-paper-3d:hover {
-  transform: perspective(1500px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateY(-8px);
-  box-shadow: 0 45px 70px -15px rgba(0, 0, 0, 0.25), 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+@media (prefers-reduced-motion: no-preference) {
+  .print-paper-3d,
+  .print-paper-3d:hover {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease, opacity 0.6s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  
+  .print-paper-3d {
+    animation: page-flip 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    box-shadow: 
+      -10px 15px 30px rgba(0, 0, 0, 0.15),
+      0 10px 10px rgba(0, 0, 0, 0.05);
+  }
+  .print-paper-3d:hover {
+    transform: perspective(1500px) rotateY(-3deg) rotateX(1deg) translateZ(20px);
+    box-shadow: 
+      -5px 10px 20px rgba(0, 0, 0, 0.12),
+      0 5px 5px rgba(0, 0, 0, 0.03);
+  }
 }
 
 /* Print CSS */
@@ -624,4 +664,15 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--theme-text-muted);
+}
+
+/* SVG Morphing Checkboxes */
+.morph-check-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.morph-checked .morph-check-path {
+  stroke-dashoffset: 0;
 }

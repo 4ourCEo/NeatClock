@@ -1,6 +1,7 @@
 import { Plus, X, Calendar, Printer } from 'lucide-react';
 import { PRESETS } from '../config/presets.js';
 import SharePresetLink from './SharePresetLink.jsx';
+import FrictionScore from './FrictionScore.jsx';
 
 function PresetIcon({ presetName, className, isActive }) {
   const colorClass = isActive ? 'text-theme-accent' : 'text-theme-text-muted';
@@ -31,6 +32,7 @@ function PresetIcon({ presetName, className, isActive }) {
 }
 
 export default function PresetSelector({
+  tasks,
   activePreset,
   customPresets,
   onSelectPreset,
@@ -131,9 +133,9 @@ export default function PresetSelector({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-x-5 gap-y-3 items-center justify-between border-t pt-5 border-theme-border/60">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
-          <div className="flex items-center gap-2 min-w-0">
+      <div className="flex flex-col md:flex-row gap-y-4 gap-x-5 items-center justify-between border-t pt-5 border-theme-border/60 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center items-center justify-center gap-3 text-center min-w-0 w-full md:w-auto">
+          <div className="flex items-center justify-center gap-2 min-w-0">
             <span className="text-xs font-semibold uppercase tracking-wider text-theme-text-muted">
               Current View:
             </span>
@@ -141,10 +143,13 @@ export default function PresetSelector({
               {activePreset}
             </span>
           </div>
-          <SharePresetLink activePreset={activePreset} onCopied={onShareCopied} />
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <SharePresetLink activePreset={activePreset} onCopied={onShareCopied} />
+            {!printPreview && <FrictionScore tasks={tasks} />}
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 sm:gap-4">
+        <div className="flex flex-wrap gap-3 sm:gap-4 justify-center w-full md:w-auto">
           <button
             onClick={onToggleExportPreview}
             className={`px-4 py-2 text-xs font-medium rounded-lg border flex items-center gap-2 transition-all cursor-pointer ${

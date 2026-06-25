@@ -141,6 +141,12 @@ export function useScheduleState({ showNotification }) {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  const handleToggleTaskChecked = (id) => {
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, checked: !task.checked } : task
+    ));
+  };
+
   const handleUpdateTaskName = (id, newName) => {
     setTasks(tasks.map(task =>
       task.id === id ? { ...task, name: newName.slice(0, TASK_NAME_MAX) } : task
@@ -207,6 +213,7 @@ export function useScheduleState({ showNotification }) {
     handleDeletePreset,
     handleAddTask,
     handleDeleteTask,
+    handleToggleTaskChecked,
     handleUpdateTaskName,
     handleUpdateTaskInterval,
     handleUpdateTaskUnit,

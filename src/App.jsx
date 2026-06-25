@@ -8,6 +8,7 @@ import AppHeader from './components/AppHeader.jsx';
 import TaskTable from './components/TaskTable.jsx';
 import PresetSelector from './components/PresetSelector.jsx';
 import ScheduleModals from './components/ScheduleModals.jsx';
+import CalendarPreview from './components/CalendarPreview.jsx';
 import {
   NaturalLanguageInput,
   ExportPreviewAside,
@@ -61,12 +62,21 @@ function App() {
     handleDeletePreset,
     handleAddTask,
     handleDeleteTask,
+    handleToggleTaskChecked,
     handleUpdateTaskName,
     handleUpdateTaskInterval,
     handleUpdateTaskUnit,
     handleReset,
     handlePresetNameChange,
   } = schedule;
+
+  const handleSetTheme = (newTheme) => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => setTheme(newTheme));
+    } else {
+      setTheme(newTheme);
+    }
+  };
 
   useSchedulePersistence({
     tasks,
@@ -95,7 +105,7 @@ function App() {
     setTasks,
     setActivePreset,
     setCustomPresets,
-    setTheme,
+    setTheme: handleSetTheme,
     setShowExportPreview,
     setStartOffsetWeeks,
     setConfirmModal,
@@ -174,10 +184,11 @@ function App() {
         data-active-preset={activePreset}
         className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}
       >
-        <AppHeader theme={theme} setTheme={setTheme} />
+        <AppHeader theme={theme} setTheme={handleSetTheme} />
 
         <section className="no-print mb-8">
           <PresetSelector
+            tasks={tasks}
             activePreset={activePreset}
             customPresets={customPresets}
             onSelectPreset={handlePresetSelect}
@@ -225,6 +236,7 @@ function App() {
                 onUpdateTaskUnit={handleUpdateTaskUnit}
                 onDeleteTask={handleDeleteTask}
                 onMoveTask={moveTask}
+                onToggleTaskChecked={handleToggleTaskChecked}
               />
             )}
 
@@ -244,6 +256,8 @@ function App() {
             <ExportPreviewAside exportPreview={exportPreview} />
           )}
         </div>
+
+        {!printPreview && <CalendarPreview tasks={tasks} />}
 
         <ExportActions
           printPreview={printPreview}

@@ -31,7 +31,8 @@ export function NaturalLanguageInput({
       {parsedNl && (
         <p className="text-xs text-theme-text-muted mt-2 pl-2 animate-fade-in flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-theme-accent animate-pulse" />
-          <span>Ready to add: <strong className="text-theme-text">"{parsedNl.name}"</strong> repeating every <strong className="text-theme-text">{parsedNl.interval} {parsedNl.unit}</strong></span>
+          <span>Ready to add: <strong className="text-theme-text">"{parsedNl.name}"</strong> repeating every <strong className="text-theme-text">{parsedNl.interval} {parsedNl.interval === 1 ? parsedNl.unit.replace(/s$/, '') : parsedNl.unit}</strong></span>
+
         </p>
       )}
     </div>

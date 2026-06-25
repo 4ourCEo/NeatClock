@@ -33,7 +33,7 @@ export default function ScheduleModals({
               <p className="text-sm text-theme-text-muted mb-6 leading-relaxed">
                 {confirmModal.message}
               </p>
-              <div className="flex gap-3 justify-end">
+              <div className="flex gap-3 justify-center sm:justify-end">
                 <button
                   type="button"
                   onClick={onCloseConfirm}
@@ -82,7 +82,7 @@ export default function ScheduleModals({
                   <p className="text-red-500 text-xs mt-1.5 font-medium">{presetNameError}</p>
                 )}
               </div>
-              <div className="flex gap-3 justify-end">
+              <div className="flex gap-3 justify-center sm:justify-end">
                 <button
                   onClick={onClosePresetModal}
                   className="px-4 py-2 text-xs font-medium rounded border cursor-pointer border-theme-border bg-theme-card hover:bg-theme-bg/60 text-theme-text focus:outline-none transition-colors"

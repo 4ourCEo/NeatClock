@@ -21,7 +21,7 @@ export default function AppHeader({ theme, setTheme }) {
       </p>
 
       {/* Theme picker — centered on mobile, top-right on desktop */}
-      <div className="theme-picker no-print items-center surface-panel shadow-[var(--theme-shadow-sm)]">
+      <div className="theme-picker no-print">
         {getAvailableThemes().map((t) => (
           <button
             key={t.id}
