@@ -7,6 +7,7 @@ import {
 } from '../config/monetization.js';
 import { isMonetizationPreview, shouldShowMonetization } from '../lib/preview.js';
 import { InterestFooterSection } from './InterestInvite.jsx';
+import SeoFooterLinks from './SeoFooterLinks.jsx';
 
 function ProductCard({ product, compact = false }) {
   const href = product.url || printsConfig.shopUrl;
@@ -142,6 +143,8 @@ export function SiteFooter({ onOpenInterest }) {
       </FeatureGate>
 
       <InterestFooterSection onOpen={onOpenInterest} />
+
+      <SeoFooterLinks />
 
       <p className="text-[11px] text-theme-text-muted/80 max-w-md mx-auto leading-relaxed pt-1">
         Free on the web. Your schedule stays on this device — no account required.

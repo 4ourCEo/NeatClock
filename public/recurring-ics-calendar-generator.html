@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Maintenance Calendar — Recurring ICS Reminders | NeatClock</title>
-    <meta name="description" content="Build a home maintenance calendar in under a minute. HVAC filters, smoke detectors, gutters, and more — export a recurring .ics file for Google, Apple, or Outlook." />
-    <link rel="canonical" href="https://neatclock.vercel.app/home-maintenance-calendar" />
+    <title>Recurring ICS Calendar Generator — Free .ics Export | NeatClock</title>
+    <meta name="description" content="Free recurring ICS calendar generator. Build home maintenance, car service, or freelance finance reminders and export a .ics file for Google, Apple, or Outlook in 60 seconds." />
+    <link rel="canonical" href="https://neatclock.vercel.app/recurring-ics-calendar-generator" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://neatclock.vercel.app/home-maintenance-calendar" />
-    <meta property="og:title" content="Home Maintenance Calendar — Recurring ICS Reminders | NeatClock" />
-    <meta property="og:description" content="Build a home maintenance calendar in under a minute. Export recurring .ics reminders for HVAC, smoke detectors, gutters, and more." />
+    <meta property="og:url" content="https://neatclock.vercel.app/recurring-ics-calendar-generator" />
+    <meta property="og:title" content="Recurring ICS Calendar Generator — Free .ics Export | NeatClock" />
+    <meta property="og:description" content="Generate recurring .ics calendar files for maintenance, car care, or freelance deadlines — no sign-up." />
     <meta property="og:image" content="https://neatclock.vercel.app/og-image.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Home Maintenance Calendar — NeatClock" />
-    <meta name="twitter:description" content="Export a recurring home maintenance .ics calendar in under a minute — no sign-up." />
+    <meta name="twitter:title" content="Recurring ICS Calendar Generator — NeatClock" />
+    <meta name="twitter:description" content="Free recurring .ics export for Google, Apple, and Outlook calendars." />
     <meta name="twitter:image" content="https://neatclock.vercel.app/og-image.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,26 +26,26 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "How do I add home maintenance reminders to my calendar?",
+          "name": "What is a recurring ICS calendar generator?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Open NeatClock, pick the Home Sentinel preset, customize tasks like HVAC filters and gutter cleaning, then export a .ics file and import it into Google Calendar, Apple Calendar, or Outlook."
+            "text": "It is a tool that creates iCalendar (.ics) files with repeating all-day events. NeatClock lets you pick a preset, edit intervals, and download a file you import into Google Calendar, Apple Calendar, or Outlook."
           }
         },
         {
           "@type": "Question",
-          "name": "Is NeatClock free for home maintenance schedules?",
+          "name": "Is NeatClock's ICS generator free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core .ics export and all built-in presets are free. Your schedule stays on your device — no account required."
+            "text": "Yes. Presets, export, print checklists, and JSON backup are free. No account required."
           }
         },
         {
           "@type": "Question",
-          "name": "What home tasks are included in the default preset?",
+          "name": "How is this different from Google Calendar recurring events?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The Home Sentinel preset includes HVAC filter replacement, smoke detector checks, gutter clearance, water heater flush, and dryer vent vacuuming on sensible recurring intervals."
+            "text": "NeatClock is a generator, not a hosted calendar. You bulk-create a full maintenance or finance schedule in one pass, export once, and own the file locally."
           }
         }
       ]
@@ -57,12 +57,12 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "NeatClock", "item": "https://neatclock.vercel.app/" },
-        { "@type": "ListItem", "position": 2, "name": "Home Maintenance Calendar", "item": "https://neatclock.vercel.app/home-maintenance-calendar" }
+        { "@type": "ListItem", "position": 2, "name": "Recurring ICS Calendar Generator", "item": "https://neatclock.vercel.app/recurring-ics-calendar-generator" }
       ]
     }
     </script>
     <style>
-      :root { --bg: #F3F1EA; --card: #fff; --text: #1C1C1C; --muted: #78716C; --accent: #E07A5F; --accent-hover: #C9654B; --highlight: #D8E2DC; }
+      :root { --bg: #F3F1EA; --card: #fff; --text: #1C1C1C; --muted: #78716C; --accent: #E07A5F; --accent-hover: #C9654B; }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body { font-family: "Outfit", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
       .wrap { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
@@ -76,41 +76,40 @@
       .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; transition: background .15s; }
       .cta:hover { background: var(--accent-hover); }
       h2 { font-family: "Playfair Display", Georgia, serif; font-size: 1.25rem; margin-bottom: 0.75rem; }
-      footer { margin-top: 2.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
-      footer a { color: var(--accent); }
       .related { text-align: center; margin: 2rem 0 0; padding-top: 1.5rem; border-top: 1px solid rgba(28,28,28,.08); }
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+      footer { margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
+      footer a { color: var(--accent); }
     </style>
   </head>
   <body>
     <div class="wrap">
       <header>
         <img class="logo" src="/logo.png" width="48" height="48" alt="NeatClock" />
-        <h1>Home Maintenance Calendar</h1>
-        <p class="lead">Recurring reminders for HVAC, smoke detectors, gutters, and more — export a .ics file in under a minute.</p>
+        <h1>Recurring ICS Calendar Generator</h1>
+        <p class="lead">Build a full recurring schedule and export a standard .ics file — Google, Apple, Outlook, no sign-up.</p>
       </header>
 
       <div class="card">
-        <h2>What you get</h2>
+        <h2>Three presets, one export</h2>
         <ul>
-          <li>HVAC filter replacement every 3 months</li>
-          <li>Smoke detector checks twice a year</li>
-          <li>Gutter clearance, water heater flush, dryer vent care</li>
-          <li>Editable tasks — add your own before export</li>
+          <li><strong>Home Sentinel</strong> — HVAC, smoke detectors, gutters</li>
+          <li><strong>Preventive Gearhead</strong> — oil, tires, brakes, wipers</li>
+          <li><strong>Automated CFO</strong> — quarterly taxes, bookkeeping</li>
         </ul>
-        <a class="cta" href="/?preset=home&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=home_maintenance">Open Home Sentinel preset →</a>
+        <a class="cta" href="/?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=ics_generator">Open NeatClock →</a>
       </div>
 
       <div class="card">
-        <h2>How it works</h2>
-        <p style="color:var(--muted)">NeatClock is a generator, not a task tracker. Pick the preset, tweak intervals, download your .ics file, and import it into any calendar app. No account. Data stays on your device.</p>
+        <h2>Why use a generator?</h2>
+        <p style="color:var(--muted)">Most people need a dozen recurring reminders at once — not one event at a time. NeatClock loads sensible defaults, lets you edit every interval, exports a single .ics file, and keeps your data on your device.</p>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">
-        <p>Other free calendars</p>
-        <a href="/recurring-ics-calendar-generator">ICS generator</a> ·
+        <p>Popular schedules</p>
+        <a href="/home-maintenance-calendar">Home maintenance</a> ·
         <a href="/car-maintenance-schedule-ics">Car maintenance</a> ·
         <a href="/freelancer-quarterly-tax-reminders">Freelancer taxes</a>
       </nav>

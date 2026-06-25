@@ -189,6 +189,7 @@ function App() {
             printPreview={printPreview}
             onTogglePrintPreview={() => setPrintPreview(!printPreview)}
             onReset={handleReset}
+            onShareCopied={showNotification}
           />
         </section>
 

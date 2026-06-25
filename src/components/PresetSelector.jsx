@@ -1,5 +1,6 @@
 import { Plus, X, Calendar, Printer } from 'lucide-react';
 import { PRESETS } from '../config/presets.js';
+import SharePresetLink from './SharePresetLink.jsx';
 
 function PresetIcon({ presetName, className, isActive }) {
   const colorClass = isActive ? 'text-theme-accent' : 'text-theme-text-muted';
@@ -41,6 +42,7 @@ export default function PresetSelector({
   printPreview,
   onTogglePrintPreview,
   onReset,
+  onShareCopied,
 }) {
   return (
     <div className="flex flex-col gap-6">
@@ -130,13 +132,16 @@ export default function PresetSelector({
       </div>
 
       <div className="flex flex-wrap gap-x-5 gap-y-3 items-center justify-between border-t pt-5 border-theme-border/60">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-semibold uppercase tracking-wider text-theme-text-muted">
-            Current View:
-          </span>
-          <span className="text-sm font-medium px-2.5 py-1 rounded bg-theme-accent/15 text-theme-text ring-1 ring-theme-accent/30">
-            {activePreset}
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xs font-semibold uppercase tracking-wider text-theme-text-muted">
+              Current View:
+            </span>
+            <span className="text-sm font-medium px-2.5 py-1 rounded bg-theme-accent/15 text-theme-text ring-1 ring-theme-accent/30">
+              {activePreset}
+            </span>
+          </div>
+          <SharePresetLink activePreset={activePreset} onCopied={onShareCopied} />
         </div>
 
         <div className="flex flex-wrap gap-3 sm:gap-4">
