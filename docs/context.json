@@ -1,6 +1,7 @@
 {
-  "asOf": "2026-06-24",
+  "asOf": "2026-06-25",
   "productionUrl": "https://neatclock.vercel.app",
+  "launchDoc": "docs/GO-LIVE-TONIGHT.md",
   "github": "4ourCEo/NeatClock",
   "targetDomain": "neatclock.app",
   "targetDomainStatus": "not purchased",
@@ -87,9 +88,8 @@
     }
   ],
   "nextSession": [
-    "Purchase neatclock.app and wire via Vercel Domains (see docs/LAUNCH-CHECKLIST.md)",
-    "Activate Formspree/FormSubmit endpoint and set VITE_INTEREST_FORM_ENDPOINT on Vercel",
-    "Set VITE_PLAUSIBLE_DOMAIN on Vercel after domain is live",
+    "Follow docs/GO-LIVE-TONIGHT.md — set VITE_INTEREST_FORM_EMAIL + VITE_PLAUSIBLE_DOMAIN on Vercel",
+    "Purchase neatclock.app and set VITE_SITE_URL=https://neatclock.app",
     "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],

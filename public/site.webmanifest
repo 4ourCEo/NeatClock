@@ -1,7 +1,7 @@
 {
   "name": "NeatClock",
   "short_name": "NeatClock",
-  "description": "Generate recurring iCalendar (.ics) files and clean checklists for homeowner maintenance, gearhead auto-checks, and quarterly bookkeeping without friction.",
+  "description": "Free recurring calendar generator — export .ics files for home maintenance, car upkeep, or freelance tax reminders in 60 seconds. No sign-up.",
   "icons": [
     {
       "src": "/icon-192.png",

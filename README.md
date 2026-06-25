@@ -70,3 +70,5 @@ npm run build
 ```
 
 Upload `dist/` or connect the repo to Vercel / Netlify / Cloudflare Pages. Set feature-flag env vars in the host dashboard when ready.
+
+**Going live tonight:** follow [docs/GO-LIVE-TONIGHT.md](./docs/GO-LIVE-TONIGHT.md) — env vars, smoke test, Search Console.
