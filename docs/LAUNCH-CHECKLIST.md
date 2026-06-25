@@ -1,11 +1,11 @@
 # NeatClock launch checklist (human steps)
 
-Code-only automation stops here. Complete these steps when you are ready to go live beyond `neatclock.vercel.app`.
+Code-only automation stops here. Complete these steps when you are ready to go live beyond `neatclock.pro`.
 
 ## 1. Custom domain
 
-1. Purchase **neatclock.app** (registrar of your choice).
-2. Vercel project → **Settings → Domains** → add `neatclock.app` and `www.neatclock.app`.
+1. Purchase **neatclock.pro** (registrar of your choice).
+2. Vercel project → **Settings → Domains** → add `neatclock.pro` and `www.neatclock.pro`.
 3. Add the DNS records Vercel shows (typically CNAME to `cname.vercel-dns.com`).
 4. Wait for HTTPS provisioning (automatic on Vercel).
 
@@ -43,17 +43,17 @@ See [WAITLIST.md](../WAITLIST.md) for field mapping and greenlight rules.
 3. Vercel → **Settings → Environment Variables** (Production):
 
    ```
-   VITE_PLAUSIBLE_DOMAIN=neatclock.app
+   VITE_PLAUSIBLE_DOMAIN=neatclock.pro
    ```
 
-   Use `neatclock.vercel.app` only if you are not using a custom domain yet.
+   Use `neatclock.pro` only if you are not using a custom domain yet.
 
 3. Redeploy. The script loads only when the env var is set and the host is not localhost (`src/lib/analytics.js`).
 
 ## 4. SEO (already in repo)
 
 - `public/sitemap.xml` and `public/robots.txt` ship with the build.
-- After custom domain is live, find-replace `neatclock.vercel.app` → `neatclock.app` in sitemap + landing page canonical URLs, then redeploy.
+- After custom domain is live, find-replace `neatclock.pro` → `neatclock.pro` in sitemap + landing page canonical URLs, then redeploy.
 - Submit sitemap in [Google Search Console](https://search.google.com/search-console).
 
 ## 5. Do not enable yet (until deliberate launch)
@@ -70,7 +70,7 @@ npm run lint && npm run test && npm run test:e2e && npm run build
 
 Then run manual smoke on the production URL per [BRIDGE-GATE.md](./BRIDGE-GATE.md).
 
-Submit `https://neatclock.vercel.app/sitemap.xml` in Google Search Console. AI crawlers use `public/llms.txt` and `public/robots.txt` (GPTBot, ClaudeBot, PerplexityBot allowed).
+Submit `https://neatclock.pro/sitemap.xml` in Google Search Console. AI crawlers use `public/llms.txt` and `public/robots.txt` (GPTBot, ClaudeBot, PerplexityBot allowed).
 
 ## 7. Optional follow-ups (post-launch)
 

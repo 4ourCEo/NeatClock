@@ -1,9 +1,9 @@
 {
   "asOf": "2026-06-25",
-  "productionUrl": "https://neatclock.vercel.app",
+  "productionUrl": "https://neatclock.pro",
   "launchDoc": "docs/GO-LIVE-TONIGHT.md",
   "github": "4ourCEo/NeatClock",
-  "targetDomain": "neatclock.app",
+  "targetDomain": "neatclock.pro",
   "targetDomainStatus": "not purchased",
   "stack": {
     "framework": "React 19 + Vite 8 + Tailwind v4",
@@ -59,8 +59,8 @@
   ],
   "blocked": [
     {
-      "item": "Custom domain neatclock.app",
-      "reason": "Domain not purchased; production serves from neatclock.vercel.app"
+      "item": "Custom domain neatclock.pro",
+      "reason": "Domain not purchased; production serves from neatclock.pro"
     },
     {
       "item": "Interest form live submissions",
@@ -84,17 +84,17 @@
     },
     {
       "item": "Plausible analytics live",
-      "reason": "VITE_PLAUSIBLE_DOMAIN not set on production; requires neatclock.app or vercel.app domain decision"
+      "reason": "VITE_PLAUSIBLE_DOMAIN not set on production; requires neatclock.pro or vercel.app domain decision"
     }
   ],
   "nextSession": [
     "Follow docs/GO-LIVE-TONIGHT.md — set VITE_INTEREST_FORM_EMAIL + VITE_PLAUSIBLE_DOMAIN on Vercel",
-    "Purchase neatclock.app and set VITE_SITE_URL=https://neatclock.app",
+    "Purchase neatclock.pro and set VITE_SITE_URL=https://neatclock.pro",
     "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 81,
+    "unit": 85,
     "e2e": 8,
     "e2eBrowsers": ["chromium", "webkit"]
   },

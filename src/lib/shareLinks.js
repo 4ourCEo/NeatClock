@@ -12,7 +12,7 @@ export function buildPresetShareUrl(
   presetName,
   { origin, medium = 'share', campaign = 'preset_link' } = {},
 ) {
-  const base = origin || (typeof window !== 'undefined' ? window.location.origin : '') || import.meta.env.VITE_SITE_URL || 'https://neatclock.vercel.app';
+  const base = origin || (typeof window !== 'undefined' ? window.location.origin : '') || import.meta.env.VITE_SITE_URL || 'https://neatclock.pro';
   const params = new URLSearchParams();
   const slug = presetShareSlug(presetName);
   if (slug) params.set('preset', slug);

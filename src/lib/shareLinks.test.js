@@ -9,7 +9,7 @@ describe('shareLinks', () => {
 
   it('builds share URL with UTM params', () => {
     const url = buildPresetShareUrl('Preventive Gearhead', {
-      origin: 'https://neatclock.vercel.app',
+      origin: 'https://neatclock.pro',
       medium: 'share',
       campaign: 'gearhead',
     });

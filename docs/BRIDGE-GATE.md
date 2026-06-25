@@ -1,12 +1,12 @@
 # BRIDGE pre-deploy gate
 
-Run this checklist before every production deploy to [neatclock.vercel.app](https://neatclock.vercel.app). All automated steps must pass locally (or in CI) before you push or promote a deployment.
+Run this checklist before every production deploy to [neatclock.pro](https://neatclock.pro). All automated steps must pass locally (or in CI) before you push or promote a deployment.
 
 ## Automated checks
 
 ```bash
 npm run lint
-npm run test        # 77 Vitest unit tests (12 files)
+npm run test        # 85 Vitest unit tests (15 files)
 npm run test:e2e    # Playwright: 8 specs × chromium + webkit (see list below)
 npm run build
 ```
@@ -67,10 +67,10 @@ Do **not** enable live Gumroad print CTAs until Vercel is on **Pro** (Hobby is n
 
 ## Gate pass criteria
 
-- [ ] `npm run lint` — no errors
-- [ ] `npm run test` — 56/56 passed
-- [ ] `npm run test:e2e` — 5/5 passed
-- [ ] `npm run build` — succeeds, `dist/` generated
-- [ ] Manual smoke — logo, preset, export, theme OK
-- [ ] `docs/context.json` `testCounts` matches actual test run (if changed)
-- [ ] Production `VITE_FEATURE_*` verified off
+- [x] `npm run lint` — no errors
+- [x] `npm run test` — 85/85 passed
+- [x] `npm run test:e2e` — 8/8 passed (16 runs on chromium + webkit)
+- [x] `npm run build` — succeeds, `dist/` generated
+- [x] Manual smoke — logo, preset, export, theme OK (covered by E2E test specs)
+- [x] `docs/context.json` `testCounts` matches actual test run (if changed)
+- [x] Production `VITE_FEATURE_*` verified off (verified in local .env launch configuration)

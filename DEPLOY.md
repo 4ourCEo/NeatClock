@@ -44,7 +44,7 @@ Follow prompts. Link to a project name like `neatclock`.
 ## Custom domain
 
 1. Vercel project → **Settings → Domains**
-2. Add `neatclock.app` (or your domain)
+2. Add `neatclock.pro` (or your domain)
 3. Add the DNS records Vercel shows (usually CNAME to `cname.vercel-dns.com`)
 
 ---
@@ -86,7 +86,7 @@ See [MONETIZATION.md](./MONETIZATION.md) for product setup.
 
 ## Analytics (Plausible)
 
-NeatClock uses [Plausible](https://plausible.io) for privacy-friendly, cookieless page analytics. The script is injected only when `VITE_PLAUSIBLE_DOMAIN` is set in Vercel env vars and the user is not on localhost — no tracking runs in local dev by default. Set the domain to your production hostname (e.g. `neatclock.app`) after the custom domain is live, then redeploy. See [docs/LAUNCH-CHECKLIST.md](./docs/LAUNCH-CHECKLIST.md) for the full human setup steps.
+NeatClock uses [Plausible](https://plausible.io) for privacy-friendly, cookieless page analytics. The script is injected only when `VITE_PLAUSIBLE_DOMAIN` is set in Vercel env vars and the user is not on localhost — no tracking runs in local dev by default. Set the domain to your production hostname (e.g. `neatclock.pro`) after the custom domain is live, then redeploy. See [docs/LAUNCH-CHECKLIST.md](./docs/LAUNCH-CHECKLIST.md) for the full human setup steps.
 
 ---
 

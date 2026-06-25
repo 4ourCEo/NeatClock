@@ -70,7 +70,7 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 **Shipped:** BreadcrumbList on all four landing pages.
 
-**PM next:** When `neatclock.app` goes live, bulk-replace `neatclock.vercel.app` in static HTML canonicals or move landings to Vite env substitution.
+**PM next:** When `neatclock.pro` goes live, bulk-replace `neatclock.pro` in static HTML canonicals or move landings to Vite env substitution.
 
 ---
 
@@ -80,7 +80,7 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 **Shipped:** `sitemap.xml` — added `/recurring-ics-calendar-generator`, `lastmod` on all URLs.
 
-**PM next:** GSC → Sitemaps → submit `https://neatclock.vercel.app/sitemap.xml`. Re-submit after domain migration.
+**PM next:** GSC → Sitemaps → submit `https://neatclock.pro/sitemap.xml`. Re-submit after domain migration.
 
 ---
 
@@ -119,7 +119,7 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 ### Revenue gate (unchanged)
 
 - `$0` until `VITE_FEATURE_NEATCLOCK_PRINTS=true` + Gumroad URLs + traffic proof
-- `.vercel.app` is fine for SEO launch; buy `neatclock.app` when interest form hits 10+ submissions
+- `.vercel.app` is fine for SEO launch; buy `neatclock.pro` when interest form hits 10+ submissions
 
 ### Monthly SEO maintenance
 

@@ -15,16 +15,16 @@ describe('resolveInterestFormEndpoint', () => {
 
   it('builds FormSubmit ajax URL from VITE_INTEREST_FORM_EMAIL', async () => {
     vi.stubEnv('VITE_INTEREST_FORM_ENDPOINT', '');
-    vi.stubEnv('VITE_INTEREST_FORM_EMAIL', 'hello@neatclock.app');
+    vi.stubEnv('VITE_INTEREST_FORM_EMAIL', 'hello@neatclock.pro');
     const { resolveInterestFormEndpoint } = await import('./interestEndpoint.js');
     expect(resolveInterestFormEndpoint()).toBe(
-      'https://formsubmit.co/ajax/hello%40neatclock.app',
+      'https://formsubmit.co/ajax/hello%40neatclock.pro',
     );
   });
 
   it('prefers explicit endpoint over email', async () => {
     vi.stubEnv('VITE_INTEREST_FORM_ENDPOINT', 'https://formspree.io/f/xyz');
-    vi.stubEnv('VITE_INTEREST_FORM_EMAIL', 'hello@neatclock.app');
+    vi.stubEnv('VITE_INTEREST_FORM_EMAIL', 'hello@neatclock.pro');
     const { resolveInterestFormEndpoint } = await import('./interestEndpoint.js');
     expect(resolveInterestFormEndpoint()).toBe('https://formspree.io/f/xyz');
   });

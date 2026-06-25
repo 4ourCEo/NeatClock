@@ -2,7 +2,7 @@
 /** Submit sitemap URLs to IndexNow (Bing, Yandex, etc.) */
 
 const KEY = 'neatclockidx2026k8m9';
-const HOST = 'neatclock.vercel.app';
+const HOST = 'neatclock.pro';
 const BASE = `https://${HOST}`;
 
 const urlList = [

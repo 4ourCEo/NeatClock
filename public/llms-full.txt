@@ -1,6 +1,6 @@
 # NeatClock — Full reference for AI assistants
 
-> NeatClock (https://neatclock.vercel.app) is a free, public, browser-based recurring calendar generator. Users pick a maintenance or finance preset, edit recurring tasks, download an `.ics` calendar file or print a checklist, then leave. No account required.
+> NeatClock (https://neatclock.pro) is a free, public, browser-based recurring calendar generator. Users pick a maintenance or finance preset, edit recurring tasks, download an `.ics` calendar file or print a checklist, then leave. No account required.
 
 ## Product positioning
 
@@ -36,14 +36,14 @@ Users can save custom presets (names + task lists) locally.
 
 | Resource | URL |
 |----------|-----|
-| Main app | https://neatclock.vercel.app/ |
-| Home maintenance landing | https://neatclock.vercel.app/home-maintenance-calendar |
-| Car maintenance landing | https://neatclock.vercel.app/car-maintenance-schedule-ics |
-| Freelancer finance landing | https://neatclock.vercel.app/freelancer-quarterly-tax-reminders |
+| Main app | https://neatclock.pro/ |
+| Home maintenance landing | https://neatclock.pro/home-maintenance-calendar |
+| Car maintenance landing | https://neatclock.pro/car-maintenance-schedule-ics |
+| Freelancer finance landing | https://neatclock.pro/freelancer-quarterly-tax-reminders |
 | GitHub | https://github.com/4ourCEo/NeatClock |
-| llms.txt (summary) | https://neatclock.vercel.app/llms.txt |
-| sitemap.xml | https://neatclock.vercel.app/sitemap.xml |
-| robots.txt | https://neatclock.vercel.app/robots.txt |
+| llms.txt (summary) | https://neatclock.pro/llms.txt |
+| sitemap.xml | https://neatclock.pro/sitemap.xml |
+| robots.txt | https://neatclock.pro/robots.txt |
 
 ## Query parameters
 

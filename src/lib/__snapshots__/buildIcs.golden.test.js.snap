@@ -7,7 +7,7 @@ PRODID:-//NeatClock//NONSGML v1.0//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
-UID:task-hs-1@neatclock.app
+UID:task-hs-1@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:HVAC Filter Replacement
@@ -15,7 +15,7 @@ DESCRIPTION:Recurring NeatClock task. Repeats every 3 months.
 RRULE:FREQ=MONTHLY;INTERVAL=3
 END:VEVENT
 BEGIN:VEVENT
-UID:task-hs-2@neatclock.app
+UID:task-hs-2@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Smoke Detector Check
@@ -23,7 +23,7 @@ DESCRIPTION:Recurring NeatClock task. Repeats every 6 months.
 RRULE:FREQ=MONTHLY;INTERVAL=6
 END:VEVENT
 BEGIN:VEVENT
-UID:task-hs-3@neatclock.app
+UID:task-hs-3@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Gutter Clearance
@@ -40,7 +40,7 @@ PRODID:-//NeatClock//NONSGML v1.0//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
-UID:task-mix-1@neatclock.app
+UID:task-mix-1@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Weekly standup
@@ -48,7 +48,7 @@ DESCRIPTION:Recurring NeatClock task. Repeats every 1 weeks.
 RRULE:FREQ=WEEKLY;INTERVAL=1
 END:VEVENT
 BEGIN:VEVENT
-UID:task-mix-2@neatclock.app
+UID:task-mix-2@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Monthly review
@@ -56,7 +56,7 @@ DESCRIPTION:Recurring NeatClock task. Repeats every 2 months.
 RRULE:FREQ=MONTHLY;INTERVAL=2
 END:VEVENT
 BEGIN:VEVENT
-UID:task-mix-3@neatclock.app
+UID:task-mix-3@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Annual audit
@@ -73,7 +73,7 @@ PRODID:-//NeatClock//NONSGML v1.0//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
-UID:task-sc-1@neatclock.app
+UID:task-sc-1@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Oil\\; change\\, now\\n(line two)
@@ -81,7 +81,7 @@ DESCRIPTION:Recurring NeatClock task. Repeats every 1 months.
 RRULE:FREQ=MONTHLY;INTERVAL=1
 END:VEVENT
 BEGIN:VEVENT
-UID:task-sc-2@neatclock.app
+UID:task-sc-2@neatclock.pro
 DTSTAMP:20260624T120000Z
 DTSTART;VALUE=DATE:20260624
 SUMMARY:Backslash \\\\ test

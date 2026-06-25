@@ -60,7 +60,7 @@ export function buildIcsContent(tasks, options = {}) {
     }
 
     lines.push('BEGIN:VEVENT');
-    lines.push(`UID:task-${task.id}@neatclock.app`);
+    lines.push(`UID:task-${task.id}@neatclock.pro`);
     lines.push(`DTSTAMP:${dtStamp}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`SUMMARY:${escapeIcalText(task.name)}`);

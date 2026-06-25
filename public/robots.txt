@@ -1,5 +1,5 @@
 # NeatClock — allow search engines and AI crawlers
-# LLM summary: https://neatclock.vercel.app/llms.txt
+# LLM summary: https://neatclock.pro/llms.txt
 
 User-agent: *
 Allow: /
@@ -31,4 +31,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://neatclock.vercel.app/sitemap.xml
+Sitemap: https://neatclock.pro/sitemap.xml

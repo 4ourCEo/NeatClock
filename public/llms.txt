@@ -17,21 +17,21 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 
 ## Primary URL
 
-- App: https://neatclock.vercel.app/
-- Target domain (when live): https://neatclock.app/
+- App: https://neatclock.pro/
+- Target domain (when live): https://neatclock.pro/
 
 ## Quick start links
 
-- Home maintenance preset: https://neatclock.vercel.app/?preset=home
-- Car maintenance preset: https://neatclock.vercel.app/?preset=gearhead
-- Freelancer finance preset: https://neatclock.vercel.app/?preset=cfo
+- Home maintenance preset: https://neatclock.pro/?preset=home
+- Car maintenance preset: https://neatclock.pro/?preset=gearhead
+- Freelancer finance preset: https://neatclock.pro/?preset=cfo
 - Force preset reload: add `&fresh=1` (e.g. `?preset=gearhead&fresh=1`)
 
 ## SEO landing pages
 
-- Home maintenance calendar: https://neatclock.vercel.app/home-maintenance-calendar
-- Car maintenance ICS schedule: https://neatclock.vercel.app/car-maintenance-schedule-ics
-- Freelancer quarterly tax reminders: https://neatclock.vercel.app/freelancer-quarterly-tax-reminders
+- Home maintenance calendar: https://neatclock.pro/home-maintenance-calendar
+- Car maintenance ICS schedule: https://neatclock.pro/car-maintenance-schedule-ics
+- Freelancer quarterly tax reminders: https://neatclock.pro/freelancer-quarterly-tax-reminders
 
 ## Features (free)
 
@@ -50,9 +50,9 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 
 ## More detail
 
-- Extended documentation for AI systems: https://neatclock.vercel.app/llms-full.txt
+- Extended documentation for AI systems: https://neatclock.pro/llms-full.txt
 - Source code: https://github.com/4ourCEo/NeatClock
-- Sitemap: https://neatclock.vercel.app/sitemap.xml
+- Sitemap: https://neatclock.pro/sitemap.xml
 
 ## Citation
 

@@ -3,8 +3,8 @@
 Use this file for **Canva logo/brand kit** creation and the **Gumroad print pack** workflow.  
 In-app UI themes are separate from print/Gumroad deliverables — see [AGENTS.md](../AGENTS.md).
 
-**Live app:** https://neatclock.vercel.app  
-**Target domain:** neatclock.app
+**Live app:** https://neatclock.pro  
+**Target domain:** neatclock.pro
 
 ---
 
@@ -113,7 +113,7 @@ CONSTRAINTS:
 - WCAG-friendly contrast
 - Readable on light (#F3F1EA) and dark (#0C0C0B) backgrounds
 - Print-friendly B&W for PDF checklist covers
-- Domain: neatclock.app
+- Domain: neatclock.pro
 ```
 
 ---

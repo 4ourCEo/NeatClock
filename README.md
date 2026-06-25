@@ -1,74 +1,91 @@
-# NeatClock
+# NeatClock 📅
 
-A minimalist, zero-friction **recurring calendar generator** — live on the web, no sign-up required.
+> A minimalist, zero-friction **recurring calendar generator** — live on the web at [neatclock.pro](https://neatclock.pro). No sign-up required.
 
-Pick a preset, edit your tasks, export a `.ics` file or print a checklist. Done in under a minute.
+NeatClock helps you generate recurring schedule files (`.ics`) for your home, car, or freelance tax obligations in under 60 seconds. Customize your tasks, export them straight to Google Calendar, Apple Calendar, or Outlook, and carry on with your day.
 
-## What it is
+---
 
-- Public web app (deploy `dist/` to any static host)
-- Home maintenance, vehicle upkeep, and freelance bookkeeping presets
-- Natural-language task input ("Wash car every 2 weeks")
-- `.ics` export (all-day dates — works in Google, Apple, and Outlook calendars)
-- Print-friendly checklist view
-- JSON backup / restore for your schedule
+## ⚡ Core Philosophy: Generator, Not a Tracker
+NeatClock is built to be a **one-time utility, not a checklist application**.
+*   **No User Accounts:** No email sign-ups, passwords, or databases.
+*   **Zero Creep:** No task completion tracking, overdue badges, streaks, or notification alerts.
+*   **Total Privacy:** All of your data resides locally in your browser's `localStorage`. Clearing your browser data removes it.
 
-## What it is not
+---
 
-NeatClock is **not** a task tracker. No completion tracking, overdue states, or accounts. See [SCOPE.md](./SCOPE.md).
+## ✨ Features
 
-## Privacy
+*   **Tailored Presets:** Includes three high-intent presets to get started immediately:
+    *   🏠 **Homeowner's Sentinel** (HVAC filter, gutter cleaning, smoke alarm checks)
+    *   🚗 **Preventive Gearhead** (Oil change, tire rotations, cabin filter replacement)
+    *   💼 **Automated CFO** (Quarterly taxes, bookkeeping reviews, subscription cleanups)
+*   **Natural Language Frequency:** Add or edit tasks using plain English (e.g., `"Change furnace filter every 3 months"`, `"Rotate tires every 6 months"`).
+*   **Universal ICS Export:** Generates standard, cross-platform iCalendar (`.ics`) files as all-day recurring events.
+*   **Print-Friendly View:** Instantly generates a clean, minimalist paper checklist formatted for your fridge, office, or garage wall.
+*   **Backup & Restore:** Export your configured schedule as a clean `neatclock-backup.json` file and restore it on any device.
+*   **Preset Deep Links:** Share custom schedule setups using simple query parameters:
+    *   `https://neatclock.pro/?preset=home`
+    *   `https://neatclock.pro/?preset=gearhead`
+    *   `https://neatclock.pro/?preset=cfo`
+    *   *Append `&fresh=1` to force-override existing local configurations.*
 
-Your schedule is saved **on your device** in the browser (not on our servers). Clearing site data for neatclock.app removes it. Use **Backup** to download a JSON copy you can restore later.
+---
 
-## Preset deep links
+## 🛠 Tech Stack & Architecture
 
-Share or bookmark a preset with URL query params (applied on first visit when no saved tasks exist, or anytime with `fresh=1`):
+NeatClock is a static Single Page Application (SPA) designed to load instantly and run at $0 hosting cost:
+*   **Frontend:** React 19 + Vite 8
+*   **Styling:** Tailwind CSS v4 + Vanilla CSS tokens (using Google Fonts: *Outfit* & *Playfair Display*)
+*   **Test Suite:** 85 Vitest unit/integration tests & 16 Playwright E2E tests (configured for Chromium + WebKit)
+*   **SEO & AI Discovery:** Includes custom JSON-LD schemas (`WebApplication` & `FAQPage`), static crawlable landing pages, a sitemap, and LLM-friendly documentation (`llms.txt` & `llms-full.txt`) for AI search engines.
 
-| Param | Preset |
-|-------|--------|
-| `?preset=home` | Homeowner's Sentinel |
-| `?preset=gearhead` | Preventive Gearhead |
-| `?preset=cfo` | Automated CFO |
+---
 
-Examples: `https://neatclock.vercel.app/?preset=gearhead` · force reload preset: `?preset=home&fresh=1`
+## 🚀 Development & Testing
 
-SEO landing pages (static HTML, preset CTAs):
-
-- `/home-maintenance-calendar` → `?preset=home`
-- `/car-maintenance-schedule-ics` → `?preset=gearhead`
-- `/freelancer-quarterly-tax-reminders` → `?preset=cfo`
-
-## AI / LLM discovery
-
-- `public/llms.txt` — concise summary for ChatGPT, Claude, Perplexity, etc. ([llmstxt.org](https://llmstxt.org))
-- `public/llms-full.txt` — extended reference (presets, URLs, FAQ-style answers)
-- `public/robots.txt` — allows major AI crawlers; links sitemap and llms.txt
-- `index.html` — WebApplication JSON-LD + `rel="alternate"` to llms.txt
-
-After custom domain: update URLs in llms files, sitemap, and landing canonicals.
-
-## Feature flags (launch when ready)
-
-Future monetization features (print shop, lockscreen goodies, sponsor footer) are **built but off by default**. Enable via environment variables — see [FEATURES.md](./FEATURES.md).
-
-## Development
+Run the application locally on your machine:
 
 ```bash
+# Install dependencies
 npm install
-npm run dev       # dev server
-npm run build     # production build → dist/
-npm run lint      # ESLint
-npm run test      # Vitest
-npm run preview   # preview production build
+
+# Run local development server (with HMR)
+npm run dev
+
+# Run code linter
+npm run lint
+
+# Run Vitest unit & integration tests
+npm run test
+
+# Run Playwright end-to-end integration tests
+npm run test:e2e
+
+# Run all verification checks (lint, unit, e2e, build)
+npm run go-live:check
 ```
 
-## Deploy
+---
 
-```bash
-npm run build
-```
+## 📦 Production Deployment
 
-Upload `dist/` or connect the repo to Vercel / Netlify / Cloudflare Pages. Set feature-flag env vars in the host dashboard when ready.
+NeatClock compiles to a static bundle in `dist/` and is fully ready to deploy to **Vercel** (recommended), Netlify, or Cloudflare Pages.
 
-**Going live tonight:** follow [docs/GO-LIVE-TONIGHT.md](./docs/GO-LIVE-TONIGHT.md) — env vars, smoke test, Search Console.
+### Environment variables
+Configure these in your host dashboard to enable live analytics and feedback features:
+
+| Environment Variable | Description |
+|---|---|
+| `VITE_SITE_URL` | Set to `https://neatclock.pro` for canonical tags and metadata. |
+| `VITE_PLAUSIBLE_DOMAIN` | Set to `neatclock.pro` to enable privacy-friendly page analytics. |
+| `VITE_INTEREST_FORM_EMAIL` | Set to your email to enable waitlist submissions (routed via FormSubmit). |
+| `VITE_INTEREST_FORM_ENDPOINT` | Set to your Formspree endpoint (e.g. `https://formspree.io/f/xxxx`). |
+
+### Feature-Flagged Monetization
+Premium features (print shop upsells, lockscreen downloads, sponsorship banners) are built-in but feature-flagged off by default. To preview or launch them, consult [FEATURES.md](./FEATURES.md) and [MONETIZATION.md](./MONETIZATION.md).
+
+---
+
+## 📄 License
+MIT License. Free and open source forever.
