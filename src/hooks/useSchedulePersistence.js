@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { persistState } from '../lib/storage.js';
 import { THEME_CLASSES } from '../lib/themes.js';
 
@@ -13,20 +13,39 @@ export function useSchedulePersistence({
   startOffsetWeeks,
   setNotification,
 }) {
+  const tasksRef = useRef(tasks);
+  const pendingTasksSaveRef = useRef(false);
+
+  useEffect(() => {
+    tasksRef.current = tasks;
+  }, [tasks]);
+
   const scheduleStorageFailureNotice = useCallback(() => {
     queueMicrotask(() => setNotification(STORAGE_SAVE_MESSAGE));
   }, [setNotification]);
+
+  const flushTasks = useCallback(() => {
+    persistState('neatclock_tasks', JSON.stringify(tasksRef.current), scheduleStorageFailureNotice);
+    pendingTasksSaveRef.current = false;
+  }, [scheduleStorageFailureNotice]);
+
+  const flushTasksIfPending = useCallback(() => {
+    if (pendingTasksSaveRef.current) {
+      flushTasks();
+    }
+  }, [flushTasks]);
 
   useEffect(() => {
     persistState('neatclock_start_offset', String(startOffsetWeeks), scheduleStorageFailureNotice);
   }, [startOffsetWeeks, scheduleStorageFailureNotice]);
 
   useEffect(() => {
+    pendingTasksSaveRef.current = true;
     const timeoutId = setTimeout(() => {
-      persistState('neatclock_tasks', JSON.stringify(tasks), scheduleStorageFailureNotice);
+      flushTasks();
     }, 300);
     return () => clearTimeout(timeoutId);
-  }, [tasks, scheduleStorageFailureNotice]);
+  }, [tasks, flushTasks]);
 
   useEffect(() => {
     persistState('neatclock_show_export_preview', String(showExportPreview), scheduleStorageFailureNotice);
@@ -47,4 +66,24 @@ export function useSchedulePersistence({
     document.body.classList.add(theme);
     persistState('neatclock_theme', theme, scheduleStorageFailureNotice);
   }, [theme, scheduleStorageFailureNotice]);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushTasksIfPending();
+      }
+    };
+
+    const onBeforeUnload = () => {
+      flushTasksIfPending();
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, [flushTasksIfPending]);
 }
