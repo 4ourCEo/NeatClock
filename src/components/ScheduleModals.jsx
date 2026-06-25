@@ -113,8 +113,16 @@ export default function ScheduleModals({
               <p className="text-sm text-theme-text-muted mb-3 leading-relaxed">
                 Your <strong className="text-theme-text">neatclock-schedule.ics</strong> file is ready.
               </p>
-              <p className="text-xs text-theme-text-muted mb-5 leading-relaxed">
-                <strong className="text-theme-text">Import:</strong> Google Calendar → Settings → Import
+              <p className="text-xs text-theme-text-muted mb-5 leading-relaxed space-y-1">
+                <span className="block">
+                  <strong className="text-theme-text">Google:</strong> calendar.google.com → Settings → Import
+                </span>
+                <span className="block">
+                  <strong className="text-theme-text">Apple:</strong> Calendar app → File → Import
+                </span>
+                <span className="block">
+                  <strong className="text-theme-text">Outlook:</strong> Add calendar → Upload from file
+                </span>
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button

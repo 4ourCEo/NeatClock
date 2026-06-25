@@ -36,7 +36,8 @@ test.describe('schedule flow', () => {
     expect(download.suggestedFilename()).toBe('neatclock-schedule.ics');
 
     await expect(page.getByRole('heading', { name: 'Calendar downloaded' })).toBeVisible();
-    await expect(page.getByText('Import: Google Calendar → Settings → Import')).toBeVisible();
+    await expect(page.getByText('Google:').first()).toBeVisible();
+    await expect(page.getByText('Apple:').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'Keep editing this schedule' }).click();
     await expect(page.getByRole('heading', { name: 'Calendar downloaded' })).toBeHidden();

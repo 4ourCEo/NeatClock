@@ -376,7 +376,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .task-row-actions {
-    opacity: 0.4;
+    opacity: 0.88;
   }
 
   .group:hover .task-row-actions,

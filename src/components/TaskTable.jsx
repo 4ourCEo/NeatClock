@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
 import { isRhythmHighlighted } from '../lib/schedulePreview.js';
+import {
+  getGoogleCalLink,
+  getOutlookCalLink,
+  downloadAppleTaskIcs,
+} from '../lib/calendarProviders.js';
+import {
+  GoogleCalendarIcon,
+  OutlookCalendarIcon,
+  AppleCalendarIcon,
+  calendarProviderButtonClass,
+} from './CalendarProviderIcons.jsx';
 
 export default function TaskTable({
   tasks,
@@ -11,8 +22,6 @@ export default function TaskTable({
   onUpdateTaskUnit,
   onDeleteTask,
   onMoveTask,
-  getGoogleCalLink,
-  getOutlookCalLink,
 }) {
   const [draggedIdx, setDraggedIdx] = useState(null);
 
@@ -45,7 +54,7 @@ export default function TaskTable({
             {printPreview && <th className="py-3 px-2 w-12 text-center">Status</th>}
             <th className="py-3 px-2">Recurring Task Name</th>
             <th className="py-3 px-2 w-48">Frequency / Unit</th>
-            <th className="py-3 px-2 w-28 text-center no-print">Actions</th>
+            <th className="py-3 px-2 w-40 text-center no-print">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -173,24 +182,31 @@ export default function TaskTable({
                       href={getGoogleCalLink(task)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="touch-target text-theme-text-muted hover:text-theme-accent transition-colors p-1"
+                      className={calendarProviderButtonClass}
                       title="Add to Google Calendar"
+                      aria-label={`Add ${task.name} to Google Calendar`}
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                      </svg>
+                      <GoogleCalendarIcon />
                     </a>
                     <a
                       href={getOutlookCalLink(task)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="touch-target text-theme-text-muted hover:text-theme-accent transition-colors p-1"
+                      className={calendarProviderButtonClass}
                       title="Add to Outlook Calendar"
+                      aria-label={`Add ${task.name} to Outlook Calendar`}
                     >
-                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M16.5 12c1.38 0 2.5-1.12 2.5-2.5S17.88 7 16.5 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 3-1.34 3-3S10.66 5 9 5 6 6.34 6 8s1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h10v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                      </svg>
+                      <OutlookCalendarIcon />
                     </a>
+                    <button
+                      type="button"
+                      onClick={() => downloadAppleTaskIcs(task)}
+                      className={`${calendarProviderButtonClass} cursor-pointer`}
+                      title="Download .ics for Apple Calendar"
+                      aria-label={`Download ${task.name} for Apple Calendar`}
+                    >
+                      <AppleCalendarIcon />
+                    </button>
                     <button
                       onClick={() => onDeleteTask(task.id)}
                       className="touch-target text-theme-text-muted hover:text-red-500 transition-colors p-1 cursor-pointer focus:outline-none"

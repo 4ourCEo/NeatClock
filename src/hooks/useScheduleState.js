@@ -32,20 +32,6 @@ export function useScheduleState({ showNotification }) {
   const [nlInput, setNlInput] = useState('');
   const parsedNl = useMemo(() => parseNaturalLanguage(nlInput), [nlInput]);
 
-  const getGoogleCalLink = (task) => {
-    let freq = 'MONTHLY';
-    if (task.unit === 'weeks') freq = 'WEEKLY';
-    if (task.unit === 'years') freq = 'YEARLY';
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(task.name)}&recur=RRULE:FREQ=${freq};INTERVAL=${task.interval}`;
-  };
-
-  const getOutlookCalLink = (task) => {
-    let freq = 'MONTHLY';
-    if (task.unit === 'weeks') freq = 'WEEKLY';
-    if (task.unit === 'years') freq = 'YEARLY';
-    return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(task.name)}&rrule=FREQ=${freq};INTERVAL=${task.interval}`;
-  };
-
   const handleAddNlTask = () => {
     if (!parsedNl) return;
     const newTask = {
@@ -215,8 +201,6 @@ export function useScheduleState({ showNotification }) {
     parsedNl,
     handleAddNlTask,
     moveTask,
-    getGoogleCalLink,
-    getOutlookCalLink,
     handlePresetSelect,
     handleSavePreset,
     submitSavePreset,

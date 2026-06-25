@@ -55,8 +55,6 @@ function App() {
     parsedNl,
     handleAddNlTask,
     moveTask,
-    getGoogleCalLink,
-    getOutlookCalLink,
     handlePresetSelect,
     handleSavePreset,
     submitSavePreset,
@@ -226,8 +224,6 @@ function App() {
                 onUpdateTaskUnit={handleUpdateTaskUnit}
                 onDeleteTask={handleDeleteTask}
                 onMoveTask={moveTask}
-                getGoogleCalLink={getGoogleCalLink}
-                getOutlookCalLink={getOutlookCalLink}
               />
             )}
 

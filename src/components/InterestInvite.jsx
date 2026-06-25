@@ -41,7 +41,7 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
             <p className="text-xs text-theme-text-muted mt-1 leading-relaxed">
               Would styled print templates help after export? Half a minute — helps us know what to build.
             </p>
-            <div className="flex flex-wrap gap-3 mt-4">
+            <div className="flex flex-wrap gap-3 mt-4 justify-center">
               <button
                 type="button"
                 onClick={onOpen}
@@ -80,13 +80,15 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
             NeatClock stays free forever. Tell us which extras — print packs, wallpapers, themes — would
             actually help after you export. We launch when enough people ask.
           </p>
-          <button
-            type="button"
-            onClick={onOpen}
-            className="mt-4 px-5 py-2.5 rounded-lg bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-medium cursor-pointer transition-colors shadow-sm"
-          >
-            Share feedback — 30 sec
-          </button>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={onOpen}
+              className="px-5 py-2.5 rounded-lg bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-medium cursor-pointer transition-colors shadow-sm"
+            >
+              Share feedback — 30 sec
+            </button>
+          </div>
         </div>
       </div>
     </div>
