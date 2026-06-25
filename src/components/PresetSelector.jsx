@@ -45,6 +45,10 @@ export default function PresetSelector({
   onTogglePrintPreview,
   onReset,
   onShareCopied,
+  includePrintBranding = true,
+  onTogglePrintBranding,
+  includePrintNotes = false,
+  onTogglePrintNotes,
 }) {
   return (
     <div className="flex flex-col gap-6">
@@ -132,6 +136,32 @@ export default function PresetSelector({
           </button>
         </div>
       </div>
+
+      {printPreview && (
+        <div className="flex flex-wrap gap-6 items-center bg-theme-accent/5 border border-theme-accent/25 rounded-xl p-4 animate-fade-in no-print">
+          <span className="text-xs font-semibold uppercase tracking-wider text-theme-text-muted">
+            Print Customizer:
+          </span>
+          <label className="flex items-center gap-2 text-xs text-theme-text cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={includePrintBranding}
+              onChange={(e) => onTogglePrintBranding?.(e.target.checked)}
+              className="rounded border-theme-border text-theme-accent focus:ring-theme-accent w-4 h-4 cursor-pointer"
+            />
+            Show Brand Header
+          </label>
+          <label className="flex items-center gap-2 text-xs text-theme-text cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={includePrintNotes}
+              onChange={(e) => onTogglePrintNotes?.(e.target.checked)}
+              className="rounded border-theme-border text-theme-accent focus:ring-theme-accent w-4 h-4 cursor-pointer"
+            />
+            Append Blank Note Lines
+          </label>
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row gap-y-4 gap-x-5 items-center justify-between border-t pt-5 border-theme-border/60 w-full">
         <div className="flex flex-col sm:flex-row sm:items-center items-center justify-center gap-3 text-center min-w-0 w-full md:w-auto">

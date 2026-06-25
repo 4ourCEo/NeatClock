@@ -3,8 +3,12 @@ import { storageGet } from './storage.js';
 /** URL slug → built-in preset name (see README). */
 export const PRESET_DEEP_LINKS = {
   home: "Homeowner's Sentinel",
+  'first-time-homeowner': "Homeowner's Sentinel",
+  hvac: "Homeowner's Sentinel",
   gearhead: 'Preventive Gearhead',
+  'honda-civic-2018': 'Preventive Gearhead',
   cfo: 'Automated CFO',
+  'sole-proprietor-tax': 'Automated CFO',
 };
 
 export function getDeepLinkSearch() {

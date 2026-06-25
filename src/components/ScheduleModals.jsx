@@ -3,6 +3,7 @@ import { ExportExtras } from './SiteExtras.jsx';
 import { features } from '../config/features.js';
 import { interestFormEnabled } from '../config/monetization.js';
 import { shouldShowMonetization } from '../lib/preview.js';
+import { buildPresetShareUrl } from '../lib/shareLinks.js';
 
 export default function ScheduleModals({
   confirmModal,
@@ -20,6 +21,8 @@ export default function ScheduleModals({
   activePreset,
   onOpenInterest,
 }) {
+  const shareUrl = buildPresetShareUrl(activePreset, { medium: 'qr_sync', campaign: 'export_success' });
+
   return (
     <>
       {confirmModal && (
@@ -140,6 +143,27 @@ export default function ScheduleModals({
                   Try Another Preset
                 </button>
               </div>
+
+              {/* QR Code Sync */}
+              <div className="hidden md:flex flex-col items-center mt-5 p-4 border border-theme-border/30 bg-theme-bg/10 rounded-xl">
+                <p className="text-xs font-semibold text-theme-text mb-1">
+                  📱 Sync to Mobile
+                </p>
+                <p className="text-[10px] text-theme-text-muted text-center mb-3">
+                  Scan to load this schedule on your phone and add it directly to your mobile calendar.
+                </p>
+                <div className="bg-white p-2 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-none">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
+                    alt="Sync QR Code"
+                    className="w-28 h-28 object-contain"
+                    width="112"
+                    height="112"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={onCloseExportSuccess}

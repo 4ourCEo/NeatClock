@@ -36,6 +36,8 @@ test.describe('schedule flow', () => {
     expect(download.suggestedFilename()).toBe('neatclock-schedule.ics');
 
     await expect(page.getByRole('heading', { name: 'Calendar downloaded' })).toBeVisible();
+    await expect(page.getByText('Sync to Mobile')).toBeVisible();
+    await expect(page.getByAltText('Sync QR Code')).toBeVisible();
     await expect(page.getByText('Google:').first()).toBeVisible();
     await expect(page.getByText('Apple:').first()).toBeVisible();
 

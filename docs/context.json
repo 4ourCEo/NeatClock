@@ -4,7 +4,7 @@
   "launchDoc": "docs/GO-LIVE-TONIGHT.md",
   "github": "4ourCEo/NeatClock",
   "targetDomain": "neatclock.pro",
-  "targetDomainStatus": "not purchased",
+  "targetDomainStatus": "purchased and launched",
   "stack": {
     "framework": "React 19 + Vite 8 + Tailwind v4",
     "hosting": "Vercel (Hobby plan)",
@@ -31,6 +31,7 @@
   },
   "completed": [
     "Public one-page generator SPA deployed to Vercel",
+    "Custom domain neatclock.pro purchased and app launched live",
     "Three built-in presets plus save-your-own custom presets",
     "ICS calendar export (core, free forever)",
     "Print-friendly checklist view",
@@ -47,6 +48,8 @@
     "Preset deep links: ?preset=home|gearhead|cfo and ?fresh=1",
     "Persist flush on beforeunload/visibilitychange; export-success monetization card (flagged)",
     "Interest form UI built (modal + footer card) — graceful handling when endpoint unset",
+    "Interest form connected to live Formspree endpoint (xqevpwlb) in configuration templates",
+    "Amazon Associates tag (neatclock090-20) connected and in-file affiliate hints enabled",
     "Print upsell UI built but feature-flagged off",
     "Owner preview mode (?preview=monetization) for gated UI testing",
     "BRIDGE pre-deploy gate (docs/BRIDGE-GATE.md)",
@@ -58,14 +61,6 @@
     "docs/LAUNCH-CHECKLIST.md for domain, Formspree, and analytics setup"
   ],
   "blocked": [
-    {
-      "item": "Custom domain neatclock.pro",
-      "reason": "Domain not purchased; production serves from neatclock.pro"
-    },
-    {
-      "item": "Interest form live submissions",
-      "reason": "VITE_INTEREST_FORM_ENDPOINT not set on production; Formspree/FormSubmit account activation pending"
-    },
     {
       "item": "NeatClock Prints Gumroad CTAs",
       "reason": "Gumroad products, ZIP deliverables, and VITE_PRINTS_* URLs not created; VITE_FEATURE_NEATCLOCK_PRINTS remains off"
@@ -79,8 +74,8 @@
       "reason": "VITE_FEATURE_PREMIUM_THEMES off; optional launch tied to print bundle"
     },
     {
-      "item": "Sponsor footer and affiliate hints",
-      "reason": "Flags off; Amazon Associates tag and sponsor outreach not started"
+      "item": "Sponsor footer",
+      "reason": "Sponsor footer flag off; sponsor outreach not started"
     },
     {
       "item": "Plausible analytics live",
@@ -88,17 +83,19 @@
     }
   ],
   "nextSession": [
-    "Follow docs/GO-LIVE-TONIGHT.md — set VITE_INTEREST_FORM_EMAIL + VITE_PLAUSIBLE_DOMAIN on Vercel",
+    "Set VITE_INTEREST_FORM_ENDPOINT + VITE_PLAUSIBLE_DOMAIN on Vercel for production launch",
     "Purchase neatclock.pro and set VITE_SITE_URL=https://neatclock.pro",
     "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 85,
-    "e2e": 8,
+    "unit": 90,
+    "e2e": 10,
     "e2eBrowsers": ["chromium", "webkit"]
   },
   "testFiles": [
+    "src/config/interestEndpoint.test.js",
+    "src/config/affiliateHints.test.js",
     "src/lib/buildIcs.test.js",
     "src/lib/buildIcs.golden.test.js",
     "src/lib/backup.test.js",
@@ -106,6 +103,8 @@
     "src/lib/themes.test.js",
     "src/lib/tasks.test.js",
     "src/lib/deepLink.test.js",
+    "src/lib/calendarProviders.test.js",
+    "src/lib/shareLinks.test.js",
     "src/hooks/useScheduleBootstrap.test.js",
     "src/hooks/useScheduleState.test.js",
     "src/hooks/useExportPreview.test.js",
@@ -116,6 +115,8 @@
     "e2e/backup-roundtrip.spec.js",
     "e2e/storage-failure-toast.spec.js",
     "e2e/print-preview.spec.js",
-    "e2e/deep-link.spec.js"
+    "e2e/deep-link.spec.js",
+    "e2e/brand-banner.spec.js",
+    "e2e/partner-builder.spec.js"
   ]
 }

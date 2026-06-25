@@ -167,25 +167,35 @@ export default function TaskTable({
                         : task.unit}
                     </span>
                   ) : (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-theme-text-muted text-xs font-sans">Every</span>
-                      <input
-                        type="number"
-                        min="1"
-                        max="120"
-                        value={task.interval}
-                        onChange={(e) => onUpdateTaskInterval(task.id, e.target.value)}
-                        className="task-freq-number w-12 bg-theme-card border border-theme-border rounded px-1.5 py-1 text-center font-sans text-sm focus:border-theme-accent focus:ring-0 focus:outline-none text-theme-text"
-                      />
-                      <select
-                        value={task.unit}
-                        onChange={(e) => onUpdateTaskUnit(task.id, e.target.value)}
-                        className="task-freq-unit bg-transparent border-0 border-b border-transparent focus:border-theme-accent focus:ring-0 py-1 pl-1 text-xs font-sans text-theme-text-muted focus:outline-none cursor-pointer"
-                      >
-                        <option value="weeks" className="bg-theme-card text-theme-text">week{task.interval > 1 ? 's' : ''}</option>
-                        <option value="months" className="bg-theme-card text-theme-text">month{task.interval > 1 ? 's' : ''}</option>
-                        <option value="years" className="bg-theme-card text-theme-text">year{task.interval > 1 ? 's' : ''}</option>
-                      </select>
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-theme-text-muted text-xs font-sans">Every</span>
+                        <input
+                          type="number"
+                          min="1"
+                          max="120"
+                          value={task.interval}
+                          onChange={(e) => onUpdateTaskInterval(task.id, e.target.value)}
+                          className="task-freq-number w-12 bg-theme-card border border-theme-border rounded px-1.5 py-1 text-center font-sans text-sm focus:border-theme-accent focus:ring-0 focus:outline-none text-theme-text"
+                        />
+                        <select
+                          value={task.unit}
+                          onChange={(e) => onUpdateTaskUnit(task.id, e.target.value)}
+                          className="task-freq-unit bg-transparent border-0 border-b border-transparent focus:border-theme-accent focus:ring-0 py-1 pl-1 text-xs font-sans text-theme-text-muted focus:outline-none cursor-pointer"
+                        >
+                          <option value="weeks" className="bg-theme-card text-theme-text">week{task.interval > 1 ? 's' : ''}</option>
+                          <option value="months" className="bg-theme-card text-theme-text">month{task.interval > 1 ? 's' : ''}</option>
+                          <option value="years" className="bg-theme-card text-theme-text">year{task.interval > 1 ? 's' : ''}</option>
+                        </select>
+                      </div>
+                      <div className="text-[10px] text-theme-text-muted/70 font-sans italic no-print select-none">
+                        {(() => {
+                          const num = parseInt(task.interval, 10);
+                          if (isNaN(num) || num <= 0) return 'Every recurrence';
+                          const cleanUnit = num === 1 ? task.unit.replace(/s$/, '') : task.unit;
+                          return `Every ${num === 1 ? '' : num + ' '}${cleanUnit}`;
+                        })()}
+                      </div>
                     </div>
                   )}
                 </td>

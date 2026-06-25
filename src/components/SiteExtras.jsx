@@ -146,6 +146,11 @@ export function SiteFooter({ onOpenInterest }) {
 
       <SeoFooterLinks />
 
+      <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 select-none bg-emerald-500/5 dark:bg-emerald-500/10 py-1.5 px-3 rounded-full border border-emerald-500/20 max-w-max mx-auto">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+        <span>Private & Serverless — Your schedule never leaves your device.</span>
+      </div>
+
       <p className="text-[11px] text-theme-text-muted/80 max-w-md mx-auto leading-relaxed pt-1">
         Free on the web. Your schedule stays on this device — no account required.
         {' '}
@@ -155,6 +160,13 @@ export function SiteFooter({ onOpenInterest }) {
           rel="help"
         >
           For AI assistants
+        </a>
+        {' · '}
+        <a
+          href="/?page=partner"
+          className="underline underline-offset-2 hover:text-theme-text transition-colors"
+        >
+          Co-Brand Scheduler
         </a>
       </p>
     </footer>

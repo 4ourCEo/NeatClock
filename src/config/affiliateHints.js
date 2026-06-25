@@ -17,11 +17,27 @@ export const AFFILIATE_HINTS = {
   'Air Filter Check': 'Tip: cabin and engine filters are often different sizes.',
 };
 
-export function getAffiliateHint(taskName) {
-  const base = AFFILIATE_HINTS[taskName];
-  if (!base) return null;
+function extractSpec(taskName) {
+  const sizeRegex = /\b\d+\s*x\s*\d+\s*(?:x\s*\d+)?\b/i;
+  const oilRegex = /\b\d+W[-_]?\d+\b/i;
+  
+  const sizeMatch = taskName.match(sizeRegex);
+  if (sizeMatch) return sizeMatch[0].replace(/\s+/g, '');
+  
+  const oilMatch = taskName.match(oilRegex);
+  if (oilMatch) return oilMatch[0].toUpperCase();
+  
+  return '';
+}
 
-  if (!amazonTag) return base;
+export function getAffiliateHint(taskName) {
+  const baseKey = Object.keys(AFFILIATE_HINTS).find((key) =>
+    taskName.toLowerCase().includes(key.toLowerCase())
+  );
+  if (!baseKey) return null;
+
+  const baseHint = AFFILIATE_HINTS[baseKey];
+  if (!amazonTag) return baseHint;
 
   const searchMap = {
     'HVAC Filter Replacement': 'HVAC air filter',
@@ -30,9 +46,11 @@ export function getAffiliateHint(taskName) {
     'Dryer Vent Vacuuming': 'dryer vent cleaning kit',
   };
 
-  const query = searchMap[taskName];
-  if (query) {
-    return `${base} Search: ${amazonSearch(query)}`;
+  const baseQuery = searchMap[baseKey];
+  if (baseQuery) {
+    const spec = extractSpec(taskName);
+    const query = spec ? `${spec} ${baseQuery}` : baseQuery;
+    return `${baseHint} Search: ${amazonSearch(query)}`;
   }
-  return base;
+  return baseHint;
 }

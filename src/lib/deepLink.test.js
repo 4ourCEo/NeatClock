@@ -24,8 +24,12 @@ describe('deepLink', () => {
 
   it('maps URL preset slugs to built-in preset names', () => {
     expect(PRESET_DEEP_LINKS.home).toBe("Homeowner's Sentinel");
+    expect(PRESET_DEEP_LINKS['first-time-homeowner']).toBe("Homeowner's Sentinel");
+    expect(PRESET_DEEP_LINKS.hvac).toBe("Homeowner's Sentinel");
     expect(PRESET_DEEP_LINKS.gearhead).toBe('Preventive Gearhead');
+    expect(PRESET_DEEP_LINKS['honda-civic-2018']).toBe('Preventive Gearhead');
     expect(PRESET_DEEP_LINKS.cfo).toBe('Automated CFO');
+    expect(PRESET_DEEP_LINKS['sole-proprietor-tax']).toBe('Automated CFO');
   });
 
   it('parseDeepLinkParams returns null for missing or unknown preset', () => {

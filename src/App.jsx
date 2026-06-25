@@ -5,6 +5,8 @@ import { PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
 import { MonetizationPreviewBanner } from './components/FeatureGate.jsx';
 import InterestModal from './components/InterestModal.jsx';
 import AppHeader from './components/AppHeader.jsx';
+import BrandBanner from './components/BrandBanner.jsx';
+import PartnerBuilder from './components/PartnerBuilder.jsx';
 import TaskTable from './components/TaskTable.jsx';
 import PresetSelector from './components/PresetSelector.jsx';
 import ScheduleModals from './components/ScheduleModals.jsx';
@@ -23,11 +25,22 @@ import { useExportActions } from './hooks/useExportActions.js';
 import { getDeepLinkBootstrap } from './lib/deepLink.js';
 import { trackEvent } from './lib/analytics.js';
 
+function getCurrentPage() {
+  if (typeof window === 'undefined') return 'generator';
+  const params = new URLSearchParams(window.location.search);
+  const pageParam = params.get('page');
+  if (pageParam === 'partner' || pageParam === 'agency') return 'partner';
+  return 'generator';
+}
+
 function App() {
   const [printPreview, setPrintPreview] = useState(false);
+  const [includePrintNotes, setIncludePrintNotes] = useState(false);
+  const [includePrintBranding, setIncludePrintBranding] = useState(true);
   const [exportSuccessOpen, setExportSuccessOpen] = useState(false);
   const [interestOpen, setInterestOpen] = useState(false);
   const [interestSource, setInterestSource] = useState('footer');
+  const currentPage = getCurrentPage();
 
   const { notification, setNotification, showNotification } = useNotifications();
 
@@ -180,11 +193,17 @@ function App() {
         tabIndex={-1}
       />
 
-      <main
-        data-active-preset={activePreset}
-        className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}
-      >
-        <AppHeader theme={theme} setTheme={handleSetTheme} />
+      {currentPage === 'partner' ? (
+        <main className="mx-auto main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl">
+          <PartnerBuilder />
+        </main>
+      ) : (
+        <main
+          data-active-preset={activePreset}
+          className={`mx-auto transition-all duration-500 print-area ${printPreview ? 'print-preview-mode print-paper-3d' : 'main-card max-w-5xl p-5 sm:p-8 md:p-12 rounded-2xl'}`}
+        >
+          <BrandBanner showOnPrint={includePrintBranding} />
+          <AppHeader theme={theme} setTheme={handleSetTheme} />
 
         <section className="no-print mb-8">
           <PresetSelector
@@ -201,6 +220,10 @@ function App() {
             onTogglePrintPreview={() => setPrintPreview(!printPreview)}
             onReset={handleReset}
             onShareCopied={showNotification}
+            includePrintBranding={includePrintBranding}
+            onTogglePrintBranding={setIncludePrintBranding}
+            includePrintNotes={includePrintNotes}
+            onTogglePrintNotes={setIncludePrintNotes}
           />
         </section>
 
@@ -257,7 +280,11 @@ function App() {
           )}
         </div>
 
-        {!printPreview && <CalendarPreview tasks={tasks} />}
+        <CalendarPreview
+          tasks={tasks}
+          printPreview={printPreview}
+          includePrintNotes={includePrintNotes}
+        />
 
         <ExportActions
           printPreview={printPreview}
@@ -278,6 +305,7 @@ function App() {
         <PrintsFooterCta activePreset={activePreset} />
         <SiteFooter onOpenInterest={() => openInterest('footer')} />
       </main>
+      )}
     </div>
   );
 }

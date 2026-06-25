@@ -1,11 +1,11 @@
-import { PRESET_DEEP_LINKS } from './deepLink.js';
-
-const SLUG_BY_PRESET = Object.fromEntries(
-  Object.entries(PRESET_DEEP_LINKS).map(([slug, name]) => [name, slug]),
-);
+const CANONICAL_SLUGS = {
+  "Homeowner's Sentinel": 'home',
+  'Preventive Gearhead': 'gearhead',
+  'Automated CFO': 'cfo',
+};
 
 export function presetShareSlug(presetName) {
-  return SLUG_BY_PRESET[presetName] ?? null;
+  return CANONICAL_SLUGS[presetName] ?? null;
 }
 
 export function buildPresetShareUrl(
