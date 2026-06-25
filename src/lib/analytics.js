@@ -1,22 +1,8 @@
 /**
- * Privacy-friendly analytics via Plausible — loads only when configured and not on localhost.
+ * Privacy-friendly analytics via Plausible.
+ * Script tag lives in index.html (parser-inserted) so currentScript/domain work.
  * Custom events: enable "Custom events" in Plausible site settings.
  */
-export function initAnalytics() {
-  const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN;
-  if (!domain) return;
-
-  const { hostname } = window.location;
-  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]') {
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.defer = true;
-  script.dataset.domain = domain;
-  script.src = 'https://plausible.io/js/script.js';
-  document.head.appendChild(script);
-}
 
 /** @param {string} name @param {Record<string, string | number | boolean>} [props] */
 export function trackEvent(name, props) {
