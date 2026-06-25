@@ -39,6 +39,15 @@ SEO landing pages (static HTML, preset CTAs):
 - `/car-maintenance-schedule-ics` → `?preset=gearhead`
 - `/freelancer-quarterly-tax-reminders` → `?preset=cfo`
 
+## AI / LLM discovery
+
+- `public/llms.txt` — concise summary for ChatGPT, Claude, Perplexity, etc. ([llmstxt.org](https://llmstxt.org))
+- `public/llms-full.txt` — extended reference (presets, URLs, FAQ-style answers)
+- `public/robots.txt` — allows major AI crawlers; links sitemap and llms.txt
+- `index.html` — WebApplication JSON-LD + `rel="alternate"` to llms.txt
+
+After custom domain: update URLs in llms files, sitemap, and landing canonicals.
+
 ## Feature flags (launch when ready)
 
 Future monetization features (print shop, lockscreen goodies, sponsor footer) are **built but off by default**. Enable via environment variables — see [FEATURES.md](./FEATURES.md).

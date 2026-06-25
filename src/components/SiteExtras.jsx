@@ -145,6 +145,14 @@ export function SiteFooter({ onOpenInterest }) {
 
       <p className="text-[11px] text-theme-text-muted/80 max-w-md mx-auto leading-relaxed pt-1">
         Free on the web. Your schedule stays on this device — no account required.
+        {' '}
+        <a
+          href="/llms.txt"
+          className="underline underline-offset-2 hover:text-theme-text transition-colors"
+          rel="help"
+        >
+          For AI assistants
+        </a>
       </p>
     </footer>
   );

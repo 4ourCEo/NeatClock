@@ -70,6 +70,8 @@ npm run lint && npm run test && npm run test:e2e && npm run build
 
 Then run manual smoke on the production URL per [BRIDGE-GATE.md](./BRIDGE-GATE.md).
 
+Submit `https://neatclock.vercel.app/sitemap.xml` in Google Search Console. AI crawlers use `public/llms.txt` and `public/robots.txt` (GPTBot, ClaudeBot, PerplexityBot allowed).
+
 ## 7. Optional follow-ups (post-launch)
 
 - Import exported `.ics` into Google Calendar once.
