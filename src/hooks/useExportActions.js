@@ -4,6 +4,7 @@ import { createBackupPayload, validateBackup } from '../lib/backup.js';
 import { downloadText } from '../lib/download.js';
 import { ALLOWED_THEMES } from '../lib/themes.js';
 import { features } from '../config/features.js';
+import { trackEvent } from '../lib/analytics.js';
 
 export const MAX_BACKUP_BYTES = 512 * 1024;
 
@@ -43,6 +44,7 @@ export function useExportActions({
     }
 
     downloadText(icsContent, 'neatclock-schedule.ics', 'text/calendar;charset=utf-8');
+    trackEvent('ics_export', { preset: activePreset, tasks: tasks.length });
     setExportSuccessOpen(true);
     showNotification('Downloaded neatclock-schedule.ics');
   };
@@ -57,6 +59,7 @@ export function useExportActions({
       startOffsetWeeks,
     });
     downloadText(JSON.stringify(payload, null, 2), 'neatclock-backup.json', 'application/json');
+    trackEvent('backup_export', { preset: activePreset });
     showNotification('Downloaded schedule backup');
   };
 

@@ -4,18 +4,23 @@
  */
 import { features } from './features.js';
 import { shouldShowMonetization } from '../lib/preview.js';
+import {
+  interestFormEndpoint,
+  isInterestEndpointConfigured,
+} from './interestEndpoint.js';
 
 function env(name, fallback = '') {
   return import.meta.env[name] || fallback;
 }
 
+export { interestFormEndpoint };
+
 export const shopUrl = env('VITE_PRINTS_SHOP_URL');
 export const themePackUrl = env('VITE_THEME_PACK_URL', shopUrl);
-export const interestFormEndpoint = env('VITE_INTEREST_FORM_ENDPOINT');
 
-/** Show native interest UI when prints aren't live and Formspree is configured */
+/** Show native interest UI when prints aren't live and a form endpoint is configured */
 export const interestFormEnabled =
-  Boolean(interestFormEndpoint) && !features.neatclockPrints;
+  isInterestEndpointConfigured() && !features.neatclockPrints;
 
 /** Preset-matched print packs ($3–5 each or bundle) */
 export const printProducts = [

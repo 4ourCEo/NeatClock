@@ -94,7 +94,7 @@
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 77,
+    "unit": 81,
     "e2e": 8,
     "e2eBrowsers": ["chromium", "webkit"]
   },

@@ -8,6 +8,7 @@ import {
   validateInterestForm,
 } from '../config/interestForm.js';
 import { submitInterestForm } from '../lib/submitInterest.js';
+import { trackEvent } from '../lib/analytics.js';
 
 function SelectCard({ selected, onClick, title, description, compact = false }) {
   return (
@@ -83,6 +84,7 @@ export default function InterestModal({ onClose, activePreset, source = 'footer'
         source,
       });
       setDone(true);
+      trackEvent('interest_submit', { source, preset: form.preset });
       onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');

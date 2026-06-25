@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://neatclock.vercel.app/sitemap.xml

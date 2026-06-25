@@ -1,8 +1,11 @@
-import { interestFormEndpoint } from '../config/monetization.js';
+import {
+  interestFormEndpoint,
+  isInterestEndpointConfigured,
+} from '../config/interestEndpoint.js';
 import { storageGet, storageSet, storageRemove } from './storage.js';
 
 export function isInterestFormConfigured() {
-  return Boolean(interestFormEndpoint);
+  return isInterestEndpointConfigured();
 }
 
 export async function submitInterestForm(payload) {

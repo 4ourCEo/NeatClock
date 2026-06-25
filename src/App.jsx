@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Sparkles } from 'lucide-react';
 import { presetCardLabel } from './config/presets.js';
 import { PrintsFooterCta, SiteFooter } from './components/SiteExtras.jsx';
@@ -19,6 +19,8 @@ import { useNotifications } from './hooks/useNotifications.js';
 import { useSchedulePersistence } from './hooks/useSchedulePersistence.js';
 import { useScheduleState } from './hooks/useScheduleState.js';
 import { useExportActions } from './hooks/useExportActions.js';
+import { getDeepLinkBootstrap } from './lib/deepLink.js';
+import { trackEvent } from './lib/analytics.js';
 
 function App() {
   const [printPreview, setPrintPreview] = useState(false);
@@ -104,6 +106,13 @@ function App() {
   });
 
   const exportPreview = useExportPreview(tasks);
+
+  useEffect(() => {
+    const deepLink = getDeepLinkBootstrap();
+    if (deepLink) {
+      trackEvent('preset_deep_link', { preset: deepLink.presetParam, fresh: deepLink.fresh });
+    }
+  }, []);
 
   const scrollToPresets = () => {
     setExportSuccessOpen(false);

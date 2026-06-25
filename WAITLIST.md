@@ -4,13 +4,25 @@ NeatClock includes a **native feedback flow** styled like the rest of the app �
 
 It appears when:
 - Print packs are **not** live yet (`VITE_FEATURE_NEATCLOCK_PRINTS` is not `true`)
-- A form endpoint is configured (`VITE_INTEREST_FORM_ENDPOINT`)
+- A form endpoint is configured (`VITE_INTEREST_FORM_ENDPOINT` **or** `VITE_INTEREST_FORM_EMAIL`)
 
 It hides automatically once print packs launch.
 
 ---
 
-## Recommended: Formspree (5 minutes)
+## Fastest: email only (~2 minutes, no Formspree account)
+
+Set on Vercel:
+
+```
+VITE_INTEREST_FORM_EMAIL=you@example.com
+```
+
+The app posts to `https://formsubmit.co/ajax/<your-email>`. FormSubmit sends a one-time activation link on first submission — click it, then all future submissions arrive in your inbox.
+
+---
+
+## Recommended long-term: Formspree (5 minutes)
 
 1. Create a free account at [formspree.io](https://formspree.io)
 2. New form → name it **NeatClock Interest**
