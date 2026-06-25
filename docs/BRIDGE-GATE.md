@@ -6,8 +6,8 @@ Run this checklist before every production deploy to [neatclock.vercel.app](http
 
 ```bash
 npm run lint
-npm run test        # 56 Vitest unit tests (8 files)
-npm run test:e2e    # Playwright: 5 specs (see list below)
+npm run test        # 77 Vitest unit tests (12 files)
+npm run test:e2e    # Playwright: 8 specs × chromium + webkit (see list below)
 npm run build
 ```
 
@@ -28,8 +28,9 @@ npm run build
 | `e2e/backup-roundtrip.spec.js` | JSON backup export and restore |
 | `e2e/storage-failure-toast.spec.js` | Quota failure toast when localStorage throws |
 | `e2e/print-preview.spec.js` | Print-friendly view opens from export success |
+| `e2e/deep-link.spec.js` | `?preset=` deep links and `?fresh=1` override |
 
-**Expected counts:** `docs/context.json` → `testCounts.unit` = 56, `testCounts.e2e` = 5. If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
+**Expected counts:** `docs/context.json` → `testCounts.unit` = 77, `testCounts.e2e` = 8 (chromium + webkit). If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
 
 ## Manual smoke (production or preview URL)
 

@@ -11,7 +11,7 @@
     "backend": "none"
   },
   "lastDeploy": {
-    "summary": "Week 1 foundation: doc sync, Plausible analytics hook, launch checklist",
+    "summary": "Elite 4-week sprint: analytics, SEO landings, deep links, ICS golden tests, webkit E2E, persist flush, print polish",
     "highlights": [
       "Doc drift fixed: 56 Vitest unit tests (8 files), 5 Playwright E2E specs",
       "Hook unit tests for useScheduleBootstrap, useScheduleState, useExportPreview",
@@ -40,8 +40,11 @@
     "Feature-flag infrastructure for monetization (VITE_FEATURE_*)",
     "Monetization catalog in src/config/monetization.js",
     "Brand assets in public/ (logo.png, logo-light.png, favicons, og-image.png, lockscreen SVG)",
-    "56 Vitest unit tests across 8 files (5 lib modules + 3 hook modules)",
-    "Playwright E2E: 5 specs — schedule-flow, theme-swap, backup-roundtrip, storage-failure-toast, print-preview",
+    "77 Vitest unit tests across 12 files (lib, hooks, ICS golden, deepLink)",
+    "Playwright E2E: 8 specs on chromium + webkit (16 runs)",
+    "SEO landing pages: /home-maintenance-calendar, /car-maintenance-schedule-ics, /freelancer-quarterly-tax-reminders",
+    "Preset deep links: ?preset=home|gearhead|cfo and ?fresh=1",
+    "Persist flush on beforeunload/visibilitychange; export-success monetization card (flagged)",
     "Interest form UI built (modal + footer card) — graceful handling when endpoint unset",
     "Print upsell UI built but feature-flagged off",
     "Owner preview mode (?preview=monetization) for gated UI testing",
@@ -91,22 +94,28 @@
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 56,
-    "e2e": 5
+    "unit": 77,
+    "e2e": 8,
+    "e2eBrowsers": ["chromium", "webkit"]
   },
   "testFiles": [
     "src/lib/buildIcs.test.js",
+    "src/lib/buildIcs.golden.test.js",
     "src/lib/backup.test.js",
     "src/lib/storage.test.js",
     "src/lib/themes.test.js",
     "src/lib/tasks.test.js",
+    "src/lib/deepLink.test.js",
     "src/hooks/useScheduleBootstrap.test.js",
     "src/hooks/useScheduleState.test.js",
     "src/hooks/useExportPreview.test.js",
+    "src/hooks/useSchedulePersistence.test.js",
+    "src/hooks/useExportActions.test.js",
     "e2e/schedule-flow.spec.js",
     "e2e/theme-swap.spec.js",
     "e2e/backup-roundtrip.spec.js",
     "e2e/storage-failure-toast.spec.js",
-    "e2e/print-preview.spec.js"
+    "e2e/print-preview.spec.js",
+    "e2e/deep-link.spec.js"
   ]
 }
