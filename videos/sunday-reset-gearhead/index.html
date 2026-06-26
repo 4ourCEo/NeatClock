@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Sunday Reset: Preventive Gearhead</title>
+    <!-- GSAP for seekable timeline rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #F3F1EA;
+        color: #1C1C1C;
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #F3F1EA;
+        box-sizing: border-box;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 120px 80px;
+        background: #F3F1EA;
+      }
+      
+      /* Typography */
+      h1.serif-title {
+        font-family: serif;
+        font-size: 72px;
+        font-weight: 600;
+        line-height: 1.25;
+        margin: 0 0 20px 0;
+        color: #1C1C1C;
+      }
+      .subtitle {
+        font-size: 32px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: #E07A5F;
+        margin: 0 0 40px 0;
+      }
+      .body-text {
+        font-size: 40px;
+        line-height: 1.5;
+        color: #78716C;
+        margin: 0;
+      }
+
+      /* Layout cards */
+      .card {
+        background: #FFFFFF;
+        border-radius: 40px;
+        box-shadow: 0 20px 60px rgba(28,28,28,0.06);
+        padding: 60px;
+        box-sizing: border-box;
+        width: 100%;
+        border: 1px solid rgba(216, 226, 220, 0.5);
+      }
+
+      /* Frame 1 specific: checklist animation */
+      .checklist-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        font-size: 38px;
+        font-weight: 500;
+        color: #1C1C1C;
+      }
+      .checkbox {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 3px solid #D8E2DC;
+        margin-right: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: #FFFFFF;
+      }
+      .checkbox.checked {
+        border-color: #E07A5F;
+        background: #E07A5F;
+      }
+      .checkbox.checked::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 24px;
+        border: solid white;
+        border-width: 0 4px 4px 0;
+        transform: rotate(45deg);
+        top: 6px;
+      }
+      .strikethrough-line {
+        position: absolute;
+        left: 72px;
+        right: 0;
+        height: 3px;
+        background: #E07A5F;
+        transform: scaleX(0);
+        transform-origin: left;
+      }
+
+      /* Frame 2 specific: Alerts */
+      .alert-box {
+        background: #FFF5F2;
+        border-left: 8px solid #E07A5F;
+        border-radius: 20px;
+        padding: 40px;
+        margin-bottom: 30px;
+        box-sizing: border-box;
+      }
+      .alert-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1C1C1C;
+        margin-bottom: 10px;
+      }
+      .alert-desc {
+        font-size: 30px;
+        color: #78716C;
+      }
+
+      /* Frame 3: Browser mockup */
+      .browser-mockup {
+        border: 4px solid #D8E2DC;
+        border-radius: 30px;
+        background: #FFFFFF;
+        width: 100%;
+        overflow: hidden;
+      }
+      .browser-header {
+        height: 70px;
+        background: #F3F1EA;
+        border-bottom: 4px solid #D8E2DC;
+        display: flex;
+        align-items: center;
+        padding: 0 30px;
+      }
+      .browser-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #D8E2DC;
+        margin-right: 12px;
+      }
+      .browser-address {
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 8px 30px;
+        font-size: 26px;
+        color: #78716C;
+        margin-left: 40px;
+        flex-grow: 1;
+        text-align: center;
+        border: 1px solid #D8E2DC;
+      }
+      .browser-content {
+        padding: 50px;
+      }
+      .app-logo {
+        font-family: serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #1C1C1C;
+      }
+      .app-preset-card {
+        border: 2px solid #E07A5F;
+        background: rgba(224, 122, 95, 0.04);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 40px;
+      }
+      .app-btn {
+        background: #E07A5F;
+        color: white;
+        text-align: center;
+        padding: 24px;
+        border-radius: 20px;
+        font-size: 34px;
+        font-weight: 600;
+      }
+
+      /* Frame 4: Print checklist preview */
+      .print-preview {
+        border: 1px solid #D8E2DC;
+        padding: 40px;
+        background: #FFFFFF;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+      }
+      .print-line {
+        border-bottom: 2px dashed #D8E2DC;
+        height: 60px;
+        margin-bottom: 10px;
+      }
+
+      /* Frame 5: CTA and QR */
+      .cta-btn {
+        background: #1C1C1C;
+        color: white;
+        font-size: 42px;
+        font-weight: 600;
+        text-align: center;
+        padding: 36px;
+        border-radius: 30px;
+        width: 100%;
+        margin-top: 40px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      }
+      .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+      }
+      .qr-box {
+        width: 320px;
+        height: 320px;
+        border: 6px solid #1C1C1C;
+        padding: 16px;
+        border-radius: 24px;
+        background: white;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .qr-block {
+        background: #1C1C1C;
+        border-radius: 6px;
+      }
+      .qr-block.corner {
+        grid-row: span 2;
+        grid-column: span 2;
+        border: 12px solid #1C1C1C;
+        background: transparent;
+      }
+
+      /* Footer branding */
+      .footer-brand {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: serif;
+        font-size: 40px;
+        font-weight: 700;
+      }
+      .footer-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #E07A5F;
+        margin-left: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-width="1080"
+      data-height="1920"
+      data-duration="23"
+    >
+      <!-- FRAME 1: HOOK (0.0s - 4.0s) -->
+      <section id="frame1" class="clip" data-start="0" data-duration="4" data-track-index="1">
+        <div>
+          <div class="subtitle">Sunday Reset</div>
+          <h1 class="serif-title" id="f1-title">Keep your ride running forever</h1>
+        </div>
+        <div class="card" id="f1-card" style="opacity: 0;">
+          <div class="checklist-item">
+            <div class="checkbox" id="f1-cb1"></div>
+            <span style="position: relative;">Change Engine Oil (5W-30)<span class="strikethrough-line" id="f1-line1"></span></span>
+          </div>
+          <div class="checklist-item">
+            <div class="checkbox" id="f1-cb2"></div>
+            <span style="position: relative;">Rotate Tires & Check Psi<span class="strikethrough-line" id="f1-line2"></span></span>
+          </div>
+          <div class="checklist-item" style="opacity: 0.6;">
+            <div class="checkbox"></div>
+            <span>Inspect Brake Pads</span>
+          </div>
+        </div>
+        <div class="footer-brand">
+          NeatClock<div class="footer-dot"></div>
+        </div>
+      </section>
+
+      <!-- FRAME 2: PROBLEM (4.0s - 9.0s) -->
+      <section id="frame2" class="clip" data-start="4" data-duration="5" data-track-index="1">
+        <div>
+          <div class="subtitle">The Problem</div>
+          <h1 class="serif-title">Spontaneous garage surprises are expensive.</h1>
+        </div>
+        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+          <div class="alert-box" id="f2-alert1">
+            <div class="alert-title">⚠ Oil Life 0%</div>
+            <div class="alert-desc">Forgot to track. Spawns engine sludge.</div>
+          </div>
+          <div class="alert-box" id="f2-alert2">
+            <div class="alert-title">⚠ Uneven Tire Wear</div>
+            <div class="alert-desc">Missed rotation cycle. Costs $600 to replace.</div>
+          </div>
+          <div class="alert-box" id="f2-alert3">
+            <div class="alert-title">📓 Lost the Service Book?</div>
+            <div class="alert-desc">Messy glovebox notes and complex spreadsheets fail.</div>
+          </div>
+        </div>
+        <div class="footer-brand">
+          NeatClock<div class="footer-dot"></div>
+        </div>
+      </section>
+
+      <!-- FRAME 3: SOLUTION (9.0s - 14.0s) -->
+      <section id="frame3" class="clip" data-start="9" data-duration="5" data-track-index="1">
+        <div>
+          <div class="subtitle">The Solution</div>
+          <h1 class="serif-title">Generate a complete service plan.</h1>
+        </div>
+        <div class="browser-mockup" id="f3-browser" style="opacity: 0;">
+          <div class="browser-header">
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-address">neatclock.pro</div>
+          </div>
+          <div class="browser-content">
+            <div class="app-logo">NeatClock</div>
+            <div class="app-preset-card">
+              <div style="font-size: 32px; font-weight: 700; color: #E07A5F; margin-bottom: 8px;">🔧 Preventive Gearhead</div>
+              <div style="font-size: 26px; color: #78716C;">Generates critical vehicle checks offline.</div>
+            </div>
+            <div class="app-btn">Generate Schedule</div>
+          </div>
+        </div>
+        <div class="footer-brand">
+          NeatClock<div class="footer-dot"></div>
+        </div>
+      </section>
+
+      <!-- FRAME 4: HIGHLIGHTS (14.0s - 19.0s) -->
+      <section id="frame4" class="clip" data-start="14" data-duration="5" data-track-index="1">
+        <div>
+          <div class="subtitle">Direct Auto-Links</div>
+          <h1 class="serif-title">Amazon part links built right in</h1>
+        </div>
+        <div class="print-preview" id="f4-print" style="opacity: 0; width: 100%; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.05);">
+          <div style="display: flex; justify-content: space-between; border-bottom: 4px solid #1C1C1C; padding-bottom: 20px;">
+            <div style="font-family: serif; font-size: 40px; font-weight: 700;">Vehicle Care</div>
+            <div style="font-size: 24px; text-transform: uppercase; color: #78716C; align-self: flex-end;">neatclock.pro</div>
+          </div>
+          <div class="print-line" style="display:flex; justify-content:space-between; align-items:flex-end; padding-bottom: 10px; font-size: 26px;">
+            <span>[ ] Buy 5W-30 Engine Oil</span>
+            <span style="color:#E07A5F; font-weight:600;">[Amazon Link]</span>
+          </div>
+          <div class="print-line" style="display:flex; justify-content:space-between; align-items:flex-end; padding-bottom: 10px; font-size: 26px;">
+            <span>[ ] Replace Wiper Blades (22")</span>
+            <span style="color:#E07A5F; font-weight:600;">[Amazon Link]</span>
+          </div>
+          <div class="print-line"></div>
+        </div>
+        <div class="footer-brand">
+          NeatClock<div class="footer-dot"></div>
+        </div>
+      </section>
+
+      <!-- FRAME 5: CTA (19.0s - 23.0s) -->
+      <section id="frame5" class="clip" data-start="19" data-duration="4" data-track-index="1">
+        <div style="text-align: center; width: 100%;">
+          <div class="subtitle">Start Now</div>
+          <h1 class="serif-title" style="font-size: 80px;">Reset your Sunday.</h1>
+          <p class="body-text" style="margin-top: 20px;">Protect your ride. Zero trackers.</p>
+        </div>
+        
+        <div class="qr-container" id="f5-qr" style="opacity: 0;">
+          <div class="qr-box">
+            <div class="qr-block corner" style="grid-row: 1/3; grid-column: 1/3;"></div>
+            <div class="qr-block" style="grid-row: 1; grid-column: 3;"></div>
+            <div class="qr-block" style="grid-row: 2; grid-column: 4;"></div>
+            <div class="qr-block" style="grid-row: 3; grid-column: 1;"></div>
+            <div class="qr-block corner" style="grid-row: 3/5; grid-column: 3/5;"></div>
+            <div class="qr-block" style="grid-row: 4; grid-column: 2;"></div>
+          </div>
+          <div class="cta-btn">neatclock.pro</div>
+        </div>
+
+        <div class="footer-brand">
+          NeatClock<div class="footer-dot"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Timeline Animation Code -->
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Initialize transform variables with GSAP to avoid CSS transform conflict lints
+      tl.set("#f1-card", { y: 50, opacity: 0 }, 0);
+      tl.set("#f2-alert1", { y: 30, opacity: 0 }, 0);
+      tl.set("#f2-alert2", { y: 30, opacity: 0 }, 0);
+      tl.set("#f2-alert3", { y: 30, opacity: 0 }, 0);
+      tl.set("#f3-browser", { scale: 0.9, opacity: 0 }, 0);
+      tl.set("#f4-print", { y: 50, opacity: 0 }, 0);
+      tl.set("#f5-qr", { scale: 0.8, opacity: 0 }, 0);
+
+      // Frame 1 animations (0.0s - 4.0s)
+      tl.set("#frame1", { opacity: 1 }, 0);
+      tl.from("#f1-title", { y: 40, opacity: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+      tl.to("#f1-card", { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 0.5);
+      // Checklist items checking off
+      tl.to("#f1-cb1", { backgroundColor: "#E07A5F", borderColor: "#E07A5F", duration: 0.3 }, 1.5);
+      tl.to("#f1-line1", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 1.7);
+      tl.to("#f1-cb2", { backgroundColor: "#E07A5F", borderColor: "#E07A5F", duration: 0.3 }, 2.4);
+      tl.to("#f1-line2", { scaleX: 1, duration: 0.4, ease: "power1.inOut" }, 2.6);
+      // Transition out and hard kill
+      tl.to("#frame1", { opacity: 0, duration: 0.4 }, 3.6);
+      tl.set("#frame1", { opacity: 0 }, 4.0);
+
+      // Frame 2 animations (4.0s - 9.0s)
+      tl.set("#frame2", { opacity: 1 }, 4.0);
+      tl.to("#f2-alert1", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 4.3);
+      tl.to("#f2-alert2", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 4.8);
+      tl.to("#f2-alert3", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 5.3);
+      // Transition out and hard kill
+      tl.to("#frame2", { opacity: 0, duration: 0.4 }, 8.6);
+      tl.set("#frame2", { opacity: 0 }, 9.0);
+
+      // Frame 3 animations (9.0s - 14.0s)
+      tl.set("#frame3", { opacity: 1 }, 9.0);
+      tl.to("#f3-browser", { scale: 1, opacity: 1, duration: 0.8, ease: "power3.out" }, 9.3);
+      // Transition out and hard kill
+      tl.to("#frame3", { opacity: 0, duration: 0.4 }, 13.6);
+      tl.set("#frame3", { opacity: 0 }, 14.0);
+
+      // Frame 4 animations (14.0s - 19.0s)
+      tl.set("#frame4", { opacity: 1 }, 14.0);
+      tl.to("#f4-print", { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, 14.3);
+      // Transition out and hard kill
+      tl.to("#frame4", { opacity: 0, duration: 0.4 }, 18.6);
+      tl.set("#frame4", { opacity: 0 }, 19.0);
+
+      // Frame 5 animations (19.0s - 23.0s)
+      tl.set("#frame5", { opacity: 1 }, 19.0);
+      tl.to("#f5-qr", { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }, 19.3);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
