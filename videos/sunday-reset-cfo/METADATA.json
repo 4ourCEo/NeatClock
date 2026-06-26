@@ -1,0 +1,35 @@
+{
+  "campaign": "Sunday Reset Social Campaign",
+  "preset": "cfo",
+  "title": "Automated CFO",
+  "monetizationGoals": {
+    "description": "Promote B2B white-labeled partner builder pages. Service providers can brand these checklists with their logos and contact info as a helpful client closing gift.",
+    "primaryFunnels": [
+      "Gumroad print pack upsell in export success modal",
+      "Amazon Associates affiliate commission via .ics event product search descriptions",
+      "B2B partner logo white-labeling subscriptions ($19/mo value proposition)"
+    ]
+  },
+  "platforms": {
+    "tiktok": {
+      "hookHeadline": "Don't let quarterly estimated taxes or subscription zombie fees sneak up on you.",
+      "caption": "Sunday Reset: Automated CFO edition. 🧼📅 Don't let quarterly estimated taxes or subscription zombie fees sneak up on you. #sundayreset #solopreneur #freelancelife #financialfreedom #budgettips #neatclock",
+      "audioRecommendation": "Ambient Lo-Fi / Soft Chill Beats",
+      "ctaUrl": "https://neatclock.pro/?preset=cfo"
+    },
+    "pinterest": {
+      "pinTitle": "Freelancer Tax Checklist & Financial Calendar Generator",
+      "pinDescription": "Never miss quarterly estimated tax deadlines or get billed for inactive software subscriptions again. Generate your solopreneur financial calendar for free at neatclock.pro. #sundayreset #solopreneur #freelancelife #financialfreedom #budgettips #neatclock",
+      "destinationLink": "https://neatclock.pro/?preset=cfo",
+      "keywords": [
+        "sunday reset routine",
+        "home organization tips",
+        "minimalist checklists",
+        "car care checklist",
+        "freelancer tax schedule",
+        "free schedule planner",
+        "printable calendar"
+      ]
+    }
+  }
+}

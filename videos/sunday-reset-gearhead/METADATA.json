@@ -1,0 +1,35 @@
+{
+  "campaign": "Sunday Reset Social Campaign",
+  "preset": "gearhead",
+  "title": "Preventive Gearhead",
+  "monetizationGoals": {
+    "description": "Emphasize how task name details (like oil viscosity grades '5W-30' or wiper sizes) auto-generate direct Amazon shopping affiliate links right inside the calendar descriptions.",
+    "primaryFunnels": [
+      "Gumroad print pack upsell in export success modal",
+      "Amazon Associates affiliate commission via .ics event product search descriptions",
+      "B2B partner logo white-labeling subscriptions ($19/mo value proposition)"
+    ]
+  },
+  "platforms": {
+    "tiktok": {
+      "hookHeadline": "Keep your car running forever without keeping a messy spreadsheet of oil changes and tire rotations.",
+      "caption": "Sunday Reset: Preventive Gearhead edition. 🧼📅 Keep your car running forever without keeping a messy spreadsheet of oil changes and tire rotations. #sundayreset #carcare #mechanictips #carrepair #diygarage #neatclock",
+      "audioRecommendation": "Ambient Lo-Fi / Soft Chill Beats",
+      "ctaUrl": "https://neatclock.pro/?preset=gearhead"
+    },
+    "pinterest": {
+      "pinTitle": "DIY Car Maintenance Schedule & Garage Checklist",
+      "pinDescription": "Keep track of vehicle logs, oil changes, and fluid checks easily. Generate a free car maintenance checklist at neatclock.pro. Export recurring events to your phone calendar with auto-links to parts. #sundayreset #carcare #mechanictips #carrepair #diygarage #neatclock",
+      "destinationLink": "https://neatclock.pro/?preset=gearhead",
+      "keywords": [
+        "sunday reset routine",
+        "home organization tips",
+        "minimalist checklists",
+        "car care checklist",
+        "freelancer tax schedule",
+        "free schedule planner",
+        "printable calendar"
+      ]
+    }
+  }
+}

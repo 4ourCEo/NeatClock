@@ -12,6 +12,7 @@
     "test:all": "npm run test && npm run test:e2e",
     "go-live:check": "npm run lint && npm run test:all && npm run build",
     "indexnow": "node scripts/submit-indexnow.mjs",
+    "campaign:reset": "node scripts/generate-reset-campaign.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

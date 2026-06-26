@@ -1,0 +1,35 @@
+{
+  "campaign": "Sunday Reset Social Campaign",
+  "preset": "home",
+  "title": "Homeowner's Sentinel",
+  "monetizationGoals": {
+    "description": "Highlight the physical checklist option (print layout with hand-written notes section) and the automated .ics export containing direct Amazon product affiliate links for needed HVAC filter sizes.",
+    "primaryFunnels": [
+      "Gumroad print pack upsell in export success modal",
+      "Amazon Associates affiliate commission via .ics event product search descriptions",
+      "B2B partner logo white-labeling subscriptions ($19/mo value proposition)"
+    ]
+  },
+  "platforms": {
+    "tiktok": {
+      "hookHeadline": "Stop trying to remember when to flush your water heater or vacuum your dryer vents.",
+      "caption": "Sunday Reset: Homeowner's Sentinel edition. 🧼📅 Stop trying to remember when to flush your water heater or vacuum your dryer vents. #sundayreset #homeowners #firsttimehomebuyer #diyhome #neatclock #homecare",
+      "audioRecommendation": "Ambient Lo-Fi / Soft Chill Beats",
+      "ctaUrl": "https://neatclock.pro/?preset=home"
+    },
+    "pinterest": {
+      "pinTitle": "Minimalist Home Maintenance Checklist & Schedule Planner",
+      "pinDescription": "Keep your home running perfectly without a messy spreadsheet. Generate your free recurring homeowner schedule at neatclock.pro. Export to your Google/Apple calendar or print a premium minimalist checklist for your fridge. #sundayreset #homeowners #firsttimehomebuyer #diyhome #neatclock #homecare",
+      "destinationLink": "https://neatclock.pro/?preset=home",
+      "keywords": [
+        "sunday reset routine",
+        "home organization tips",
+        "minimalist checklists",
+        "car care checklist",
+        "freelancer tax schedule",
+        "free schedule planner",
+        "printable calendar"
+      ]
+    }
+  }
+}
