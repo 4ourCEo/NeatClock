@@ -47,7 +47,7 @@
     "SEO landing pages: /home-maintenance-calendar, /car-maintenance-schedule-ics, /freelancer-quarterly-tax-reminders",
     "Preset deep links: ?preset=home|gearhead|cfo and ?fresh=1",
     "Persist flush on beforeunload/visibilitychange; export-success monetization card (flagged)",
-    "Interest form UI built (modal + footer card) — graceful handling when endpoint unset",
+    "Interest form UI built (modal + footer card) \u2014 graceful handling when endpoint unset",
     "Interest form connected to live Formspree endpoint (xqevpwlb) in configuration templates",
     "Amazon Associates tag (neatclock090-20) connected and in-file affiliate hints enabled",
     "Print upsell UI built but feature-flagged off",
@@ -57,7 +57,7 @@
     "App.jsx vertical slices: AppHeader, TaskTable, useSchedulePersistence, useNotifications, schedulePreview",
     "Hook unit tests: useScheduleBootstrap, useScheduleState, useExportPreview",
     "GitHub Actions CI: lint, unit tests, Playwright E2E on push/PR",
-    "Plausible analytics hook (src/lib/analytics.js) — opt-in via VITE_PLAUSIBLE_DOMAIN",
+    "Plausible analytics hook (src/lib/analytics.js) \u2014 opt-in via VITE_PLAUSIBLE_DOMAIN",
     "docs/LAUNCH-CHECKLIST.md for domain, Formspree, and analytics setup"
   ],
   "blocked": [
@@ -89,9 +89,12 @@
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 90,
+    "unit": 157,
     "e2e": 10,
-    "e2eBrowsers": ["chromium", "webkit"]
+    "e2eBrowsers": [
+      "chromium",
+      "webkit"
+    ]
   },
   "testFiles": [
     "src/config/interestEndpoint.test.js",

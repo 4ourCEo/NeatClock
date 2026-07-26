@@ -35,8 +35,9 @@ export default defineConfig(({ mode }) => {
       overlay: true
     }
   },
+  ...(mode === 'test' ? { esbuild: { jsx: 'automatic' } } : {}),
   test: {
-    include: ['src/**/*.test.js'],
+    include: ['src/**/*.test.js', 'src/**/*.test.jsx'],
     exclude: ['e2e/**', 'node_modules/**'],
   },
   }
