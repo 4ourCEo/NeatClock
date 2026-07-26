@@ -84,7 +84,12 @@ export default function InterestModal({ onClose, activePreset, source = 'footer'
         source,
       });
       setDone(true);
-      trackEvent('interest_submit', { source, preset: form.preset });
+      trackEvent('interest_submit', {
+        source,
+        preset: form.preset,
+        interests: form.interests.join(','),
+        purchase_intent: form.purchaseIntent,
+      });
       onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
