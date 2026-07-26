@@ -29,3 +29,7 @@ dist-ssr
 .vercel
 test-results/
 playwright-report/
+
+# Local video-tool build output (renders, thumbnails)
+videos/*/renders/
+videos/*/.thumbnails/
