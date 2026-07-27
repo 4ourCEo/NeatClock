@@ -29,9 +29,12 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 
 ## SEO landing pages
 
+- Recurring ICS calendar generator: https://neatclock.pro/recurring-ics-calendar-generator
 - Home maintenance calendar: https://neatclock.pro/home-maintenance-calendar
 - Car maintenance ICS schedule: https://neatclock.pro/car-maintenance-schedule-ics
 - Freelancer quarterly tax reminders: https://neatclock.pro/freelancer-quarterly-tax-reminders
+- Printable chore chart generator: https://neatclock.pro/printable-chore-chart
+- Recurring task reminder app: https://neatclock.pro/recurring-task-reminder-app
 
 ## Features (free)
 

@@ -16,6 +16,8 @@ const SOURCE_FOR_PATH = {
   '/home-maintenance-calendar': 'public/home-maintenance-calendar.html',
   '/car-maintenance-schedule-ics': 'public/car-maintenance-schedule-ics.html',
   '/freelancer-quarterly-tax-reminders': 'public/freelancer-quarterly-tax-reminders.html',
+  '/printable-chore-chart': 'public/printable-chore-chart.html',
+  '/recurring-task-reminder-app': 'public/recurring-task-reminder-app.html',
 };
 
 function lastCommitDate(sourcePath) {

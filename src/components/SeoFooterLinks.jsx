@@ -3,6 +3,8 @@ const GUIDES = [
   { href: '/home-maintenance-calendar', label: 'Home maintenance calendar' },
   { href: '/car-maintenance-schedule-ics', label: 'Car maintenance ICS' },
   { href: '/freelancer-quarterly-tax-reminders', label: 'Freelancer tax reminders' },
+  { href: '/printable-chore-chart', label: 'Printable chore chart' },
+  { href: '/recurring-task-reminder-app', label: 'Recurring reminder app' },
 ];
 
 export default function SeoFooterLinks() {

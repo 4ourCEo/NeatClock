@@ -37,9 +37,12 @@ Users can save custom presets (names + task lists) locally.
 | Resource | URL |
 |----------|-----|
 | Main app | https://neatclock.pro/ |
+| Generic ICS generator landing | https://neatclock.pro/recurring-ics-calendar-generator |
 | Home maintenance landing | https://neatclock.pro/home-maintenance-calendar |
 | Car maintenance landing | https://neatclock.pro/car-maintenance-schedule-ics |
 | Freelancer finance landing | https://neatclock.pro/freelancer-quarterly-tax-reminders |
+| Printable chore chart landing | https://neatclock.pro/printable-chore-chart |
+| Recurring reminder app landing | https://neatclock.pro/recurring-task-reminder-app |
 | GitHub | https://github.com/4ourCEo/NeatClock |
 | llms.txt (summary) | https://neatclock.pro/llms.txt |
 | sitemap.xml | https://neatclock.pro/sitemap.xml |
