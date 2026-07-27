@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Affiliate Disclosure | NeatClock</title>
+    <meta name="description" content="How and where NeatClock uses Amazon affiliate links, and how they're labeled." />
+    <link rel="canonical" href="https://neatclock.pro/affiliate-disclosure" />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root { --bg: #F3F1EA; --card: #fff; --text: #1C1C1C; --muted: #78716C; --accent: #E07A5F; --accent-hover: #C9654B; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: "Outfit", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+      .wrap { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+      header { text-align: center; margin-bottom: 2rem; }
+      .logo { width: 48px; height: 48px; margin-bottom: 1rem; }
+      h1 { font-family: "Playfair Display", Georgia, serif; font-size: clamp(1.75rem, 5vw, 2.25rem); font-weight: 700; line-height: 1.2; margin-bottom: 0.75rem; }
+      .lead { color: var(--muted); font-size: 1.05rem; }
+      .card { background: var(--card); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 14px -2px rgba(28,28,28,.08); margin: 1.5rem 0; }
+      h2 { font-family: "Playfair Display", Georgia, serif; font-size: 1.15rem; margin-bottom: 0.75rem; }
+      p { color: var(--muted); margin: 0.75rem 0; }
+      p:first-child { margin-top: 0; }
+      code { background: rgba(28,28,28,.06); padding: 0.15em 0.4em; border-radius: 0.35em; font-size: 0.9em; }
+      footer { margin-top: 2.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
+      footer a { color: var(--accent); }
+      .updated { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 1rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img class="logo" src="/logo.png" width="48" height="48" alt="NeatClock" />
+        <h1>Affiliate Disclosure</h1>
+        <p class="lead">As an Amazon Associate, NeatClock earns from qualifying purchases.</p>
+      </header>
+
+      <div class="card">
+        <h2>Where affiliate links appear</h2>
+        <p>
+          NeatClock does not show ads or affiliate links on this website. Instead, when you export a
+          <code>.ics</code> calendar file with a task that matches one of a short list of common household or
+          vehicle chores (for example, an HVAC filter replacement or an engine oil change), the exported
+          calendar event's description may include a short tip and an Amazon search link tagged with our
+          Associates ID.
+        </p>
+        <p>
+          That link travels with the calendar event into whatever app you import it into (Google Calendar,
+          Apple Calendar, Outlook, etc.) — far away from this page. Because of that, every link we generate is
+          labeled inline as <code>(affiliate link)</code> directly next to the URL, so the disclosure travels
+          with the link itself rather than only living on this page.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>What this means for you</h2>
+        <p>
+          If you click one of these links and buy something on Amazon, NeatClock may earn a small commission
+          at no extra cost to you. We only attach these hints to a small, fixed set of task names — see
+          <code>src/config/affiliateHints.js</code> in the
+          <a href="https://github.com/4ourCEo/NeatClock" style="color:var(--accent)">source code</a> for the
+          exact list. You can turn this off entirely for your own export by simply not using those task names,
+          or by removing the task before exporting.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Turning it off</h2>
+        <p>
+          NeatClock is a generator, not a subscription — there's nothing to opt out of beyond editing your
+          task list before you export. No tracking pixel, cookie, or account is tied to whether you click an
+          affiliate link.
+        </p>
+      </div>
+
+      <p class="updated">Last updated: 2026-07-26</p>
+
+      <footer>
+        <a href="/">NeatClock</a> ·
+        <a href="/privacy">Privacy</a> ·
+        <a href="/terms">Terms</a>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -44,17 +44,17 @@ npm run build
 
 ## Production feature flags
 
-Core export and presets stay free. Monetization UI must stay **hidden** on production until deliberately launched.
+Core export and presets stay free. Only deliberately-launched monetization stays on in production — verify against `.env.production` (source of truth), not this table from memory:
 
-In **Vercel → Project → Settings → Environment Variables** (Production), confirm all `VITE_FEATURE_*` flags are **unset or `false`**:
+| Variable | Production | Notes |
+|----------|------------|-------|
+| `VITE_FEATURE_NEATCLOCK_PRINTS` | off | blocked on Gumroad products + Vercel Pro, see below |
+| `VITE_FEATURE_LOCKSCREEN_GOODIES` | **on** | free lead magnet, launched 2026-07-26 |
+| `VITE_FEATURE_PREMIUM_THEMES` | off | |
+| `VITE_FEATURE_SPONSOR_FOOTER` | off | |
+| `VITE_FEATURE_AFFILIATE_LINKS` | **on** | launched with `/affiliate-disclosure` page + inline link labeling, see `src/config/affiliateHints.js` |
 
-| Variable | Production |
-|----------|------------|
-| `VITE_FEATURE_NEATCLOCK_PRINTS` | off |
-| `VITE_FEATURE_LOCKSCREEN_GOODIES` | off |
-| `VITE_FEATURE_PREMIUM_THEMES` | off |
-| `VITE_FEATURE_SPONSOR_FOOTER` | off |
-| `VITE_FEATURE_AFFILIATE_LINKS` | off |
+When a flag flips in `.env.production`, update this table in the same commit — it drifted out of sync with reality once already.
 
 Owner preview for gated UI: append `?preview=monetization` locally or on a preview deployment — not required for production gate.
 
@@ -75,4 +75,4 @@ Do **not** enable live Gumroad print CTAs until Vercel is on **Pro** (Hobby is n
 - [x] `npm run build` — succeeds, `dist/` generated
 - [x] Manual smoke — logo, preset, export, theme OK (covered by E2E test specs)
 - [x] `docs/context.json` `testCounts` matches actual test run (if changed)
-- [x] Production `VITE_FEATURE_*` verified off (verified in local .env launch configuration)
+- [x] Production `VITE_FEATURE_*` matches the table above (verified against `.env.production`)

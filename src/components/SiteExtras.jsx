@@ -168,6 +168,31 @@ export function SiteFooter({ onOpenInterest }) {
         >
           Partner Builder
         </a>
+        {' · '}
+        <a
+          href="/privacy"
+          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+        >
+          Privacy
+        </a>
+        {' · '}
+        <a
+          href="/terms"
+          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+        >
+          Terms
+        </a>
+        <FeatureGate enabled={features.affiliateLinks}>
+          <>
+            {' · '}
+            <a
+              href="/affiliate-disclosure"
+              className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+            >
+              Affiliate Disclosure
+            </a>
+          </>
+        </FeatureGate>
       </p>
     </footer>
   );

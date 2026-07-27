@@ -20,6 +20,21 @@ describe('getAffiliateHint', () => {
     expect(result).toContain('https://www.amazon.com/s?k=HVAC%20air%20filter&tag=my-tag-20');
   });
 
+  it('labels every generated Amazon link as an affiliate link, in-line with the URL', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
+    const { AFFILIATE_DISCLOSURE_LABEL, getAffiliateHint } = await import('./affiliateHints.js');
+    const result = getAffiliateHint('HVAC Filter Replacement');
+    expect(result.endsWith(AFFILIATE_DISCLOSURE_LABEL)).toBe(true);
+  });
+
+  it('does not label hints that carry no Amazon link (no matching searchMap entry)', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
+    const { AFFILIATE_DISCLOSURE_LABEL, getAffiliateHint } = await import('./affiliateHints.js');
+    const result = getAffiliateHint('Quarterly Estimated Taxes');
+    expect(result).not.toContain(AFFILIATE_DISCLOSURE_LABEL);
+    expect(result).not.toContain('amazon.com');
+  });
+
   it('supports case-insensitive partial match on task names', async () => {
     vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
     const { getAffiliateHint } = await import('./affiliateHints.js');

@@ -1,8 +1,15 @@
 /**
  * Optional resource hints for .ics descriptions when VITE_FEATURE_AFFILIATE_LINKS=true.
  * Set VITE_AMAZON_AFFILIATE_TAG to append ?tag= to Amazon search links.
+ *
+ * These links end up inside a calendar app description, far from neatclock.pro
+ * and any on-site disclosure — so the disclosure has to travel with the link
+ * itself (see AFFILIATE_DISCLOSURE_LABEL). See /affiliate-disclosure.
  */
 const amazonTag = import.meta.env.VITE_AMAZON_AFFILIATE_TAG || '';
+
+/** Disclosure label appended to every generated affiliate link, per FTC "clear and conspicuous, close in proximity" guidance. */
+export const AFFILIATE_DISCLOSURE_LABEL = '(affiliate link)';
 
 function amazonSearch(query) {
   const base = `https://www.amazon.com/s?k=${encodeURIComponent(query)}`;
@@ -50,7 +57,7 @@ export function getAffiliateHint(taskName) {
   if (baseQuery) {
     const spec = extractSpec(taskName);
     const query = spec ? `${spec} ${baseQuery}` : baseQuery;
-    return `${baseHint} Search: ${amazonSearch(query)}`;
+    return `${baseHint} Search: ${amazonSearch(query)} ${AFFILIATE_DISCLOSURE_LABEL}`;
   }
   return baseHint;
 }
