@@ -1,5 +1,6 @@
 import { Printer } from 'lucide-react';
 import { ExportExtras } from './SiteExtras.jsx';
+import { InterestExportSection } from './InterestInvite.jsx';
 import { features } from '../config/features.js';
 import { interestFormEnabled } from '../config/monetization.js';
 import { shouldShowMonetization } from '../lib/preview.js';
@@ -176,15 +177,7 @@ export default function ScheduleModals({
                 onPrint={onExportSuccessPrint}
               />
               {interestFormEnabled && !shouldShowMonetization(features.neatclockPrints) && (
-                <p className="mt-5 pt-5 border-t border-theme-border/60 text-center">
-                  <button
-                    type="button"
-                    onClick={onOpenInterest}
-                    className="text-xs text-theme-text-muted hover:text-theme-accent transition-colors cursor-pointer"
-                  >
-                    Want a print version?
-                  </button>
-                </p>
+                <InterestExportSection onOpen={onOpenInterest} />
               )}
             </div>
           </div>

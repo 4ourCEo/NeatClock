@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Copy, ExternalLink, Sparkles, Check, ArrowLeft } from 'lucide-react';
+import { trackEvent } from '../lib/analytics.js';
 
 export default function PartnerBuilder() {
   const [brandName, setBrandName] = useState('');
@@ -34,6 +35,7 @@ export default function PartnerBuilder() {
     try {
       await navigator.clipboard.writeText(generatedUrl);
       setCopied(true);
+      trackEvent('partner_link_copy', { hasLogo: Boolean(brandLogo.trim()) });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy link', err);

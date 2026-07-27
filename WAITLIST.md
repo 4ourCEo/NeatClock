@@ -33,6 +33,12 @@ The app posts to `https://formsubmit.co/ajax/<your-email>`. FormSubmit sends a o
 VITE_INTEREST_FORM_ENDPOINT=https://formspree.io/f/xxxxxxxx
 ```
 
+**Watch the free-tier cap:** Formspree's free plan caps at 50 submissions/month with no
+built-in overage alert — once traffic grows, submissions past the cap silently fail
+instead of reaching your inbox. Check the Formspree dashboard submission count
+periodically, or upgrade to a paid plan once the interest-form data is actually driving
+a launch decision.
+
 5. Redeploy
 
 ### Fields received (auto-mapped)
