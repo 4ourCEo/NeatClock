@@ -19,6 +19,14 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "NeatClock",
+      "url": "%VITE_SITE_URL%/"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "NeatClock",
       "alternateName": "NeatClock Recurring Calendar Generator",
@@ -112,7 +120,34 @@
     <!-- PLAUSIBLE_SNIPPET -->
   </head>
   <body class="antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <noscript>
+        <main style="max-width:42rem;margin:2rem auto;padding:0 1.25rem;font-family:system-ui,sans-serif;line-height:1.6;">
+          <h1>NeatClock — Free Recurring Calendar &amp; .ics Export</h1>
+          <p>
+            NeatClock is a free, zero-friction recurring calendar generator. Pick a preset —
+            Homeowner's Sentinel, Preventive Gearhead, or Automated CFO — customize the tasks,
+            and export a standard <code>.ics</code> file for Google Calendar, Apple Calendar, or
+            Outlook in under 60 seconds. No sign-up, no account, no backend — your schedule stays
+            on your device.
+          </p>
+          <h2>Built-in presets</h2>
+          <ul>
+            <li><strong>Homeowner's Sentinel</strong> — HVAC filters, smoke detectors, gutters, water heater flush, dryer vent care</li>
+            <li><strong>Preventive Gearhead</strong> — oil changes, tire rotation, brake fluid, wiper blades</li>
+            <li><strong>Automated CFO</strong> — quarterly estimated taxes, monthly bookkeeping, subscription reviews</li>
+          </ul>
+          <h2>Guides</h2>
+          <ul>
+            <li><a href="/recurring-ics-calendar-generator">Recurring ICS calendar generator</a></li>
+            <li><a href="/home-maintenance-calendar">Home maintenance calendar</a></li>
+            <li><a href="/car-maintenance-schedule-ics">Car maintenance schedule</a></li>
+            <li><a href="/freelancer-quarterly-tax-reminders">Freelancer quarterly tax reminders</a></li>
+          </ul>
+          <p>This page requires JavaScript to generate and export your calendar.</p>
+        </main>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

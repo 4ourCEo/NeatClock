@@ -33,6 +33,14 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.neatclock.pro" }],
+      "destination": "https://neatclock.pro/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/llms.txt", "destination": "/llms.txt" },
     { "source": "/llms-full.txt", "destination": "/llms-full.txt" },
