@@ -1,0 +1,6 @@
+Contact: https://github.com/4ourCEo/NeatClock/security/advisories/new
+Contact: https://neatclock.pro
+Expires: 2027-07-26T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://neatclock.pro/.well-known/security.txt
+Policy: https://github.com/4ourCEo/NeatClock/blob/main/SECURITY.md

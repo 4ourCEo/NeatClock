@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,6 +17,7 @@
     "go-live:check": "npm run lint && npm run test:all && npm run build",
     "indexnow": "node scripts/submit-indexnow.mjs",
     "sitemap:update": "node scripts/update-sitemap.mjs",
+    "check:html-assets": "node scripts/check-html-assets.mjs",
     "campaign:reset": "node scripts/generate-reset-campaign.mjs",
     "preview": "vite preview"
   },
