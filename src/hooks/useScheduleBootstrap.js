@@ -68,7 +68,9 @@ export function loadInitialActivePreset() {
 export function loadInitialTheme() {
   const savedTheme = storageGet('neatclock_theme');
   const legacyDark = storageGet('neatclock_dark_mode') === 'true';
-  return resolveTheme(savedTheme, legacyDark);
+  const prefersDarkOS =
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+  return resolveTheme(savedTheme, legacyDark, Boolean(prefersDarkOS));
 }
 
 export function loadInitialShowExportPreview() {

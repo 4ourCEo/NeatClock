@@ -21,6 +21,19 @@ describe('resolveTheme', () => {
   it('prefers valid saved theme over legacy dark flag', () => {
     expect(resolveTheme('theme-blush-linen', true)).toBe('theme-blush-linen');
   });
+
+  it('uses obsidian for first-time visitors whose OS prefers dark mode', () => {
+    expect(resolveTheme(null, false, true)).toBe('theme-obsidian');
+    expect(resolveTheme(undefined, false, true)).toBe('theme-obsidian');
+  });
+
+  it('prefers a valid saved theme over OS dark-mode preference', () => {
+    expect(resolveTheme('theme-blush-linen', false, true)).toBe('theme-blush-linen');
+  });
+
+  it('defaults to warm sand when nothing is saved and OS does not prefer dark', () => {
+    expect(resolveTheme(null, false, false)).toBe('theme-warm-sand');
+  });
 });
 
 describe('THEME_CLASSES', () => {

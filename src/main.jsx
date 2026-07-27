@@ -11,7 +11,8 @@ const themeClasses = THEME_CLASSES;
 function applyInitialTheme() {
   const savedTheme = storageGet('neatclock_theme');
   const legacyDark = storageGet('neatclock_dark_mode') === 'true';
-  const theme = resolveTheme(savedTheme, legacyDark);
+  const prefersDarkOS = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+  const theme = resolveTheme(savedTheme, legacyDark, prefersDarkOS);
   document.documentElement.classList.remove(...themeClasses);
   document.body.classList.remove(...themeClasses);
   document.documentElement.classList.add(theme);
