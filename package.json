@@ -19,6 +19,9 @@
     "sitemap:update": "node scripts/update-sitemap.mjs",
     "check:html-assets": "node scripts/check-html-assets.mjs",
     "check:seo-live": "node scripts/check-seo-live.mjs",
+    "seo:auto": "node scripts/seo-automate.mjs",
+    "seo:landing": "node scripts/new-landing.mjs",
+    "seo:scoreboard": "node scripts/plausible-scoreboard.mjs",
     "campaign:reset": "node scripts/generate-reset-campaign.mjs",
     "preview": "vite preview"
   },

@@ -37,4 +37,5 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [ ] Human: enable Plausible custom-event goals (list above)
 - [ ] Human: GSC Inspect for new `/hvac-filter-reminder-calendar`, `/smoke-detector-reminder-calendar`, `/partner`
 - [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md`
-- [ ] Human: fill 7 daily scoreboard rows
+- [ ] Human: fill 7 daily scoreboard rows (or set `PLAUSIBLE_API_KEY` Actions secret → weekly auto-fill via `npm run seo:scoreboard`)
+- Automation playbook: `docs/SEO-AUTOMATION.md`

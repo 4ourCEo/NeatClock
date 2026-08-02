@@ -22,6 +22,7 @@
 - Agenda sidebar was reframed as "Export Preview" (first-occurrence simulation, not a to-do list).
 - 185 Vitest tests (33 files, including hooks/config/lib/ui), 8 Playwright E2E specs (22 runs on chromium + webkit), GitHub Actions CI on push/PR (plus weekly Dependabot npm/actions updates); `npm run test:all` before ship; review via `CODE-REVIEW-PROMPT.md`, `DEBUG-RCA-PROMPT.md`, and `.cursor/rules/code-review.mdc`.
 - Thin shadcn/Radix UI layer under `src/components/ui/` (button, dialog, input, label, card, badge, accordion) with semantic tokens bridged to NeatClock `--theme-*` in `src/index.css`. Creative Tim skill at `.cursor/skills/creative-tim-ui/`; do not adopt CT orange brand.
+- SEO automation: `npm run seo:auto` + weekly GitHub Action (`.github/workflows/seo-automation.yml`); landing factory `npm run seo:landing`; playbook `docs/SEO-AUTOMATION.md`. Optional `PLAUSIBLE_API_KEY` secret fills `docs/TRAFFIC-SCOREBOARD.md`.
 - BRIDGE workflow (`docs/requirements.json`, `docs/context.json`, `docs/decisions.md`, `docs/BRIDGE-GATE.md`); `App.jsx` ~262-line orchestrator with UI in `src/hooks/` and `src/components/`—keep test counts in sync (docs drift is a known issue).
 - Print pack default pricing is $5 per pack and $12 for the bundle (overridable via `VITE_PRINTS_*_PRICE`).
 - In-app brand assets: source logos in `design-system/brand-assets/` (PNG transparent); web copies in `public/` (`logo.png`, `logo-light.png`, favicons, `og-image.png`); header swaps logo for dark themes. Gumroad print deliverables are separate per `design-system/BRAND-BRIEF.md`.

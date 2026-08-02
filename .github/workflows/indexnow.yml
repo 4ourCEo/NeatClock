@@ -9,6 +9,10 @@ on:
       - "public/*.html"
       - "scripts/submit-indexnow.mjs"
       - "scripts/update-sitemap.mjs"
+  # Backup re-ping even when no content ships
+  schedule:
+    - cron: "0 15 * * 3"
+  workflow_dispatch:
 
 permissions:
   contents: write

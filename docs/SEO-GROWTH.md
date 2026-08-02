@@ -150,7 +150,8 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 1. GSC property verify + sitemap submit (`https://neatclock.pro/sitemap.xml`)
 2. Plausible: enable Custom events + goals listed in `docs/TRAFFIC-SCOREBOARD.md` (`ics_export`, `interest_submit`, `preset_deep_link`, `share_link_copy`, `landing_cta`, `qr_sync_shown`, …)
 3. One distribution post per `docs/DISTRIBUTION-WEEKLY.md` (link intent landing, not only `/`)
-4. `npm run go-live:check` → deploy → `npm run indexnow` → `npm run check:seo-live`
-5. Start filling `docs/TRAFFIC-SCOREBOARD.md` daily for 7 days
+4. `npm run go-live:check` → deploy → `npm run seo:auto` (sitemap + live smoke + IndexNow + optional scoreboard)
+5. Start filling `docs/TRAFFIC-SCOREBOARD.md` daily for 7 days (or set `PLAUSIBLE_API_KEY` for weekly auto-fill)
+6. Automation details: `docs/SEO-AUTOMATION.md`
 
 **Validated live (2026-08):** Plausible script already on homepage (`data-domain=neatclock.pro`); Formspree interest endpoint present in production bundle. Static landings must ship with the same Plausible snippet so SEO pageviews are visible.
