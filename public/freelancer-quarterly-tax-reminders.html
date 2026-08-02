@@ -72,6 +72,12 @@
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
     </style>
+    <script>
+      window.plausible = window.plausible || function () {
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+    </script>
+    <script defer data-domain="neatclock.pro" src="https://plausible.io/js/script.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -89,7 +95,7 @@
           <li>Security audit and subscription review twice a year</li>
           <li>Domain renewal reminders annually</li>
         </ul>
-        <a class="cta" href="/?preset=cfo&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=freelancer_taxes">Open CFO preset →</a>
+        <a class="cta" href="/?preset=cfo&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=freelancer_taxes" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'freelancer_taxes'}})">Open CFO preset →</a>
         <p class="disclaimer">Reminder generator only — not tax advice or accounting software.</p>
       </div>
 

@@ -78,18 +78,19 @@
       "reason": "Sponsor footer flag off; sponsor outreach not started"
     },
     {
-      "item": "Plausible analytics live",
-      "reason": "VITE_PLAUSIBLE_DOMAIN not set on production; requires neatclock.pro or vercel.app domain decision"
+      "item": "Plausible custom-event goals in UI",
+      "reason": "Script is live on neatclock.pro; goals (ics_export, landing_cta, etc.) must be toggled in Plausible dashboard — see docs/TRAFFIC-SCOREBOARD.md"
     }
   ],
   "nextSession": [
-    "Set VITE_INTEREST_FORM_ENDPOINT + VITE_PLAUSIBLE_DOMAIN on Vercel for production launch",
-    "Purchase neatclock.pro and set VITE_SITE_URL=https://neatclock.pro",
-    "Create Gumroad print pack products and ZIP assets per design-system/BRAND-BRIEF.md",
+    "Enable Plausible custom-event goals listed in docs/TRAFFIC-SCOREBOARD.md",
+    "GSC: confirm sitemap + Inspect URL for all landings",
+    "Fill docs/TRAFFIC-SCOREBOARD.md daily for 7 days post-deploy",
+    "Create Gumroad print pack products only after traffic proof (exports/week)",
     "Upgrade Vercel to Pro before enabling live Gumroad print CTAs"
   ],
   "testCounts": {
-    "unit": 157,
+    "unit": 185,
     "e2e": 10,
     "e2eBrowsers": [
       "chromium",

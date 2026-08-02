@@ -1,6 +1,8 @@
 const GUIDES = [
   { href: '/recurring-ics-calendar-generator', label: 'ICS calendar generator' },
   { href: '/home-maintenance-calendar', label: 'Home maintenance calendar' },
+  { href: '/hvac-filter-reminder-calendar', label: 'HVAC filter reminders' },
+  { href: '/smoke-detector-reminder-calendar', label: 'Smoke detector reminders' },
   { href: '/car-maintenance-schedule-ics', label: 'Car maintenance ICS' },
   { href: '/freelancer-quarterly-tax-reminders', label: 'Freelancer tax reminders' },
   { href: '/printable-chore-chart', label: 'Printable chore chart' },
@@ -9,16 +11,23 @@ const GUIDES = [
 
 export default function SeoFooterLinks() {
   return (
-    <nav aria-label="Free schedule guides" className="text-center no-print">
-      <ul className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 text-[10px] text-theme-text-muted/50">
-        <li className="text-theme-text-muted/30 font-serif italic mr-1 select-none text-[9px]">Sitemap:</li>
-        {GUIDES.map(({ href, label }, idx) => (
-          <li key={href} className="flex items-center gap-2">
-            {idx > 0 && <span className="text-theme-text-muted/20 select-none">·</span>}
+    <nav
+      aria-label="Free schedule guides"
+      className="no-print mx-auto max-w-3xl rounded-2xl border border-border/50 bg-card/40 px-4 py-5 sm:px-6"
+    >
+      <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-3 text-center sm:text-left">
+        Free schedule guides
+      </p>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs text-muted-foreground">
+        {GUIDES.map(({ href, label }) => (
+          <li key={href}>
             <a
               href={href}
-              className="hover:text-theme-accent hover:underline underline-offset-2 transition-colors"
+              className="inline-flex items-center gap-1.5 hover:text-primary hover:underline underline-offset-2 transition-colors"
             >
+              <span className="text-primary/50 select-none" aria-hidden="true">
+                →
+              </span>
               {label}
             </a>
           </li>

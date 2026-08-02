@@ -14,18 +14,26 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:all": "npm run test && npm run test:e2e",
-    "go-live:check": "npm run lint && npm run test:all && npm run build",
+    "go-live:check": "npm run lint && npm run test:all && npm run build && npm run check:html-assets",
     "indexnow": "node scripts/submit-indexnow.mjs",
     "sitemap:update": "node scripts/update-sitemap.mjs",
     "check:html-assets": "node scripts/check-html-assets.mjs",
+    "check:seo-live": "node scripts/check-seo-live.mjs",
     "campaign:reset": "node scripts/generate-reset-campaign.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.20",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@radix-ui/react-label": "^2.1.15",
+    "@radix-ui/react-slot": "^1.3.3",
     "@tailwindcss/vite": "^4.3.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^1.21.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {

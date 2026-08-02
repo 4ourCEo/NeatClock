@@ -6,7 +6,7 @@ Run this checklist before every production deploy to [neatclock.pro](https://nea
 
 ```bash
 npm run lint
-npm run test        # 157 Vitest unit tests (26 files)
+npm run test        # 185 Vitest unit tests (33 files)
 npm run test:e2e    # Playwright: 8 specs × chromium + webkit (see list below)
 npm run build
 ```
@@ -32,7 +32,7 @@ npm run build
 | `e2e/brand-banner.spec.js` | B2B co-branding banner rendering |
 | `e2e/partner-builder.spec.js` | Partner builder link generation flow |
 
-**Expected counts:** `docs/context.json` → `testCounts.unit` = 157, `testCounts.e2e` = 8 (chromium + webkit). If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
+**Expected counts:** `docs/context.json` → `testCounts.unit` = 185, `testCounts.e2e` = 8 (chromium + webkit). If test counts change, update `context.json` and any `vitest:` / `e2e:` entries in `docs/requirements.json`.
 
 ## Manual smoke (production or preview URL)
 
@@ -70,7 +70,7 @@ Do **not** enable live Gumroad print CTAs until Vercel is on **Pro** (Hobby is n
 ## Gate pass criteria
 
 - [x] `npm run lint` — no errors
-- [x] `npm run test` — 157/157 passed
+- [x] `npm run test` — 185/185 passed
 - [x] `npm run test:e2e` — 8/8 passed (16 runs on chromium + webkit)
 - [x] `npm run build` — succeeds, `dist/` generated
 - [x] Manual smoke — logo, preset, export, theme OK (covered by E2E test specs)

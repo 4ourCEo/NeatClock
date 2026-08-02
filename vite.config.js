@@ -1,6 +1,10 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Parser-inserted Plausible tag — dynamic JS injection breaks document.currentScript. */
 function plausibleAnalytics(domain) {
@@ -25,6 +29,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '')
   return {
   plugins: [react(), tailwindcss(), plausibleAnalytics(env.VITE_PLAUSIBLE_DOMAIN)],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   server: {
     host: true,
     watch: {

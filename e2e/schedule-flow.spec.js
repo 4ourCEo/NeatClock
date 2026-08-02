@@ -13,9 +13,9 @@ test.describe('schedule flow', () => {
     await page.getByRole('button', { name: /Preventive Gearhead/i }).click();
 
     const confirmModal = page.getByRole('dialog', { name: /Overwrite current list/i });
-    if (await confirmModal.isVisible()) {
-      await confirmModal.getByRole('button', { name: 'Confirm' }).click();
-    }
+    await expect(confirmModal).toBeVisible();
+    await confirmModal.getByRole('button', { name: 'Confirm' }).click();
+    await expect(confirmModal).toBeHidden();
 
     await expect(
       page.getByText('Current View:').locator('..').getByText('Preventive Gearhead')

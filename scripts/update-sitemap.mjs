@@ -14,10 +14,13 @@ const SOURCE_FOR_PATH = {
   '/': 'src',
   '/recurring-ics-calendar-generator': 'public/recurring-ics-calendar-generator.html',
   '/home-maintenance-calendar': 'public/home-maintenance-calendar.html',
+  '/hvac-filter-reminder-calendar': 'public/hvac-filter-reminder-calendar.html',
+  '/smoke-detector-reminder-calendar': 'public/smoke-detector-reminder-calendar.html',
   '/car-maintenance-schedule-ics': 'public/car-maintenance-schedule-ics.html',
   '/freelancer-quarterly-tax-reminders': 'public/freelancer-quarterly-tax-reminders.html',
   '/printable-chore-chart': 'public/printable-chore-chart.html',
   '/recurring-task-reminder-app': 'public/recurring-task-reminder-app.html',
+  '/partner': 'public/partner.html',
 };
 
 function lastCommitDate(sourcePath) {

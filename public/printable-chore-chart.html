@@ -71,6 +71,12 @@
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
     </style>
+    <script>
+      window.plausible = window.plausible || function () {
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+    </script>
+    <script defer data-domain="neatclock.pro" src="https://plausible.io/js/script.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -88,7 +94,7 @@
           <li>Switch to print-friendly view — clean fridge or garage-wall layout</li>
           <li>Print directly or save as PDF from your browser's print dialog</li>
         </ul>
-        <a class="cta" href="/?preset=home&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=printable_chore_chart">Build a chore chart →</a>
+        <a class="cta" href="/?preset=home&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=printable_chore_chart" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'printable_chore_chart'}})">Build a chore chart →</a>
       </div>
 
       <div class="card">
@@ -98,8 +104,9 @@
 
       <nav class="related" aria-label="Related schedule guides">
         <p>Other free calendars</p>
-        <a href="/recurring-ics-calendar-generator">ICS generator</a> ·
         <a href="/home-maintenance-calendar">Home maintenance</a> ·
+        <a href="/hvac-filter-reminder-calendar">HVAC filters</a> ·
+        <a href="/smoke-detector-reminder-calendar">Smoke detectors</a> ·
         <a href="/recurring-task-reminder-app">Recurring reminder app</a>
       </nav>
 

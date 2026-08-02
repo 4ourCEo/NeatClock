@@ -43,6 +43,9 @@ Users can save custom presets (names + task lists) locally.
 | Freelancer finance landing | https://neatclock.pro/freelancer-quarterly-tax-reminders |
 | Printable chore chart landing | https://neatclock.pro/printable-chore-chart |
 | Recurring reminder app landing | https://neatclock.pro/recurring-task-reminder-app |
+| HVAC filter reminder landing | https://neatclock.pro/hvac-filter-reminder-calendar |
+| Smoke detector reminder landing | https://neatclock.pro/smoke-detector-reminder-calendar |
+| Partner / co-brand page | https://neatclock.pro/partner |
 | GitHub | https://github.com/4ourCEo/NeatClock |
 | llms.txt (summary) | https://neatclock.pro/llms.txt |
 | sitemap.xml | https://neatclock.pro/sitemap.xml |

@@ -50,6 +50,23 @@ const PRESETS_DATA = {
 const data = PRESETS_DATA[presetArg] || PRESETS_DATA.home;
 const projectDir = path.join('videos', `sunday-reset-${data.alias}`);
 
+/** Intent landing per preset — social CTAs should not dump bare /?preset= */
+const LANDING_FOR_PRESET = {
+  home: 'https://neatclock.pro/home-maintenance-calendar',
+  gearhead: 'https://neatclock.pro/car-maintenance-schedule-ics',
+  cfo: 'https://neatclock.pro/freelancer-quarterly-tax-reminders',
+};
+
+function socialUrl(source) {
+  const base = LANDING_FOR_PRESET[data.alias] || 'https://neatclock.pro/';
+  const params = new URLSearchParams({
+    utm_source: source,
+    utm_medium: 'social',
+    utm_campaign: `sunday_reset_${data.alias}`,
+  });
+  return `${base}?${params.toString()}`;
+}
+
 // Ensure directories exist
 fs.mkdirSync(projectDir, { recursive: true });
 
@@ -194,12 +211,12 @@ const metadata = {
       hookHeadline: data.hook,
       caption: `Sunday Reset: ${data.title} edition. 🧼📅 ${data.hook} ${data.tags.join(' ')}`,
       audioRecommendation: "Ambient Lo-Fi / Soft Chill Beats",
-      ctaUrl: `https://neatclock.pro/?preset=${data.alias}`
+      ctaUrl: socialUrl('tiktok'),
     },
     pinterest: {
       pinTitle: data.pinTitle,
       pinDescription: `${data.pinDesc} ${data.tags.join(' ')}`,
-      destinationLink: `https://neatclock.pro/?preset=${data.alias}`,
+      destinationLink: socialUrl('pinterest'),
       keywords: [
         "sunday reset routine",
         "home organization tips",

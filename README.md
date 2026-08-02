@@ -37,7 +37,7 @@ NeatClock is built to be a **one-time utility, not a checklist application**.
 NeatClock is a static Single Page Application (SPA) designed to load instantly and run at $0 hosting cost:
 *   **Frontend:** React 19 + Vite 8
 *   **Styling:** Tailwind CSS v4 + Vanilla CSS tokens (using Google Fonts: *Outfit* & *Playfair Display*)
-*   **Test Suite:** 157 Vitest unit/integration tests & 16 Playwright E2E tests (configured for Chromium + WebKit)
+*   **Test Suite:** 185 Vitest unit/integration tests & 22 Playwright E2E tests (configured for Chromium + WebKit)
 *   **SEO & AI Discovery:** Includes custom JSON-LD schemas (`WebApplication` & `FAQPage`), static crawlable landing pages, a sitemap, and LLM-friendly documentation (`llms.txt` & `llms-full.txt`) for AI search engines.
 
 ---

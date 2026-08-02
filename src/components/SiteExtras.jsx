@@ -126,15 +126,15 @@ export function InterestFeedback() {
 
 export function SiteFooter({ onOpenInterest }) {
   return (
-    <footer className="no-print mt-10 text-center space-y-5 pb-6">
+    <footer className="no-print mt-10 text-center space-y-6 pb-8 border-t border-border/40 pt-8">
       <FeatureGate enabled={features.sponsorFooter}>
-        <p className="text-xs text-theme-text-muted">
+        <p className="text-xs text-muted-foreground">
           Sponsored this week by{' '}
           <a
             href={sponsorConfig.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-theme-text hover:text-theme-accent transition-colors underline-offset-2 hover:underline"
+            className="text-foreground hover:text-primary transition-colors underline-offset-2 hover:underline"
           >
             {sponsorConfig.name}
           </a>
@@ -151,34 +151,34 @@ export function SiteFooter({ onOpenInterest }) {
         <span>Private & Serverless — Your schedule never leaves your device.</span>
       </div>
 
-      <p className="text-[10px] text-theme-text-muted/50 max-w-md mx-auto leading-relaxed pt-1 select-none">
+      <p className="text-[10px] text-muted-foreground/70 max-w-md mx-auto leading-relaxed pt-1 select-none">
         Free on the web. Your schedule stays on this device — no account required.
         {' · '}
         <a
           href="/llms.txt"
-          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+          className="hover:text-primary transition-colors hover:underline underline-offset-2"
           rel="help"
         >
           For AI
         </a>
         {' · '}
         <a
-          href="/?page=partner"
-          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+          href="/partner"
+          className="hover:text-primary transition-colors hover:underline underline-offset-2"
         >
           Partner Builder
         </a>
         {' · '}
         <a
           href="/privacy"
-          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+          className="hover:text-primary transition-colors hover:underline underline-offset-2"
         >
           Privacy
         </a>
         {' · '}
         <a
           href="/terms"
-          className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+          className="hover:text-primary transition-colors hover:underline underline-offset-2"
         >
           Terms
         </a>
@@ -187,7 +187,7 @@ export function SiteFooter({ onOpenInterest }) {
             {' · '}
             <a
               href="/affiliate-disclosure"
-              className="hover:text-theme-accent transition-colors hover:underline underline-offset-2"
+              className="hover:text-primary transition-colors hover:underline underline-offset-2"
             >
               Affiliate Disclosure
             </a>

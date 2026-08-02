@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Printer } from 'lucide-react';
 import { ExportExtras } from './SiteExtras.jsx';
 import { InterestExportSection } from './InterestInvite.jsx';
@@ -5,6 +6,17 @@ import { features } from '../config/features.js';
 import { interestFormEnabled } from '../config/monetization.js';
 import { shouldShowMonetization } from '../lib/preview.js';
 import { buildPresetShareUrl } from '../lib/shareLinks.js';
+import { trackEvent } from '../lib/analytics.js';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 
 export default function ScheduleModals({
   confirmModal,
@@ -23,166 +35,160 @@ export default function ScheduleModals({
   onOpenInterest,
 }) {
   const shareUrl = buildPresetShareUrl(activePreset, { medium: 'qr_sync', campaign: 'export_success' });
+  const qrTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (!exportSuccessOpen) {
+      qrTrackedRef.current = false;
+      return;
+    }
+    if (qrTrackedRef.current) return;
+    qrTrackedRef.current = true;
+    trackEvent('qr_sync_shown', { preset: activePreset });
+  }, [exportSuccessOpen, activePreset]);
 
   return (
     <>
-      {confirmModal && (
-        <div className="modal-overlay no-print" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
-          <div className="modal-backdrop" aria-hidden="true" />
-          <div className="modal-panel-wrap">
-            <div className="modal-panel md:p-8 transition-all duration-300 animate-slide-up">
-              <h3 id="confirm-modal-title" className="font-serif text-xl font-semibold mb-3 text-theme-text">
-                {confirmModal.title}
-              </h3>
-              <p className="text-sm text-theme-text-muted mb-6 leading-relaxed">
-                {confirmModal.message}
-              </p>
-              <div className="flex gap-3 justify-center sm:justify-end">
-                <button
-                  type="button"
-                  onClick={onCloseConfirm}
-                  className="px-4 py-2 text-xs font-medium rounded border cursor-pointer border-theme-border bg-theme-card hover:bg-theme-bg/60 text-theme-text focus:outline-none transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmModal.onConfirm}
-                  className="btn-primary px-4 py-2 text-xs font-medium rounded cursor-pointer shadow-sm focus:outline-none transition-colors inline-flex items-center justify-center"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
+      <Dialog
+        open={Boolean(confirmModal)}
+        onOpenChange={(open) => {
+          if (!open) onCloseConfirm();
+        }}
+      >
+        <DialogContent showCloseButton={false} className="md:p-8">
+          <DialogHeader>
+            <DialogTitle>{confirmModal?.title}</DialogTitle>
+            <DialogDescription>{confirmModal?.message}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3">
+            <Button type="button" variant="outline" size="sm" onClick={onCloseConfirm}>
+              Cancel
+            </Button>
+            <Button type="button" size="sm" onClick={confirmModal?.onConfirm}>
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={presetModalOpen}
+        onOpenChange={(open) => {
+          if (!open) onClosePresetModal();
+        }}
+      >
+        <DialogContent showCloseButton={false} className="md:p-8">
+          <DialogHeader>
+            <DialogTitle>Save Current Preset</DialogTitle>
+            <DialogDescription>
+              Enter a unique name for your custom recurring task list preset:
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <Input
+              id="input-preset-name"
+              type="text"
+              value={presetNameInput}
+              onChange={(e) => onPresetNameChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') onSubmitSavePreset();
+              }}
+              placeholder="e.g. Monthly Cleaning, Auto Maintenance"
+              autoFocus
+              aria-invalid={Boolean(presetNameError)}
+            />
+            {presetNameError && (
+              <p className="text-destructive text-xs mt-1.5 font-medium">{presetNameError}</p>
+            )}
           </div>
-        </div>
-      )}
+          <DialogFooter className="gap-3">
+            <Button type="button" variant="outline" size="sm" onClick={onClosePresetModal}>
+              Cancel
+            </Button>
+            <Button type="button" size="sm" onClick={onSubmitSavePreset}>
+              Save Preset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {presetModalOpen && (
-        <div className="modal-overlay no-print" role="dialog" aria-modal="true">
-          <div className="modal-backdrop" aria-hidden="true" />
-          <div className="modal-panel-wrap">
-            <div className="modal-panel md:p-8 transition-all duration-300 animate-slide-up">
-              <h3 className="font-serif text-xl font-semibold mb-3 text-theme-text">
-                Save Current Preset
-              </h3>
-              <p className="text-xs text-theme-text-muted mb-4 leading-relaxed">
-                Enter a unique name for your custom recurring task list preset:
-              </p>
-              <div className="mb-4">
-                <input
-                  id="input-preset-name"
-                  type="text"
-                  value={presetNameInput}
-                  onChange={(e) => onPresetNameChange(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') onSubmitSavePreset();
-                  }}
-                  placeholder="e.g. Monthly Cleaning, Auto Maintenance"
-                  className="w-full px-3 py-2 text-sm rounded border bg-transparent border-theme-border text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-                  autoFocus
-                />
-                {presetNameError && (
-                  <p className="text-red-500 text-xs mt-1.5 font-medium">{presetNameError}</p>
-                )}
-              </div>
-              <div className="flex gap-3 justify-center sm:justify-end">
-                <button
-                  onClick={onClosePresetModal}
-                  className="px-4 py-2 text-xs font-medium rounded border cursor-pointer border-theme-border bg-theme-card hover:bg-theme-bg/60 text-theme-text focus:outline-none transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={onSubmitSavePreset}
-                  className="btn-primary px-4 py-2 text-xs font-medium rounded cursor-pointer shadow-sm focus:outline-none transition-colors inline-flex items-center justify-center"
-                >
-                  Save Preset
-                </button>
-              </div>
-            </div>
+      <Dialog
+        open={exportSuccessOpen}
+        onOpenChange={(open) => {
+          if (!open) onCloseExportSuccess();
+        }}
+      >
+        <DialogContent showCloseButton={false} size="lg" className="md:p-8">
+          <DialogHeader>
+            <DialogTitle>Calendar downloaded</DialogTitle>
+            <DialogDescription>
+              Your <strong className="text-foreground">neatclock-schedule.ics</strong> file is ready.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="text-xs text-muted-foreground leading-relaxed space-y-1">
+            <span className="block">
+              <strong className="text-foreground">Google:</strong> calendar.google.com → Settings → Import
+            </span>
+            <span className="block">
+              <strong className="text-foreground">Apple:</strong> Calendar app → File → Import
+            </span>
+            <span className="block">
+              <strong className="text-foreground">Outlook:</strong> Add calendar → Upload from file
+            </span>
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 h-auto py-3 rounded-lg"
+              onClick={onExportSuccessPrint}
+            >
+              <Printer className="w-4 h-4" />
+              Print Checklist
+            </Button>
+            <Button
+              type="button"
+              className="flex-1 h-auto py-3 rounded-lg"
+              onClick={onScrollToPresets}
+            >
+              Try Another Preset
+            </Button>
           </div>
-        </div>
-      )}
 
-      {exportSuccessOpen && (
-        <div className="modal-overlay no-print" role="dialog" aria-modal="true">
-          <div className="modal-backdrop" aria-hidden="true" />
-          <div className="modal-panel-wrap">
-            <div className="modal-panel modal-panel-lg md:p-8 transition-all duration-300 animate-slide-up">
-              <h3 className="font-serif text-xl font-semibold mb-2 text-theme-text">
-                Calendar downloaded
-              </h3>
-              <p className="text-sm text-theme-text-muted mb-3 leading-relaxed">
-                Your <strong className="text-theme-text">neatclock-schedule.ics</strong> file is ready.
-              </p>
-              <p className="text-xs text-theme-text-muted mb-5 leading-relaxed space-y-1">
-                <span className="block">
-                  <strong className="text-theme-text">Google:</strong> calendar.google.com → Settings → Import
-                </span>
-                <span className="block">
-                  <strong className="text-theme-text">Apple:</strong> Calendar app → File → Import
-                </span>
-                <span className="block">
-                  <strong className="text-theme-text">Outlook:</strong> Add calendar → Upload from file
-                </span>
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={onExportSuccessPrint}
-                  className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border cursor-pointer border-theme-border bg-theme-card hover:bg-theme-bg/60 text-theme-text transition-colors flex items-center justify-center gap-2"
-                >
-                  <Printer className="w-4 h-4" />
-                  Print Checklist
-                </button>
-                <button
-                  type="button"
-                  onClick={onScrollToPresets}
-                  className="btn-primary flex flex-1 items-center justify-center px-4 py-3 text-sm font-medium rounded-lg cursor-pointer shadow-sm"
-                >
-                  Try Another Preset
-                </button>
-              </div>
-
-              {/* QR Code Sync */}
-              <div className="hidden md:flex flex-col items-center mt-5 p-4 border border-theme-border/30 bg-theme-bg/10 rounded-xl">
-                <p className="text-xs font-semibold text-theme-text mb-1">
-                  📱 Sync to Mobile
-                </p>
-                <p className="text-[10px] text-theme-text-muted text-center mb-3">
-                  Scan to load this schedule on your phone and add it directly to your mobile calendar.
-                </p>
-                <div className="bg-white p-2 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-none">
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
-                    alt="Sync QR Code"
-                    className="w-28 h-28 object-contain"
-                    width="112"
-                    height="112"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={onCloseExportSuccess}
-                className="w-full mt-3 px-4 py-2 text-xs font-medium text-theme-text-muted hover:text-theme-text cursor-pointer transition-colors"
-              >
-                Keep editing this schedule
-              </button>
-              <ExportExtras
-                activePreset={activePreset}
-                onPrint={onExportSuccessPrint}
+          <div className="hidden md:flex flex-col items-center p-4 border border-border/30 bg-background/40 rounded-xl">
+            <p className="text-xs font-semibold text-foreground mb-1">📱 Sync to Mobile</p>
+            <p className="text-[10px] text-muted-foreground text-center mb-3">
+              Scan to load this schedule on your phone and add it directly to your mobile calendar.
+            </p>
+            <div className="bg-white p-2 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-none">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
+                alt="Sync QR Code"
+                className="w-28 h-28 object-contain"
+                width="112"
+                height="112"
+                loading="lazy"
               />
-              {interestFormEnabled && !shouldShowMonetization(features.neatclockPrints) && (
-                <InterestExportSection onOpen={onOpenInterest} />
-              )}
             </div>
           </div>
-        </div>
-      )}
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="w-full text-xs text-muted-foreground"
+            onClick={onCloseExportSuccess}
+          >
+            Keep editing this schedule
+          </Button>
+          <ExportExtras
+            activePreset={activePreset}
+            onPrint={onExportSuccessPrint}
+          />
+          {interestFormEnabled && !shouldShowMonetization(features.neatclockPrints) && (
+            <InterestExportSection onOpen={onOpenInterest} />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

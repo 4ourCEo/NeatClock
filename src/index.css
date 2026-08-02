@@ -22,6 +22,32 @@
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-slide-up: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   --animate-toast-in: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  /* shadcn semantic colors → NeatClock theme tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -34,6 +60,14 @@
   @keyframes toast-in {
     from { transform: translateY(16px) scale(0.98); opacity: 0; }
     to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
   }
 }
 
@@ -151,6 +185,46 @@ html {
   --color-theme-accent-hover: var(--theme-accent-hover);
   --color-theme-highlight: var(--theme-highlight);
   --color-theme-accent-text: var(--theme-accent-text);
+
+  /* shadcn semantic bridge — NeatClock themes win over Creative Tim defaults */
+  --radius: 0.625rem;
+  --background: var(--theme-bg);
+  --foreground: var(--theme-text);
+  --card: var(--theme-card);
+  --card-foreground: var(--theme-text);
+  --popover: var(--theme-card);
+  --popover-foreground: var(--theme-text);
+  --primary: var(--theme-accent);
+  --primary-foreground: var(--theme-accent-text);
+  --secondary: var(--theme-highlight);
+  --secondary-foreground: var(--theme-text);
+  --muted: var(--theme-highlight);
+  --muted-foreground: var(--theme-text-muted);
+  --accent: var(--theme-highlight);
+  --accent-foreground: var(--theme-text);
+  --destructive: #dc2626;
+  --border: var(--theme-border);
+  --input: var(--theme-border);
+  --ring: var(--theme-accent);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 /* Custom baseline styling */
@@ -262,7 +336,8 @@ body {
 }
 
 /* Primary actions — theme vars + forced paint (Safari/modal-safe) */
-.btn-primary {
+.btn-primary,
+[data-slot="button"][data-variant="default"] {
   appearance: none;
   -webkit-appearance: none;
   background-color: var(--theme-accent, #e07a5f);
@@ -272,13 +347,15 @@ body {
   transform: translateZ(0);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+[data-slot="button"][data-variant="default"]:hover {
   background-color: var(--theme-accent-hover, #c9654b);
   border-color: var(--theme-accent-hover, #c9654b);
   color: var(--theme-accent-text, #ffffff);
 }
 
-.btn-primary:disabled {
+.btn-primary:disabled,
+[data-slot="button"][data-variant="default"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -530,6 +607,8 @@ body {
 
   .no-print,
   .modal-overlay,
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
   .toast-fixed {
     display: none !important;
   }

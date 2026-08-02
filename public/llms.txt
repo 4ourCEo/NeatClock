@@ -35,6 +35,9 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 - Freelancer quarterly tax reminders: https://neatclock.pro/freelancer-quarterly-tax-reminders
 - Printable chore chart generator: https://neatclock.pro/printable-chore-chart
 - Recurring task reminder app: https://neatclock.pro/recurring-task-reminder-app
+- HVAC filter reminder calendar: https://neatclock.pro/hvac-filter-reminder-calendar
+- Smoke detector reminder calendar: https://neatclock.pro/smoke-detector-reminder-calendar
+- Partner / co-brand builder: https://neatclock.pro/partner
 
 ## Features (free)
 

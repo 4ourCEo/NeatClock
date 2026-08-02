@@ -28,7 +28,7 @@
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io https://formspree.io https://formsubmit.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io https://formspree.io https://formsubmit.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         }
       ]
     }
@@ -39,7 +39,19 @@
       "has": [{ "type": "host", "value": "www.neatclock.pro" }],
       "destination": "https://neatclock.pro/$1",
       "permanent": true
-    }
+    },
+    { "source": "/home-maintenance-calendar.html", "destination": "/home-maintenance-calendar", "permanent": true },
+    { "source": "/car-maintenance-schedule-ics.html", "destination": "/car-maintenance-schedule-ics", "permanent": true },
+    { "source": "/freelancer-quarterly-tax-reminders.html", "destination": "/freelancer-quarterly-tax-reminders", "permanent": true },
+    { "source": "/recurring-ics-calendar-generator.html", "destination": "/recurring-ics-calendar-generator", "permanent": true },
+    { "source": "/printable-chore-chart.html", "destination": "/printable-chore-chart", "permanent": true },
+    { "source": "/recurring-task-reminder-app.html", "destination": "/recurring-task-reminder-app", "permanent": true },
+    { "source": "/hvac-filter-reminder-calendar.html", "destination": "/hvac-filter-reminder-calendar", "permanent": true },
+    { "source": "/smoke-detector-reminder-calendar.html", "destination": "/smoke-detector-reminder-calendar", "permanent": true },
+    { "source": "/privacy.html", "destination": "/privacy", "permanent": true },
+    { "source": "/terms.html", "destination": "/terms", "permanent": true },
+    { "source": "/affiliate-disclosure.html", "destination": "/affiliate-disclosure", "permanent": true },
+    { "source": "/partner.html", "destination": "/partner", "permanent": true }
   ],
   "rewrites": [
     { "source": "/llms.txt", "destination": "/llms.txt" },
@@ -50,6 +62,9 @@
     { "source": "/recurring-ics-calendar-generator", "destination": "/recurring-ics-calendar-generator.html" },
     { "source": "/printable-chore-chart", "destination": "/printable-chore-chart.html" },
     { "source": "/recurring-task-reminder-app", "destination": "/recurring-task-reminder-app.html" },
+    { "source": "/hvac-filter-reminder-calendar", "destination": "/hvac-filter-reminder-calendar.html" },
+    { "source": "/smoke-detector-reminder-calendar", "destination": "/smoke-detector-reminder-calendar.html" },
+    { "source": "/partner", "destination": "/partner.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/affiliate-disclosure", "destination": "/affiliate-disclosure.html" },

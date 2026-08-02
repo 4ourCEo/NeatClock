@@ -1,17 +1,21 @@
 #!/usr/bin/env node
-/** Submit sitemap URLs to IndexNow (Bing, Yandex, etc.) */
+/** Submit all sitemap <loc> URLs to IndexNow (Bing, Yandex, etc.) */
+
+import fs from 'node:fs';
+import path from 'node:path';
 
 const KEY = 'neatclockidx2026k8m9';
 const HOST = 'neatclock.pro';
 const BASE = `https://${HOST}`;
+const SITEMAP_PATH = path.join('public', 'sitemap.xml');
 
-const urlList = [
-  `${BASE}/`,
-  `${BASE}/recurring-ics-calendar-generator`,
-  `${BASE}/home-maintenance-calendar`,
-  `${BASE}/car-maintenance-schedule-ics`,
-  `${BASE}/freelancer-quarterly-tax-reminders`,
-];
+const xml = fs.readFileSync(SITEMAP_PATH, 'utf8');
+const urlList = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+
+if (urlList.length === 0) {
+  console.error('IndexNow failed: no <loc> URLs found in public/sitemap.xml');
+  process.exit(1);
+}
 
 const body = {
   host: HOST,
@@ -29,6 +33,7 @@ const res = await fetch('https://api.indexnow.org/indexnow', {
 const text = await res.text();
 if (res.ok || res.status === 202) {
   console.log(`IndexNow OK (${res.status}): ${urlList.length} URLs submitted`);
+  for (const url of urlList) console.log(`  - ${url}`);
 } else {
   console.error(`IndexNow failed (${res.status}):`, text || res.statusText);
   process.exit(1);

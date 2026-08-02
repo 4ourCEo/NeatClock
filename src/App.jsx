@@ -11,6 +11,7 @@ import TaskTable from './components/TaskTable.jsx';
 import PresetSelector from './components/PresetSelector.jsx';
 import ScheduleModals from './components/ScheduleModals.jsx';
 import CalendarPreview from './components/CalendarPreview.jsx';
+import HomeFaq from './components/HomeFaq.jsx';
 import {
   NaturalLanguageInput,
   ExportPreviewAside,
@@ -177,6 +178,7 @@ function App() {
 
       {interestOpen && (
         <InterestModal
+          open={interestOpen}
           onClose={() => setInterestOpen(false)}
           activePreset={activePreset}
           source={interestSource}
@@ -303,6 +305,7 @@ function App() {
         />
 
         <PrintsFooterCta activePreset={activePreset} />
+        <HomeFaq />
         <SiteFooter onOpenInterest={() => openInterest('footer')} />
       </main>
       )}
