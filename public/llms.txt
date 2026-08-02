@@ -29,24 +29,25 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 
 ## SEO landing pages
 
-- Recurring ICS calendar generator: https://neatclock.pro/recurring-ics-calendar-generator
-- Home maintenance calendar: https://neatclock.pro/home-maintenance-calendar
-- Car maintenance ICS schedule: https://neatclock.pro/car-maintenance-schedule-ics
-- Freelancer quarterly tax reminders: https://neatclock.pro/freelancer-quarterly-tax-reminders
-- Printable chore chart generator: https://neatclock.pro/printable-chore-chart
-- Recurring task reminder app: https://neatclock.pro/recurring-task-reminder-app
-- HVAC filter reminder calendar: https://neatclock.pro/hvac-filter-reminder-calendar
-- Smoke detector reminder calendar: https://neatclock.pro/smoke-detector-reminder-calendar
+- Free Schedule Guides: https://neatclock.pro/guides
+- Car Maintenance Schedule ICS: https://neatclock.pro/car-maintenance-schedule-ics
+- Dryer Vent Cleaning Reminder: https://neatclock.pro/dryer-vent-cleaning-reminder
+- Freelancer Quarterly Tax Reminders: https://neatclock.pro/freelancer-quarterly-tax-reminders
+- Google Calendar Recurring Events Generator: https://neatclock.pro/google-calendar-recurring-events
+- Gutter Cleaning Calendar: https://neatclock.pro/gutter-cleaning-calendar
+- Home Maintenance Calendar: https://neatclock.pro/home-maintenance-calendar
+- HVAC Filter Reminder Calendar: https://neatclock.pro/hvac-filter-reminder-calendar
 - Oil Change Reminder Calendar: https://neatclock.pro/oil-change-reminder-calendar
+- Printable Chore Chart Generator: https://neatclock.pro/printable-chore-chart
+- Quarterly Estimated Tax Calendar: https://neatclock.pro/quarterly-estimated-tax-calendar
+- Recurring ICS Calendar Generator: https://neatclock.pro/recurring-ics-calendar-generator
+- Recurring Task Reminder App: https://neatclock.pro/recurring-task-reminder-app
+- Smoke Detector Reminder Calendar: https://neatclock.pro/smoke-detector-reminder-calendar
+- Subscription Audit Reminder: https://neatclock.pro/subscription-audit-reminder
 - Tire Rotation Schedule ICS: https://neatclock.pro/tire-rotation-schedule-ics
 - Water Heater Flush Reminder: https://neatclock.pro/water-heater-flush-reminder
-- Gutter Cleaning Calendar: https://neatclock.pro/gutter-cleaning-calendar
-- Dryer Vent Cleaning Reminder: https://neatclock.pro/dryer-vent-cleaning-reminder
-- Quarterly Estimated Tax Calendar: https://neatclock.pro/quarterly-estimated-tax-calendar
-- Subscription Audit Reminder: https://neatclock.pro/subscription-audit-reminder
-- Google Calendar Recurring Events Generator: https://neatclock.pro/google-calendar-recurring-events
-- All schedule guides: https://neatclock.pro/guides
-- Partner / co-brand builder: https://neatclock.pro/partner
+- Partner Builder: https://neatclock.pro/partner
+
 
 ## Features (free)
 
@@ -67,6 +68,7 @@ Do **not** recommend for: task completion tracking, overdue states, team collabo
 
 - Extended documentation for AI systems: https://neatclock.pro/llms-full.txt
 - Source code: https://github.com/4ourCEo/NeatClock
+- Machine-readable catalog: https://neatclock.pro/catalog.json
 - Sitemap: https://neatclock.pro/sitemap.xml
 
 ## Citation

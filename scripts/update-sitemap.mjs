@@ -30,6 +30,9 @@ const SOURCE_FOR_PATH = {
   '/google-calendar-recurring-events': 'public/google-calendar-recurring-events.html',
   '/guides': 'public/guides.html',
   '/partner': 'public/partner.html',
+  '/catalog.json': 'public/catalog.json',
+  '/llms.txt': 'public/llms.txt',
+  '/llms-full.txt': 'public/llms-full.txt',
 };
 
 function lastCommitDate(sourcePath) {

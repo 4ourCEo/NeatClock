@@ -46,3 +46,27 @@ jobs:
 
       - name: Submit URLs to IndexNow
         run: node scripts/submit-indexnow.mjs
+
+      - name: Notify Zapier / Notion (new landings on push)
+        if: github.event_name == 'push'
+        env:
+          OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
+        run: |
+          urls=()
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            slug="${f#public/}"
+            slug="${slug%.html}"
+            urls+=(--url "https://neatclock.pro/${slug}")
+          done < <(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'public/*.html' 2>/dev/null || true)
+          if [ ${#urls[@]} -eq 0 ]; then
+            echo "no public HTML changes — skip landing notify"
+            exit 0
+          fi
+          node scripts/notify-ops.mjs \
+            --event landing_indexed \
+            --title "New or updated landings — IndexNow submitted" \
+            --source github-actions-indexnow \
+            --checklist "GSC URL Inspection for each URL below" \
+            --checklist "Confirm https://neatclock.pro/catalog.json lists the new pages" \
+            "${urls[@]}"

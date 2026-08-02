@@ -30,19 +30,31 @@ npm run seo:landing -- \
 PLAUSIBLE_API_KEY=xxx npm run seo:scoreboard
 ```
 
-## GitHub secret (recommended)
+## GitHub secrets (recommended)
 
 In the repo → **Settings → Secrets and variables → Actions**:
 
 - `PLAUSIBLE_API_KEY` — from Plausible → Settings → API keys (Stats API)
+- `OPS_WEBHOOK_URL` — Zapier Catch Hook → Notion Ops (see [`OPS-AUTOMATION.md`](./OPS-AUTOMATION.md))
 
-Without it, weekly automation still runs live SEO checks + IndexNow; scoreboard auto-fill is skipped.
+Without `PLAUSIBLE_API_KEY`, weekly automation still runs live SEO checks + IndexNow; scoreboard auto-fill is skipped. Without `OPS_WEBHOOK_URL`, Zapier/Notion notify steps no-op.
+
+## LLM discovery (public, indexable)
+
+- https://neatclock.pro/llms.txt
+- https://neatclock.pro/llms-full.txt
+- https://neatclock.pro/catalog.json
+- https://neatclock.pro/.well-known/llms.txt
+
+Regenerate after landings change: `npm run seo:llms` (also inside `seo:auto` / `seo:landing`).
 
 ## Still human (cannot fully automate)
 
 1. Enable Plausible **Custom events / goals** once (`docs/TRAFFIC-SCOREBOARD.md`)
 2. Google Search Console: sitemap ownership + URL Inspection for brand-new URLs
-3. Actually posting to Reddit / Pinterest / Shorts (workflow opens a checklist issue)
+3. Actually posting to Reddit / Pinterest / Shorts (workflow opens a checklist issue + Notion row if Zapier is wired)
+
+Private ops checklist: [`OPS-AUTOMATION.md`](./OPS-AUTOMATION.md).
 
 ## Scripts
 
@@ -50,4 +62,6 @@ Without it, weekly automation still runs live SEO checks + IndexNow; scoreboard 
 - [`scripts/check-seo-live.mjs`](../scripts/check-seo-live.mjs) — production smoke
 - [`scripts/submit-indexnow.mjs`](../scripts/submit-indexnow.mjs) — sitemap → IndexNow
 - [`scripts/plausible-scoreboard.mjs`](../scripts/plausible-scoreboard.mjs) — API → scoreboard
+- [`scripts/sync-llms-catalog.mjs`](../scripts/sync-llms-catalog.mjs) — llms.txt + catalog.json
+- [`scripts/notify-ops.mjs`](../scripts/notify-ops.mjs) — Zapier Catch Hook notify
 - [`scripts/new-landing.mjs`](../scripts/new-landing.mjs) — landing factory

@@ -182,12 +182,20 @@
   ],
   "rewrites": [
     {
+      "source": "/.well-known/llms.txt",
+      "destination": "/llms.txt"
+    },
+    {
       "source": "/llms.txt",
       "destination": "/llms.txt"
     },
     {
       "source": "/llms-full.txt",
       "destination": "/llms-full.txt"
+    },
+    {
+      "source": "/catalog.json",
+      "destination": "/catalog.json"
     },
     {
       "source": "/home-maintenance-calendar",

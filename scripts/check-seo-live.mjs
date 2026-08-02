@@ -72,6 +72,32 @@ await check('www → apex redirect', async () => {
   }
 });
 
+await check('catalog.json is machine-readable', async () => {
+  const res = await fetch(`${BASE}/catalog.json`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!Array.isArray(data.pages) || data.pages.length < 5) {
+    throw new Error(`expected pages[], got ${JSON.stringify(data).slice(0, 120)}`);
+  }
+  if (data.llms !== `${BASE}/llms.txt`) throw new Error('catalog.llms mismatch');
+});
+
+await check('.well-known/llms.txt aliases llms.txt', async () => {
+  const [a, b] = await Promise.all([
+    fetch(`${BASE}/.well-known/llms.txt`).then((r) => {
+      if (!r.ok) throw new Error(`well-known HTTP ${r.status}`);
+      return r.text();
+    }),
+    fetch(`${BASE}/llms.txt`).then((r) => {
+      if (!r.ok) throw new Error(`llms HTTP ${r.status}`);
+      return r.text();
+    }),
+  ]);
+  if (!a.includes('NeatClock') || a.trim() !== b.trim()) {
+    throw new Error('well-known/llms.txt does not match /llms.txt');
+  }
+});
+
 if (failures.length) {
   console.error(`\ncheck-seo-live: ${failures.length} failure(s)`);
   process.exit(1);

@@ -1,0 +1,120 @@
+{
+  "name": "NeatClock",
+  "url": "https://neatclock.pro/",
+  "description": "Free recurring calendar generator — export .ics files for home maintenance, car upkeep, or freelance tax reminders in 60 seconds. No sign-up.",
+  "llms": "https://neatclock.pro/llms.txt",
+  "llmsFull": "https://neatclock.pro/llms-full.txt",
+  "sitemap": "https://neatclock.pro/sitemap.xml",
+  "guides": "https://neatclock.pro/guides",
+  "updated": "2026-08-02",
+  "pages": [
+    {
+      "path": "/guides",
+      "title": "Free Schedule Guides",
+      "intent": "hub",
+      "url": "https://neatclock.pro/guides"
+    },
+    {
+      "path": "/car-maintenance-schedule-ics",
+      "title": "Car Maintenance Schedule ICS",
+      "intent": "landing",
+      "url": "https://neatclock.pro/car-maintenance-schedule-ics"
+    },
+    {
+      "path": "/dryer-vent-cleaning-reminder",
+      "title": "Dryer Vent Cleaning Reminder",
+      "intent": "landing",
+      "url": "https://neatclock.pro/dryer-vent-cleaning-reminder"
+    },
+    {
+      "path": "/freelancer-quarterly-tax-reminders",
+      "title": "Freelancer Quarterly Tax Reminders",
+      "intent": "landing",
+      "url": "https://neatclock.pro/freelancer-quarterly-tax-reminders"
+    },
+    {
+      "path": "/google-calendar-recurring-events",
+      "title": "Google Calendar Recurring Events Generator",
+      "intent": "landing",
+      "url": "https://neatclock.pro/google-calendar-recurring-events"
+    },
+    {
+      "path": "/gutter-cleaning-calendar",
+      "title": "Gutter Cleaning Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/gutter-cleaning-calendar"
+    },
+    {
+      "path": "/home-maintenance-calendar",
+      "title": "Home Maintenance Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/home-maintenance-calendar"
+    },
+    {
+      "path": "/hvac-filter-reminder-calendar",
+      "title": "HVAC Filter Reminder Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/hvac-filter-reminder-calendar"
+    },
+    {
+      "path": "/oil-change-reminder-calendar",
+      "title": "Oil Change Reminder Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/oil-change-reminder-calendar"
+    },
+    {
+      "path": "/printable-chore-chart",
+      "title": "Printable Chore Chart Generator",
+      "intent": "landing",
+      "url": "https://neatclock.pro/printable-chore-chart"
+    },
+    {
+      "path": "/quarterly-estimated-tax-calendar",
+      "title": "Quarterly Estimated Tax Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/quarterly-estimated-tax-calendar"
+    },
+    {
+      "path": "/recurring-ics-calendar-generator",
+      "title": "Recurring ICS Calendar Generator",
+      "intent": "landing",
+      "url": "https://neatclock.pro/recurring-ics-calendar-generator"
+    },
+    {
+      "path": "/recurring-task-reminder-app",
+      "title": "Recurring Task Reminder App",
+      "intent": "landing",
+      "url": "https://neatclock.pro/recurring-task-reminder-app"
+    },
+    {
+      "path": "/smoke-detector-reminder-calendar",
+      "title": "Smoke Detector Reminder Calendar",
+      "intent": "landing",
+      "url": "https://neatclock.pro/smoke-detector-reminder-calendar"
+    },
+    {
+      "path": "/subscription-audit-reminder",
+      "title": "Subscription Audit Reminder",
+      "intent": "landing",
+      "url": "https://neatclock.pro/subscription-audit-reminder"
+    },
+    {
+      "path": "/tire-rotation-schedule-ics",
+      "title": "Tire Rotation Schedule ICS",
+      "intent": "landing",
+      "url": "https://neatclock.pro/tire-rotation-schedule-ics"
+    },
+    {
+      "path": "/water-heater-flush-reminder",
+      "title": "Water Heater Flush Reminder",
+      "intent": "landing",
+      "url": "https://neatclock.pro/water-heater-flush-reminder"
+    },
+    {
+      "path": "/partner",
+      "title": "Partner Builder",
+      "intent": "partner",
+      "url": "https://neatclock.pro/partner"
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 # NeatClock — allow search engines and AI crawlers
 # LLM summary: https://neatclock.pro/llms.txt
+# LLM full: https://neatclock.pro/llms-full.txt
+# Catalog: https://neatclock.pro/catalog.json
+# Well-known: https://neatclock.pro/.well-known/llms.txt
 
 User-agent: *
 Allow: /

@@ -7,14 +7,18 @@
  *  2) check local HTML assets
  *  3) live SEO smoke (production)
  *  4) IndexNow submit (all sitemap URLs)
- *  5) Plausible → TRAFFIC-SCOREBOARD (if PLAUSIBLE_API_KEY set)
- *  6) print today's distribution reminder
+ *  5) sync llms.txt / llms-full.txt / catalog.json from sitemap
+ *  6) Plausible → TRAFFIC-SCOREBOARD (if PLAUSIBLE_API_KEY set)
+ *  7) print today's distribution reminder
+ *  8) optional OPS_WEBHOOK_URL notify (Zapier → Notion)
  *
  * Flags:
  *   --skip-live
  *   --skip-indexnow
  *   --skip-scoreboard
  *   --skip-sitemap
+ *   --skip-llms
+ *   --skip-notify
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -43,6 +47,10 @@ if (!flags.has('--skip-sitemap')) {
 
 run('check:html-assets', 'node', ['scripts/check-html-assets.mjs']);
 
+if (!flags.has('--skip-llms')) {
+  run('sync-llms-catalog', 'node', ['scripts/sync-llms-catalog.mjs']);
+}
+
 if (!flags.has('--skip-live')) {
   run('check:seo-live', 'node', ['scripts/check-seo-live.mjs']);
 }
@@ -66,6 +74,23 @@ if (fs.existsSync(distPath)) {
   console.log(map[weekday] || 'No scheduled channel today — max 3 posts/week. See docs/DISTRIBUTION-WEEKLY.md');
 } else {
   console.log('docs/DISTRIBUTION-WEEKLY.md missing');
+}
+
+if (!flags.has('--skip-notify')) {
+  run(
+    'notify-ops',
+    'node',
+    [
+      'scripts/notify-ops.mjs',
+      '--event',
+      'seo_auto_complete',
+      '--title',
+      `seo:auto complete (${weekday})`,
+      '--source',
+      'seo-automate',
+    ],
+    { optional: true },
+  );
 }
 
 console.log('\nseo:auto complete');

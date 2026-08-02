@@ -298,6 +298,12 @@ if (!llmsFull.includes(urlPath)) {
 }
 
 try {
+  execFileSync('node', ['scripts/sync-llms-catalog.mjs'], { stdio: 'inherit' });
+} catch {
+  process.exitCode = 1;
+}
+
+try {
   execFileSync('node', ['scripts/check-html-assets.mjs'], { stdio: 'inherit' });
 } catch {
   process.exitCode = 1;
