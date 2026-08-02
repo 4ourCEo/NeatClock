@@ -11,10 +11,14 @@
     <meta property="og:title" content="Smoke Detector Reminder Calendar — Free ICS | NeatClock" />
     <meta property="og:description" content="Recurring smoke detector test reminders as a calendar file — export in under a minute." />
     <meta property="og:image" content="https://neatclock.pro/og-smoke-detector-reminder-calendar.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Smoke Detector Reminder Calendar — NeatClock" />
     <meta name="twitter:description" content="Export recurring smoke detector reminders to your calendar — free, no sign-up." />
     <meta name="twitter:image" content="https://neatclock.pro/og-smoke-detector-reminder-calendar.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,6 +74,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -100,6 +110,22 @@
       <div class="card">
         <h2>How it works</h2>
         <p style="color:var(--muted)">Load the home preset, keep or edit the smoke detector interval, export .ics, and import into your calendar. Pair it with HVAC and gutter reminders so home safety isn't a sticky note you'll lose.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>How often should I test smoke detectors?</summary>
+          <p>Test detectors at least twice a year (many households do it when clocks change). NeatClock's Home Sentinel preset includes a twice-yearly smoke detector check you can edit before export.</p>
+        </details>
+        <details>
+          <summary>Can smoke detector reminders go on my phone calendar?</summary>
+          <p>Yes. Export a .ics file from NeatClock and import it into Google Calendar, Apple Calendar, or Outlook so reminders show up on your phone.</p>
+        </details>
+        <details>
+          <summary>Is this smoke detector calendar free?</summary>
+          <p>Yes. Core presets and .ics export are free with no account. Your schedule stays on your device.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">

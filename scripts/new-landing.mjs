@@ -22,7 +22,9 @@ function arg(name, fallback = '') {
 
 const slug = arg('slug').replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
 const title = arg('title');
-const preset = arg('preset', 'home'); // home | gearhead | cfo | ''
+const presetRaw = arg('preset', 'home'); // home | gearhead | cfo | ''
+const presetAliases = { car: 'gearhead', freelance: 'cfo', freelancer: 'cfo' };
+const preset = presetAliases[presetRaw] || presetRaw;
 const campaign = arg('campaign', slug.replace(/-/g, '_').slice(0, 40));
 const lead = arg('lead', `${title} — export a free .ics file in under a minute.`);
 const label = arg('label', title);
@@ -65,10 +67,14 @@ const html = `<!doctype html>
     <meta property="og:title" content="${title} — Free ICS | NeatClock" />
     <meta property="og:description" content="${description.replace(/"/g, '&quot;')}" />
     <meta property="og:image" content="https://neatclock.pro/og-${slug}.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title} — NeatClock" />
     <meta name="twitter:description" content="${description.replace(/"/g, '&quot;')}" />
     <meta name="twitter:image" content="https://neatclock.pro/og-${slug}.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -156,8 +162,25 @@ const html = `<!doctype html>
         <p style="color:var(--muted)">Pick a preset, tweak intervals, download your .ics, and import it into any calendar app. NeatClock is a generator — not another task tracker with a signup wall.</p>
       </div>
 
+      <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Is ${title.replace(/</g, '&lt;')} free?</summary>
+          <p>Yes. Core presets and .ics export are free. No account — your schedule stays on your device.</p>
+        </details>
+        <details>
+          <summary>Can I import this into Google Calendar?</summary>
+          <p>Yes. Export a .ics file from NeatClock and import it into Google Calendar, Apple Calendar, or Outlook.</p>
+        </details>
+        <details>
+          <summary>Do I need an account?</summary>
+          <p>No. NeatClock runs in your browser with no sign-up.</p>
+        </details>
+      </div>
+
       <nav class="related" aria-label="Related schedule guides">
         <p>Other free calendars</p>
+        <a href="/guides">All guides</a> ·
         <a href="/recurring-ics-calendar-generator">ICS generator</a> ·
         <a href="/home-maintenance-calendar">Home maintenance</a> ·
         <a href="/car-maintenance-schedule-ics">Car maintenance</a> ·
@@ -238,12 +261,16 @@ const footerPath = path.join('src', 'components', 'SeoFooterLinks.jsx');
 let footer = fs.readFileSync(footerPath, 'utf8');
 const guideLine = `  { href: '${urlPath}', label: '${label.replace(/'/g, "\\'")}' },`;
 if (!footer.includes(`href: '${urlPath}'`)) {
-  footer = footer.replace(
-    "  { href: '/recurring-task-reminder-app', label: 'Recurring reminder app' },\n];",
-    `  { href: '/recurring-task-reminder-app', label: 'Recurring reminder app' },\n${guideLine}\n];`,
+  const inserted = footer.replace(
+    /(\n];\n\nexport default function SeoFooterLinks)/,
+    `\n${guideLine}$1`,
   );
-  fs.writeFileSync(footerPath, footer);
-  console.log('updated SeoFooterLinks.jsx');
+  if (inserted === footer) {
+    console.warn('Could not auto-wire SeoFooterLinks.jsx — add manually:', guideLine.trim());
+  } else {
+    fs.writeFileSync(footerPath, inserted);
+    console.log('updated SeoFooterLinks.jsx');
+  }
 }
 
 // llms.txt

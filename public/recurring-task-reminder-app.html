@@ -11,10 +11,14 @@
     <meta property="og:title" content="Recurring Task Reminder App — No Sign-Up | NeatClock" />
     <meta property="og:description" content="A free recurring task reminder app with no account and no subscription — export straight to your phone's calendar." />
     <meta property="og:image" content="https://neatclock.pro/og-recurring-task-reminder-app.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Recurring Task Reminder App — NeatClock" />
     <meta name="twitter:description" content="Free recurring reminders, exported straight to your calendar app — no account, no subscription." />
     <meta name="twitter:image" content="https://neatclock.pro/og-recurring-task-reminder-app.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,6 +74,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -100,6 +110,22 @@
       <div class="card">
         <h2>Why not another reminder app?</h2>
         <p style="color:var(--muted)">Most reminder apps want an account, send push notifications, and add another icon to your home screen. NeatClock generates standard calendar events you already know how to use — reminders live where you already look, not in a new app you'll forget to open.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Is there a free app for recurring reminders without an account?</summary>
+          <p>Yes. NeatClock runs entirely in your browser — no account, no app store download. Build a recurring schedule and export it as a standard .ics file that any calendar app can import.</p>
+        </details>
+        <details>
+          <summary>Does this work on my phone?</summary>
+          <p>Yes. Open neatclock.pro in your phone's browser, build your schedule, and export directly into your phone's native calendar app (Google Calendar, Apple Calendar, or Outlook).</p>
+        </details>
+        <details>
+          <summary>Is this a subscription?</summary>
+          <p>No. The core recurring reminder generator is free forever, with no subscription and no paywall on export.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">

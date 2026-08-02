@@ -19,9 +19,24 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@type": "Organization",
+      "@id": "https://neatclock.pro/#organization",
       "name": "NeatClock",
-      "url": "%VITE_SITE_URL%/"
+      "url": "https://neatclock.pro/",
+      "logo": "https://neatclock.pro/logo.png",
+      "sameAs": [
+        "https://github.com/4ourCEo/NeatClock"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://neatclock.pro/#website",
+      "name": "NeatClock",
+      "url": "%VITE_SITE_URL%/",
+      "publisher": { "@id": "https://neatclock.pro/#organization" }
     }
     </script>
     <script type="application/ld+json">
@@ -35,6 +50,7 @@
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "browserRequirements": "Requires JavaScript",
+      "publisher": { "@id": "https://neatclock.pro/#organization" },
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -139,10 +155,17 @@
           </ul>
           <h2>Guides</h2>
           <ul>
+            <li><a href="/guides">All free schedule guides</a></li>
             <li><a href="/recurring-ics-calendar-generator">Recurring ICS calendar generator</a></li>
             <li><a href="/home-maintenance-calendar">Home maintenance calendar</a></li>
+            <li><a href="/hvac-filter-reminder-calendar">HVAC filter reminders</a></li>
+            <li><a href="/smoke-detector-reminder-calendar">Smoke detector reminders</a></li>
             <li><a href="/car-maintenance-schedule-ics">Car maintenance schedule</a></li>
+            <li><a href="/oil-change-reminder-calendar">Oil change reminders</a></li>
             <li><a href="/freelancer-quarterly-tax-reminders">Freelancer quarterly tax reminders</a></li>
+            <li><a href="/printable-chore-chart">Printable chore chart</a></li>
+            <li><a href="/recurring-task-reminder-app">Recurring reminder app</a></li>
+            <li><a href="/partner">Partner builder</a></li>
           </ul>
           <p>This page requires JavaScript to generate and export your calendar.</p>
         </main>

@@ -45,6 +45,15 @@ Users can save custom presets (names + task lists) locally.
 | Recurring reminder app landing | https://neatclock.pro/recurring-task-reminder-app |
 | HVAC filter reminder landing | https://neatclock.pro/hvac-filter-reminder-calendar |
 | Smoke detector reminder landing | https://neatclock.pro/smoke-detector-reminder-calendar |
+| Oil Change Reminder Calendar landing | https://neatclock.pro/oil-change-reminder-calendar |
+| Tire Rotation Schedule ICS landing | https://neatclock.pro/tire-rotation-schedule-ics |
+| Water Heater Flush Reminder landing | https://neatclock.pro/water-heater-flush-reminder |
+| Gutter Cleaning Calendar landing | https://neatclock.pro/gutter-cleaning-calendar |
+| Dryer Vent Cleaning Reminder landing | https://neatclock.pro/dryer-vent-cleaning-reminder |
+| Quarterly Estimated Tax Calendar landing | https://neatclock.pro/quarterly-estimated-tax-calendar |
+| Subscription Audit Reminder landing | https://neatclock.pro/subscription-audit-reminder |
+| Google Calendar Recurring Events Generator landing | https://neatclock.pro/google-calendar-recurring-events |
+| Guides hub | https://neatclock.pro/guides |
 | Partner / co-brand page | https://neatclock.pro/partner |
 | GitHub | https://github.com/4ourCEo/NeatClock |
 | llms.txt (summary) | https://neatclock.pro/llms.txt |

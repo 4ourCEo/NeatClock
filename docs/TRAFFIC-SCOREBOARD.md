@@ -39,3 +39,12 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md`
 - [ ] Human: fill 7 daily scoreboard rows (or set `PLAUSIBLE_API_KEY` Actions secret → weekly auto-fill via `npm run seo:scoreboard`)
 - Automation playbook: `docs/SEO-AUTOMATION.md`
+
+## 10x discovery push (2026-08-02)
+
+- [x] Trailing-slash → clean URL (308) via `vercel.json`
+- [x] Visible FAQ on landings with `FAQPage` schema
+- [x] Organization + WebSite schema on homepage; expanded noscript guides
+- [x] `/guides` hub + 8 long-tail landings (oil, tires, water heater, gutters, dryer vent, quarterly tax, subscription audit, Google Calendar)
+- [ ] Human: GSC Inspect for `/guides` and each new long-tail URL after deploy
+- [ ] Human: Mon/Wed/Fri distribution — link `/guides` + one intent landing each post

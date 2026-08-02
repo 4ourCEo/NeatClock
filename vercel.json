@@ -3,29 +3,53 @@
     {
       "source": "/og-image.png",
       "headers": [
-        { "key": "Content-Type", "value": "image/png" },
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+        {
+          "key": "Content-Type",
+          "value": "image/png"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*).html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://plausible.io https://formspree.io https://formsubmit.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
@@ -36,38 +60,222 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.neatclock.pro" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.neatclock.pro"
+        }
+      ],
       "destination": "https://neatclock.pro/$1",
       "permanent": true
     },
-    { "source": "/home-maintenance-calendar.html", "destination": "/home-maintenance-calendar", "permanent": true },
-    { "source": "/car-maintenance-schedule-ics.html", "destination": "/car-maintenance-schedule-ics", "permanent": true },
-    { "source": "/freelancer-quarterly-tax-reminders.html", "destination": "/freelancer-quarterly-tax-reminders", "permanent": true },
-    { "source": "/recurring-ics-calendar-generator.html", "destination": "/recurring-ics-calendar-generator", "permanent": true },
-    { "source": "/printable-chore-chart.html", "destination": "/printable-chore-chart", "permanent": true },
-    { "source": "/recurring-task-reminder-app.html", "destination": "/recurring-task-reminder-app", "permanent": true },
-    { "source": "/hvac-filter-reminder-calendar.html", "destination": "/hvac-filter-reminder-calendar", "permanent": true },
-    { "source": "/smoke-detector-reminder-calendar.html", "destination": "/smoke-detector-reminder-calendar", "permanent": true },
-    { "source": "/privacy.html", "destination": "/privacy", "permanent": true },
-    { "source": "/terms.html", "destination": "/terms", "permanent": true },
-    { "source": "/affiliate-disclosure.html", "destination": "/affiliate-disclosure", "permanent": true },
-    { "source": "/partner.html", "destination": "/partner", "permanent": true }
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "permanent": true
+    },
+    {
+      "source": "/home-maintenance-calendar.html",
+      "destination": "/home-maintenance-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/car-maintenance-schedule-ics.html",
+      "destination": "/car-maintenance-schedule-ics",
+      "permanent": true
+    },
+    {
+      "source": "/freelancer-quarterly-tax-reminders.html",
+      "destination": "/freelancer-quarterly-tax-reminders",
+      "permanent": true
+    },
+    {
+      "source": "/recurring-ics-calendar-generator.html",
+      "destination": "/recurring-ics-calendar-generator",
+      "permanent": true
+    },
+    {
+      "source": "/printable-chore-chart.html",
+      "destination": "/printable-chore-chart",
+      "permanent": true
+    },
+    {
+      "source": "/recurring-task-reminder-app.html",
+      "destination": "/recurring-task-reminder-app",
+      "permanent": true
+    },
+    {
+      "source": "/hvac-filter-reminder-calendar.html",
+      "destination": "/hvac-filter-reminder-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/smoke-detector-reminder-calendar.html",
+      "destination": "/smoke-detector-reminder-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/terms.html",
+      "destination": "/terms",
+      "permanent": true
+    },
+    {
+      "source": "/affiliate-disclosure.html",
+      "destination": "/affiliate-disclosure",
+      "permanent": true
+    },
+    {
+      "source": "/oil-change-reminder-calendar.html",
+      "destination": "/oil-change-reminder-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/tire-rotation-schedule-ics.html",
+      "destination": "/tire-rotation-schedule-ics",
+      "permanent": true
+    },
+    {
+      "source": "/water-heater-flush-reminder.html",
+      "destination": "/water-heater-flush-reminder",
+      "permanent": true
+    },
+    {
+      "source": "/gutter-cleaning-calendar.html",
+      "destination": "/gutter-cleaning-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/dryer-vent-cleaning-reminder.html",
+      "destination": "/dryer-vent-cleaning-reminder",
+      "permanent": true
+    },
+    {
+      "source": "/quarterly-estimated-tax-calendar.html",
+      "destination": "/quarterly-estimated-tax-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/subscription-audit-reminder.html",
+      "destination": "/subscription-audit-reminder",
+      "permanent": true
+    },
+    {
+      "source": "/google-calendar-recurring-events.html",
+      "destination": "/google-calendar-recurring-events",
+      "permanent": true
+    },
+    {
+      "source": "/guides.html",
+      "destination": "/guides",
+      "permanent": true
+    },
+    {
+      "source": "/partner.html",
+      "destination": "/partner",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/llms.txt", "destination": "/llms.txt" },
-    { "source": "/llms-full.txt", "destination": "/llms-full.txt" },
-    { "source": "/home-maintenance-calendar", "destination": "/home-maintenance-calendar.html" },
-    { "source": "/car-maintenance-schedule-ics", "destination": "/car-maintenance-schedule-ics.html" },
-    { "source": "/freelancer-quarterly-tax-reminders", "destination": "/freelancer-quarterly-tax-reminders.html" },
-    { "source": "/recurring-ics-calendar-generator", "destination": "/recurring-ics-calendar-generator.html" },
-    { "source": "/printable-chore-chart", "destination": "/printable-chore-chart.html" },
-    { "source": "/recurring-task-reminder-app", "destination": "/recurring-task-reminder-app.html" },
-    { "source": "/hvac-filter-reminder-calendar", "destination": "/hvac-filter-reminder-calendar.html" },
-    { "source": "/smoke-detector-reminder-calendar", "destination": "/smoke-detector-reminder-calendar.html" },
-    { "source": "/partner", "destination": "/partner.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms", "destination": "/terms.html" },
-    { "source": "/affiliate-disclosure", "destination": "/affiliate-disclosure.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/llms.txt",
+      "destination": "/llms.txt"
+    },
+    {
+      "source": "/llms-full.txt",
+      "destination": "/llms-full.txt"
+    },
+    {
+      "source": "/home-maintenance-calendar",
+      "destination": "/home-maintenance-calendar.html"
+    },
+    {
+      "source": "/car-maintenance-schedule-ics",
+      "destination": "/car-maintenance-schedule-ics.html"
+    },
+    {
+      "source": "/freelancer-quarterly-tax-reminders",
+      "destination": "/freelancer-quarterly-tax-reminders.html"
+    },
+    {
+      "source": "/recurring-ics-calendar-generator",
+      "destination": "/recurring-ics-calendar-generator.html"
+    },
+    {
+      "source": "/printable-chore-chart",
+      "destination": "/printable-chore-chart.html"
+    },
+    {
+      "source": "/recurring-task-reminder-app",
+      "destination": "/recurring-task-reminder-app.html"
+    },
+    {
+      "source": "/hvac-filter-reminder-calendar",
+      "destination": "/hvac-filter-reminder-calendar.html"
+    },
+    {
+      "source": "/smoke-detector-reminder-calendar",
+      "destination": "/smoke-detector-reminder-calendar.html"
+    },
+    {
+      "source": "/partner",
+      "destination": "/partner.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/affiliate-disclosure",
+      "destination": "/affiliate-disclosure.html"
+    },
+    {
+      "source": "/oil-change-reminder-calendar",
+      "destination": "/oil-change-reminder-calendar.html"
+    },
+    {
+      "source": "/tire-rotation-schedule-ics",
+      "destination": "/tire-rotation-schedule-ics.html"
+    },
+    {
+      "source": "/water-heater-flush-reminder",
+      "destination": "/water-heater-flush-reminder.html"
+    },
+    {
+      "source": "/gutter-cleaning-calendar",
+      "destination": "/gutter-cleaning-calendar.html"
+    },
+    {
+      "source": "/dryer-vent-cleaning-reminder",
+      "destination": "/dryer-vent-cleaning-reminder.html"
+    },
+    {
+      "source": "/quarterly-estimated-tax-calendar",
+      "destination": "/quarterly-estimated-tax-calendar.html"
+    },
+    {
+      "source": "/subscription-audit-reminder",
+      "destination": "/subscription-audit-reminder.html"
+    },
+    {
+      "source": "/google-calendar-recurring-events",
+      "destination": "/google-calendar-recurring-events.html"
+    },
+    {
+      "source": "/guides",
+      "destination": "/guides.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

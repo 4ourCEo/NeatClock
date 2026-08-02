@@ -1,11 +1,20 @@
 const GUIDES = [
+  { href: '/guides', label: 'All schedule guides' },
   { href: '/recurring-ics-calendar-generator', label: 'ICS calendar generator' },
   { href: '/home-maintenance-calendar', label: 'Home maintenance calendar' },
   { href: '/hvac-filter-reminder-calendar', label: 'HVAC filter reminders' },
   { href: '/smoke-detector-reminder-calendar', label: 'Smoke detector reminders' },
+  { href: '/water-heater-flush-reminder', label: 'Water heater flush reminder' },
+  { href: '/gutter-cleaning-calendar', label: 'Gutter cleaning calendar' },
+  { href: '/dryer-vent-cleaning-reminder', label: 'Dryer vent cleaning reminder' },
   { href: '/car-maintenance-schedule-ics', label: 'Car maintenance ICS' },
+  { href: '/oil-change-reminder-calendar', label: 'Oil change reminders' },
+  { href: '/tire-rotation-schedule-ics', label: 'Tire rotation schedule' },
   { href: '/freelancer-quarterly-tax-reminders', label: 'Freelancer tax reminders' },
+  { href: '/quarterly-estimated-tax-calendar', label: 'Quarterly estimated tax calendar' },
+  { href: '/subscription-audit-reminder', label: 'Subscription audit reminder' },
   { href: '/printable-chore-chart', label: 'Printable chore chart' },
+  { href: '/google-calendar-recurring-events', label: 'Google Calendar recurring events' },
   { href: '/recurring-task-reminder-app', label: 'Recurring reminder app' },
 ];
 

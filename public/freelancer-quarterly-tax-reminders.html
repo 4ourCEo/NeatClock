@@ -11,10 +11,14 @@
     <meta property="og:title" content="Freelancer Quarterly Tax Reminders — ICS Calendar | NeatClock" />
     <meta property="og:description" content="Quarterly estimated taxes, monthly bookkeeping, and finance hygiene — export recurring .ics reminders for your calendar." />
     <meta property="og:image" content="https://neatclock.pro/og-freelancer-quarterly-tax-reminders.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Freelancer Quarterly Tax Reminders — NeatClock" />
     <meta name="twitter:description" content="Recurring tax and bookkeeping reminders as a downloadable .ics file." />
     <meta name="twitter:image" content="https://neatclock.pro/og-freelancer-quarterly-tax-reminders.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -71,6 +75,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -102,6 +112,22 @@
       <div class="card">
         <h2>Stay ahead of deadlines</h2>
         <p style="color:var(--muted)">Missed quarterly payments are expensive. Put the dates on your real calendar, tweak intervals to match your CPA's schedule, and re-export when things change. Your data never leaves your browser.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>How do freelancers track quarterly estimated taxes?</summary>
+          <p>NeatClock's Automated CFO preset includes quarterly estimated tax reminders every three months, plus monthly bookkeeping and semi-annual subscription reviews. Export to your calendar so deadlines surface automatically.</p>
+        </details>
+        <details>
+          <summary>Is this tax advice or accounting software?</summary>
+          <p>No. NeatClock only generates recurring calendar reminders. It does not calculate taxes, file returns, or store financial data on servers. Consult a CPA for tax advice.</p>
+        </details>
+        <details>
+          <summary>Can I add custom finance reminders?</summary>
+          <p>Yes. Edit any task interval, add new items like HSA contributions or invoice follow-ups, and export an updated .ics file anytime.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">

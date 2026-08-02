@@ -15,3 +15,8 @@ li { margin: 0.35rem 0; }
 code { background: rgba(28,28,28,.06); padding: 0.15em 0.4em; border-radius: 0.35em; font-size: 0.9em; }
 footer { margin-top: 2.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
 footer a { color: var(--accent); }
+.faq details { border-top: 1px solid rgba(28,28,28,.08); padding: 0.75rem 0; }
+.faq details:first-of-type { border-top: 0; }
+.faq summary { cursor: pointer; font-weight: 600; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq details p { color: var(--muted); margin-top: 0.5rem; font-size: 0.95rem; }

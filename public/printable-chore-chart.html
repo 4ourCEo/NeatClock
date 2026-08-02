@@ -11,10 +11,14 @@
     <meta property="og:title" content="Printable Chore Chart Generator — Free Checklist | NeatClock" />
     <meta property="og:description" content="Generate a printable chore chart or maintenance checklist in under a minute — no sign-up, no app to install." />
     <meta property="og:image" content="https://neatclock.pro/og-printable-chore-chart.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Printable Chore Chart Generator — NeatClock" />
     <meta name="twitter:description" content="Generate a printable chore chart or maintenance checklist in under a minute — no sign-up." />
     <meta name="twitter:image" content="https://neatclock.pro/og-printable-chore-chart.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,6 +74,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -100,6 +110,22 @@
       <div class="card">
         <h2>How it works</h2>
         <p style="color:var(--muted)">NeatClock isn't just a calendar exporter — the same schedule you build also renders as a minimalist, print-ready checklist. No watermarks, no account, no template shop. Edit once, print or export to your calendar.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>How do I make a printable chore chart?</summary>
+          <p>Open NeatClock, pick a preset or add your own chores, then use the print-friendly checklist view to print a clean, fridge-ready chart — no design software needed.</p>
+        </details>
+        <details>
+          <summary>Is the printable checklist free?</summary>
+          <p>Yes. The print-friendly checklist view is part of NeatClock's free core tool. No account or payment required.</p>
+        </details>
+        <details>
+          <summary>Can I customize the chore chart before printing?</summary>
+          <p>Yes. Edit task names and intervals, add your own chores with natural language input, then switch to the print view before printing or saving as PDF from your browser.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">

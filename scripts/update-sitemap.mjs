@@ -20,6 +20,15 @@ const SOURCE_FOR_PATH = {
   '/freelancer-quarterly-tax-reminders': 'public/freelancer-quarterly-tax-reminders.html',
   '/printable-chore-chart': 'public/printable-chore-chart.html',
   '/recurring-task-reminder-app': 'public/recurring-task-reminder-app.html',
+  '/oil-change-reminder-calendar': 'public/oil-change-reminder-calendar.html',
+  '/tire-rotation-schedule-ics': 'public/tire-rotation-schedule-ics.html',
+  '/water-heater-flush-reminder': 'public/water-heater-flush-reminder.html',
+  '/gutter-cleaning-calendar': 'public/gutter-cleaning-calendar.html',
+  '/dryer-vent-cleaning-reminder': 'public/dryer-vent-cleaning-reminder.html',
+  '/quarterly-estimated-tax-calendar': 'public/quarterly-estimated-tax-calendar.html',
+  '/subscription-audit-reminder': 'public/subscription-audit-reminder.html',
+  '/google-calendar-recurring-events': 'public/google-calendar-recurring-events.html',
+  '/guides': 'public/guides.html',
   '/partner': 'public/partner.html',
 };
 

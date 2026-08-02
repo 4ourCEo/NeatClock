@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free Schedule Guides — Recurring Calendars &amp; ICS | NeatClock</title>
+    <meta name="description" content="Browse every free NeatClock schedule guide — home maintenance, car care, freelancer taxes, printable checklists, and more. Export .ics calendars with no sign-up." />
+    <link rel="canonical" href="https://neatclock.pro/guides" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://neatclock.pro/guides" />
+    <meta property="og:title" content="Free Schedule Guides | NeatClock" />
+    <meta property="og:description" content="Every free NeatClock guide in one place — recurring calendars you can export as .ics." />
+    <meta property="og:image" content="https://neatclock.pro/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock free schedule guides" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Free Schedule Guides | NeatClock" />
+    <meta name="twitter:description" content="Home, car, and finance recurring calendar guides — free .ics export." />
+    <meta name="twitter:image" content="https://neatclock.pro/og-image.png" />
+    <meta name="twitter:image:alt" content="NeatClock free schedule guides" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/page-base.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "NeatClock Free Schedule Guides",
+      "url": "https://neatclock.pro/guides",
+      "isPartOf": { "@id": "https://neatclock.pro/#website" }
+    }
+    </script>
+    <style>
+      .grid { display: grid; gap: 0.85rem; margin-top: 1rem; }
+      .grid a {
+        display: block; padding: 1rem 1.15rem; border-radius: 1rem;
+        border: 1px solid rgba(28,28,28,.1); background: var(--card, #fff);
+        color: var(--text); text-decoration: none; font-weight: 600;
+      }
+      .grid a:hover { border-color: var(--accent); }
+      .grid a span { display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; margin-top: 0.35rem; }
+      .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; }
+    </style>
+    <script>
+      window.plausible = window.plausible || function () {
+        (window.plausible.q = window.plausible.q || []).push(arguments);
+      };
+    </script>
+    <script defer data-domain="neatclock.pro" src="https://plausible.io/js/script.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <img class="logo" src="/logo.png" width="2003" height="299" alt="NeatClock" />
+        <h1>Free schedule guides</h1>
+        <p class="lead">Intent pages for homeowners, drivers, and freelancers — each exports a real .ics calendar. No account.</p>
+      </header>
+
+      <div class="card">
+        <h2>Home</h2>
+        <div class="grid" id="home-guides"></div>
+      </div>
+      <div class="card">
+        <h2>Car</h2>
+        <div class="grid" id="car-guides"></div>
+      </div>
+      <div class="card">
+        <h2>Freelance &amp; finance</h2>
+        <div class="grid" id="finance-guides"></div>
+      </div>
+      <div class="card">
+        <h2>Tools</h2>
+        <div class="grid" id="tool-guides"></div>
+      </div>
+
+      <a class="cta" href="/?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=guides" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'guides'}})">Open the generator →</a>
+
+      <footer>
+        <a href="/">NeatClock</a> — minimalist recurring calendar generator
+      </footer>
+    </div>
+    <script>
+      const groups = {
+        'home-guides': [
+          ['/home-maintenance-calendar', 'Home maintenance calendar', 'HVAC, smoke detectors, gutters, and more'],
+          ['/hvac-filter-reminder-calendar', 'HVAC filter reminders', 'Never miss a filter change'],
+          ['/smoke-detector-reminder-calendar', 'Smoke detector reminders', 'Twice-yearly safety checks'],
+          ['/water-heater-flush-reminder', 'Water heater flush reminder', 'Annual flush on your calendar'],
+          ['/gutter-cleaning-calendar', 'Gutter cleaning calendar', 'Seasonal gutter reminders'],
+          ['/dryer-vent-cleaning-reminder', 'Dryer vent cleaning reminder', 'Fire-safety maintenance cadence'],
+          ['/printable-chore-chart', 'Printable chore chart', 'Fridge-ready checklist'],
+        ],
+        'car-guides': [
+          ['/car-maintenance-schedule-ics', 'Car maintenance ICS', 'Oil, tires, brakes, fluids'],
+          ['/oil-change-reminder-calendar', 'Oil change reminders', 'Mileage-style cadence as calendar events'],
+          ['/tire-rotation-schedule-ics', 'Tire rotation schedule', 'Recurring rotation reminders'],
+        ],
+        'finance-guides': [
+          ['/freelancer-quarterly-tax-reminders', 'Freelancer quarterly taxes', 'Estimated tax + bookkeeping rhythm'],
+          ['/quarterly-estimated-tax-calendar', 'Quarterly estimated tax calendar', 'IRS-style quarter reminders'],
+          ['/subscription-audit-reminder', 'Subscription audit reminder', 'Kill zombie SaaS charges'],
+        ],
+        'tool-guides': [
+          ['/recurring-ics-calendar-generator', 'ICS calendar generator', 'Head-term free .ics builder'],
+          ['/recurring-task-reminder-app', 'Recurring reminder app', 'No-signup reminder workflow'],
+          ['/google-calendar-recurring-events', 'Google Calendar recurring events', 'Export then import in 60 seconds'],
+          ['/partner', 'Partner builder', 'Co-branded links for clients'],
+        ],
+      };
+      for (const [id, items] of Object.entries(groups)) {
+        const el = document.getElementById(id);
+        el.innerHTML = items.map(([href, title, desc]) =>
+          `<a href="${href}"><strong>${title}</strong><span>${desc}</span></a>`
+        ).join('');
+      }
+    </script>
+  </body>
+</html>

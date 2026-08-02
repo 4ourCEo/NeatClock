@@ -11,10 +11,14 @@
     <meta property="og:title" content="Home Maintenance Calendar — Recurring ICS Reminders | NeatClock" />
     <meta property="og:description" content="Build a home maintenance calendar in under a minute. Export recurring .ics reminders for HVAC, smoke detectors, gutters, and more." />
     <meta property="og:image" content="https://neatclock.pro/og-home-maintenance-calendar.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Home Maintenance Calendar — NeatClock" />
     <meta name="twitter:description" content="Export a recurring home maintenance .ics calendar in under a minute — no sign-up." />
     <meta name="twitter:image" content="https://neatclock.pro/og-home-maintenance-calendar.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,6 +74,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -100,6 +110,22 @@
       <div class="card">
         <h2>How it works</h2>
         <p style="color:var(--muted)">NeatClock is a generator, not a task tracker. Pick the preset, tweak intervals, download your .ics file, and import it into any calendar app. No account. Data stays on your device.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>How do I add home maintenance reminders to my calendar?</summary>
+          <p>Open NeatClock, pick the Home Sentinel preset, customize tasks like HVAC filters and gutter cleaning, then export a .ics file and import it into Google Calendar, Apple Calendar, or Outlook.</p>
+        </details>
+        <details>
+          <summary>Is NeatClock free for home maintenance schedules?</summary>
+          <p>Yes. Core .ics export and all built-in presets are free. Your schedule stays on your device — no account required.</p>
+        </details>
+        <details>
+          <summary>What home tasks are included in the default preset?</summary>
+          <p>The Home Sentinel preset includes HVAC filter replacement, smoke detector checks, gutter clearance, water heater flush, and dryer vent vacuuming on sensible recurring intervals.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">

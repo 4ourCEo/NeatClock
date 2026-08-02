@@ -11,10 +11,14 @@
     <meta property="og:title" content="Recurring ICS Calendar Generator — Free .ics Export | NeatClock" />
     <meta property="og:description" content="Generate recurring .ics calendar files for maintenance, car care, or freelance deadlines — no sign-up." />
     <meta property="og:image" content="https://neatclock.pro/og-recurring-ics-calendar-generator.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NeatClock — free recurring calendar export" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Recurring ICS Calendar Generator — NeatClock" />
     <meta name="twitter:description" content="Free recurring .ics export for Google, Apple, and Outlook calendars." />
     <meta name="twitter:image" content="https://neatclock.pro/og-recurring-ics-calendar-generator.png" />
+    <meta name="twitter:image:alt" content="NeatClock — free recurring calendar export" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,6 +74,12 @@
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <script>
       window.plausible = window.plausible || function () {
@@ -99,6 +109,22 @@
       <div class="card">
         <h2>Why use a generator?</h2>
         <p style="color:var(--muted)">Most people need a dozen recurring reminders at once — not one event at a time. NeatClock loads sensible defaults, lets you edit every interval, exports a single .ics file, and keeps your data on your device.</p>
+      </div>
+
+            <div class="card faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>What is a recurring ICS calendar generator?</summary>
+          <p>It is a tool that creates iCalendar (.ics) files with repeating all-day events. NeatClock lets you pick a preset, edit intervals, and download a file you import into Google Calendar, Apple Calendar, or Outlook.</p>
+        </details>
+        <details>
+          <summary>Is NeatClock's ICS generator free?</summary>
+          <p>Yes. Presets, export, print checklists, and JSON backup are free. No account required.</p>
+        </details>
+        <details>
+          <summary>How is this different from Google Calendar recurring events?</summary>
+          <p>NeatClock is a generator, not a hosted calendar. You bulk-create a full maintenance or finance schedule in one pass, export once, and own the file locally.</p>
+        </details>
       </div>
 
       <nav class="related" aria-label="Related schedule guides">
