@@ -24,6 +24,7 @@
     "seo:scoreboard": "node scripts/plausible-scoreboard.mjs",
     "seo:llms": "node scripts/sync-llms-catalog.mjs",
     "ops:notify": "node scripts/notify-ops.mjs",
+    "ops:sync-leads": "node scripts/sync-leads-notion.mjs",
     "campaign:reset": "node scripts/generate-reset-campaign.mjs",
     "preview": "vite preview"
   },

@@ -50,6 +50,8 @@ jobs:
       - name: Notify Zapier / Notion (new landings on push)
         if: github.event_name == 'push'
         env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_OPS_DATABASE_ID: ${{ secrets.NOTION_OPS_DATABASE_ID }}
           OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
         run: |
           urls=()

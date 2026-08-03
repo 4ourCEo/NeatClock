@@ -27,17 +27,28 @@ jobs:
           SEO_LIVE_BASE: https://neatclock.pro
           PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
           PLAUSIBLE_SITE_ID: neatclock.pro
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_OPS_DATABASE_ID: ${{ secrets.NOTION_OPS_DATABASE_ID }}
+          OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
         run: node scripts/seo-automate.mjs
 
-      - name: Commit scoreboard / sitemap / LLM catalog updates
+      - name: Sync Formspree leads → Notion
+        env:
+          FORMSPREE_API_KEY: ${{ secrets.FORMSPREE_API_KEY }}
+          FORMSPREE_FORM_ID: xqevpwlb
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_LEADS_DATABASE_ID: ${{ secrets.NOTION_LEADS_DATABASE_ID }}
+        run: node scripts/sync-leads-notion.mjs
+
+      - name: Commit scoreboard / sitemap / LLM catalog / lead cursor updates
         run: |
-          if git diff --quiet -- docs/TRAFFIC-SCOREBOARD.md public/sitemap.xml public/catalog.json public/llms.txt public/llms-full.txt; then
+          if git diff --quiet -- docs/TRAFFIC-SCOREBOARD.md public/sitemap.xml public/catalog.json public/llms.txt public/llms-full.txt docs/.formspree-leads-sync.json; then
             echo "no seo file changes"
           else
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add docs/TRAFFIC-SCOREBOARD.md public/sitemap.xml public/catalog.json public/llms.txt public/llms-full.txt
-            git commit -m "chore(seo): automated weekly scoreboard/sitemap/llms [skip ci]"
+            git add docs/TRAFFIC-SCOREBOARD.md public/sitemap.xml public/catalog.json public/llms.txt public/llms-full.txt docs/.formspree-leads-sync.json 2>/dev/null || true
+            git commit -m "chore(seo): automated weekly scoreboard/sitemap/llms [skip ci]" || echo "nothing to commit"
             git push
           fi
 
@@ -100,6 +111,8 @@ jobs:
       - name: Notify Zapier / Notion (weekly ops)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_OPS_DATABASE_ID: ${{ secrets.NOTION_OPS_DATABASE_ID }}
           OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
         run: |
           node scripts/notify-ops.mjs \
