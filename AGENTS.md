@@ -10,25 +10,23 @@
 - Print upsell copy should be preset-specific and functional (e.g. garage-ready for gearheads), not generic aesthetic language like "prettier."
 - Prefer short, on-brand custom domains (e.g. `neatclock.pro`) over long descriptive alternatives.
 - Export Canva brand logos as PNG with transparent background, not JPG (JPG cannot preserve transparency).
-- Use subagents for parallel optional slices; when user says "proceed," finish with commit, push, and deploy.
-- Prefer brutally honest senior-dev/PM reviews; before more code, prioritize domain, interest form, analytics, then SEO and ICS reliability—not more App.jsx refactors pre-PMF.
+- Use subagents for parallel optional slices; when user says "proceed" / "you do it," finish commit/push/deploy and complete automation setup yourself when tooling allows—avoid leaving manual runbooks as the default.
+- Prefer brutally honest senior-dev/PM reviews; prioritize verified daily traffic (SEO/LLM visibility, analytics, interest form) and ICS reliability over more App.jsx polish pre-PMF; prefer genuine fixes over patches.
 
 ## Learned Workspace Facts
 
 - NeatClock is a static React 19 + Vite 8 + Tailwind v4 SPA; scope in `SCOPE.md` (generator only, no accounts/backend; schedules in browser `localStorage`).
-- Monetization is feature-flagged via `VITE_FEATURE_*` env vars; catalog in `src/config/monetization.js`; docs in `FEATURES.md` and `MONETIZATION.md`.
-- Production: https://neatclock.pro; GitHub `4ourCEo/NeatClock`; target custom domain `neatclock.pro` (available, not purchased; Vercel Domains recommended).
-- Three built-in presets: Homeowner's Sentinel, Preventive Gearhead, Automated CFO; plus user-saved custom presets.
+- Monetization is feature-flagged via `VITE_FEATURE_*` env vars; catalog in `src/config/monetization.js`; docs in `FEATURES.md` and `MONETIZATION.md`. On Vercel Pro; live Gumroad print CTAs still stay flag-gated until interest validates demand.
+- Production: https://neatclock.pro; GitHub `4ourCEo/NeatClock`; custom domain `neatclock.pro` on Vercel.
+- Three built-in presets: Homeowner's Sentinel, Preventive Gearhead, Automated CFO (cards may use short labels like "Home Sentinel"; storage/modals/monetization keep full names); plus user-saved custom presets. `.ics` messaging covers Google, Apple, and Outlook.
 - Agenda sidebar was reframed as "Export Preview" (first-occurrence simulation, not a to-do list).
-- 185 Vitest tests (33 files, including hooks/config/lib/ui), 8 Playwright E2E specs (22 runs on chromium + webkit), GitHub Actions CI on push/PR (plus weekly Dependabot npm/actions updates); `npm run test:all` before ship; review via `CODE-REVIEW-PROMPT.md`, `DEBUG-RCA-PROMPT.md`, and `.cursor/rules/code-review.mdc`.
-- Thin shadcn/Radix UI layer under `src/components/ui/` (button, dialog, input, label, card, badge, accordion) with semantic tokens bridged to NeatClock `--theme-*` in `src/index.css`. Creative Tim skill at `.cursor/skills/creative-tim-ui/`; do not adopt CT orange brand.
-- SEO automation: `npm run seo:auto` + weekly GitHub Action (`.github/workflows/seo-automation.yml`); landing factory `npm run seo:landing`; playbook `docs/SEO-AUTOMATION.md`. Optional `PLAUSIBLE_API_KEY` secret fills `docs/TRAFFIC-SCOREBOARD.md`.
+- 185 Vitest tests (33 files), 8 Playwright E2E specs (22 runs on chromium + webkit), GitHub Actions CI on push/PR (plus weekly Dependabot); `npm run test:all` before ship; review via `CODE-REVIEW-PROMPT.md`, `DEBUG-RCA-PROMPT.md`, and `.cursor/rules/code-review.mdc`.
+- Thin shadcn/Radix UI layer under `src/components/ui/` with semantic tokens bridged to NeatClock `--theme-*` in `src/index.css`. Creative Tim skill at `.cursor/skills/creative-tim-ui/`; do not adopt CT orange brand.
+- SEO/LLM growth stack: `npm run seo:auto` + weekly `.github/workflows/seo-automation.yml`, IndexNow (`.github/workflows/indexnow.yml`), landing factory `npm run seo:landing`, `public/llms.txt` (+ `llms-full.txt` / `catalog.json`), Sunday Reset landings under `videos/`; playbooks `docs/SEO-AUTOMATION.md` and `docs/TRAFFIC-SCOREBOARD.md` (optional `PLAUSIBLE_API_KEY`).
+- Ops automation prefers agent-owned GitHub Issues (`seo-weekly` via `scripts/notify-ops.mjs`) over Notion Add-connections; optional Notion hub/leads in `docs/notion-config.json` / `docs/OPS-AUTOMATION.md`. Interest form UI exists; `VITE_INTEREST_FORM_ENDPOINT` wires when Formspree/FormSubmit is set.
 - BRIDGE workflow (`docs/requirements.json`, `docs/context.json`, `docs/decisions.md`, `docs/BRIDGE-GATE.md`); `App.jsx` ~262-line orchestrator with UI in `src/hooks/` and `src/components/`—keep test counts in sync (docs drift is a known issue).
 - Print pack default pricing is $5 per pack and $12 for the bundle (overridable via `VITE_PRINTS_*_PRICE`).
 - In-app brand assets: source logos in `design-system/brand-assets/` (PNG transparent); web copies in `public/` (`logo.png`, `logo-light.png`, favicons, `og-image.png`); header swaps logo for dark themes. Gumroad print deliverables are separate per `design-system/BRAND-BRIEF.md`.
-- Interest form UI exists; `VITE_INTEREST_FORM_ENDPOINT` not wired until Formspree/FormSubmit is set—validates print demand before Gumroad goes live.
-- Preset cards may use short display labels (e.g. "Home Sentinel") while storage, modals, and monetization keep full preset names.
-- Upgrade Vercel to Pro before enabling live Gumroad print CTAs; Hobby plan is non-commercial only.
 
 ## AI-Assisted Engineering Rigor
 
