@@ -41,34 +41,34 @@ Notion puts this under **Settings → Connections** (not a separate “integrati
 Shortcut URL if Settings is hard to find: https://www.notion.so/profile/integrations  
 (same “My connections” screen)
 
-### 2. Grant page access (••• often does nothing — use Share)
+### 2. Grant page access (do NOT use the email invite box)
 
-The top-right **•••** menu is buggy for a lot of people. Use **Share** instead:
+Typing `NeatClock GitHub` in **Share → invite** fails with “not a valid email” — that box is **only for people**. Connections are added separately.
 
-1. Open the hub in the **browser** (not the desktop app if the menu is dead):  
-   https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517  
-2. Click **Share** (top right, usually blue/black button — not the three dots)
-3. In the invite box, type: `NeatClock GitHub`  
-   (or whatever you named the connection)
-4. When the connection appears, select it → **Invite** / **Can edit**
-5. Confirm
+**Try A — Share panel → Add connections (not Invite)**
 
-**If the connection does not show up in Share search:**
+1. Open https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517 in Chrome/Safari  
+2. Click **Share**  
+3. Ignore the email field  
+4. Look at the **bottom** of that panel for **Add connections** / **Connections**  
+5. Click it → search `NeatClock GitHub` → select → confirm  
 
-1. Settings → **Connections** → find **NeatClock GitHub**
-2. Confirm it exists under *your* workspace
-3. Then retry Share on the hub page
-4. Or open each database and Share there too:  
-   - Ops Board: https://www.notion.so/e44d6a2ef9af414380178436148617b7  
-   - Leads: https://www.notion.so/0dc21b683ee94cf5b5ee5b4a7435a35b  
+**Try B — page menu (when ••• works)**
 
-**Still stuck?**
+1. Same page → top-right **•••**  
+2. Scroll to **Add connections** (below Duplicate / Move / etc.)  
+3. Pick `NeatClock GitHub`
 
-- Use Chrome/Safari web Notion, not the Mac app  
-- Make sure you’re in the same workspace where you created the connection (workspace switcher top-left)  
-- You must be able to edit the page (if it’s view-only, duplicate it into your Private section first)
+**Try C — blank page you create (most reliable when A/B fail)**
 
-Optional classic path (when it works): **•••** → **Add connections** → pick `NeatClock GitHub`.
+1. In Notion: **New page** in your Private section → title `NeatClock`  
+2. On **that** page, use Try A or B to add connection `NeatClock GitHub`  
+3. Paste the connection token in chat  
+4. Tell me “page is shared” — I’ll recreate Leads + Ops **under your page** with the GitHub token (so it owns write access)
+
+**Try D — desktop app broken**
+
+Quit Notion Mac app → use only https://www.notion.so in the browser.
 
 ### 3. Hand me the token (pick one)
 
