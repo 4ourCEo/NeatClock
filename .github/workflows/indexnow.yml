@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   submit:
@@ -47,12 +48,13 @@ jobs:
       - name: Submit URLs to IndexNow
         run: node scripts/submit-indexnow.mjs
 
-      - name: Notify Zapier / Notion (new landings on push)
+      - name: Open landing index checklist (GitHub Issue)
         if: github.event_name == 'push'
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_OPS_DATABASE_ID: ${{ secrets.NOTION_OPS_DATABASE_ID }}
           OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           urls=()
           while IFS= read -r f; do

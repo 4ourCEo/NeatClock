@@ -79,10 +79,22 @@ const body = [
 
 function postGitHubIssue() {
   // Prefer gh CLI (local + Actions with gh)
+  const label = payload.event === 'landing_indexed' ? 'seo-landing' : 'seo-weekly';
   try {
-    execFileSync('gh', ['label', 'create', 'seo-weekly', '--description', 'Weekly SEO ops', '--color', '0E8A16', '--force'], {
-      stdio: 'ignore',
-    });
+    execFileSync(
+      'gh',
+      [
+        'label',
+        'create',
+        label,
+        '--description',
+        label === 'seo-landing' ? 'New landing index reminder' : 'Weekly SEO ops',
+        '--color',
+        label === 'seo-landing' ? '1D76DB' : '0E8A16',
+        '--force',
+      ],
+      { stdio: 'ignore' },
+    );
   } catch {
     // label may already exist or lack permission — fine
   }
@@ -113,16 +125,7 @@ function postGitHubIssue() {
 
   const created = execFileSync(
     'gh',
-    [
-      'issue',
-      'create',
-      '--title',
-      issueTitle,
-      '--body',
-      body,
-      '--label',
-      payload.event === 'weekly_seo' ? 'seo-weekly' : 'seo-weekly',
-    ],
+    ['issue', 'create', '--title', issueTitle, '--body', body, '--label', label],
     { encoding: 'utf8' },
   ).trim();
 

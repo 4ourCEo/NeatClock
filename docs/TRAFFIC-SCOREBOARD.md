@@ -35,11 +35,10 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [x] IndexNow submitted **12** sitemap URLs
 - [x] `npm run check:seo-live` passed (Plausible on homepage + landings; `.html` → clean 308)
 - [ ] Human: enable Plausible custom-event goals (list above)
-- [ ] Human: GSC Inspect for new `/hvac-filter-reminder-calendar`, `/smoke-detector-reminder-calendar`, `/partner`
-- [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md`
+- [ ] Human: GSC Inspect for new `/hvac-filter-reminder-calendar`, `/smoke-detector-reminder-calendar`, `/partner`, `/guides`, long-tail landings
+- [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md` (checklist: [seo-weekly issues](https://github.com/4ourCEo/NeatClock/issues?q=label%3Aseo-weekly))
 - [ ] Human: fill 7 daily scoreboard rows (or set `PLAUSIBLE_API_KEY` Actions secret → weekly auto-fill via `npm run seo:scoreboard`)
-- [ ] Human: set `OPS_WEBHOOK_URL` + Formspree/Zapier Zaps per `docs/OPS-AUTOMATION.md`
-- Automation playbook: `docs/SEO-AUTOMATION.md` · Ops + LLM: `docs/OPS-AUTOMATION.md`
+- Automation playbook: `docs/SEO-AUTOMATION.md` · Ops: `docs/OPS-AUTOMATION.md` (GitHub Issues — no Notion Add-connections required)
 
 ## 10x discovery push (2026-08-02)
 

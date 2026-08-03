@@ -52,9 +52,9 @@ Regenerate after landings change: `npm run seo:llms` (also inside `seo:auto` / `
 
 1. Enable Plausible **Custom events / goals** once (`docs/TRAFFIC-SCOREBOARD.md`)
 2. Google Search Console: sitemap ownership + URL Inspection for brand-new URLs
-3. Actually posting to Reddit / Pinterest / Shorts (workflow opens a checklist issue + Notion row if Zapier is wired)
+3. Actually posting to Reddit / Pinterest / Shorts — checklist is the weekly GitHub Issue (`seo-weekly`)
 
-Private ops checklist: [`OPS-AUTOMATION.md`](./OPS-AUTOMATION.md).
+Ops board: https://github.com/4ourCEo/NeatClock/issues?q=label%3Aseo-weekly · playbook [`OPS-AUTOMATION.md`](./OPS-AUTOMATION.md)
 
 ## Scripts
 
