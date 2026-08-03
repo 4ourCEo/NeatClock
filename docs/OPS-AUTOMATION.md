@@ -25,17 +25,28 @@ Zapier is **optional fallback** only (`OPS_WEBHOOK_URL`). Prefer Notion direct.
 
 ## Your one remaining step (≈2 minutes)
 
-### 1. Create a Notion integration
+Notion puts this under **Settings → Connections** (not a separate “integrations” app).
 
-1. Open https://www.notion.so/my-integrations  
-2. **New integration** → name `NeatClock GitHub` → associated workspace = yours → Submit  
-3. Copy the **Internal Integration Secret** (`secret_...`)
+### 1. Create your own connection (gets the token)
 
-### 2. Share the hub with that integration
+1. In Notion: **Settings** (sidebar) → **Connections**
+2. Scroll to the bottom → **Develop your own connections** (opens My connections in the browser)
+3. **+ New connection**
+4. Name: `NeatClock GitHub`
+5. Associated workspace: the one that has the NeatClock Ops hub
+6. Submit / create
+7. Open that connection → copy the **Internal Integration Secret**  
+   (often starts with `secret_` or `ntn_`)
 
-1. Open https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517  
-2. **•••** → **Connections** → **Connect to** → `NeatClock GitHub`  
-3. Confirm access (children DBs inherit)
+Shortcut URL if Settings is hard to find: https://www.notion.so/profile/integrations  
+(same “My connections” screen)
+
+### 2. Add the connection to the NeatClock Ops hub page
+
+1. Open the hub: https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517  
+2. Top-right **•••** → **Connections** → **Add connections** (or **Connect to**)
+3. Search **NeatClock GitHub** → select → confirm  
+4. That grants access to the hub **and** its child DBs (Leads + Ops Board)
 
 ### 3. Hand me the token (pick one)
 
@@ -45,9 +56,8 @@ Zapier is **optional fallback** only (`OPS_WEBHOOK_URL`). Prefer Notion direct.
 
 ```bash
 cd /Users/thagreat/Desktop/NeatClock
-gh secret set NOTION_TOKEN          # paste secret_... when prompted
-gh secret set NOTION_OPS_DATABASE_ID -b 'e44d6a2e-f9af-4143-8017-8436148617b7'
-gh secret set NOTION_LEADS_DATABASE_ID -b '0dc21b68-3ee9-4cf5-b5ee-5b4a7435a35b'
+gh secret set NOTION_TOKEN          # paste secret_... / ntn_... when prompted
+# DB ids are already set in GitHub Actions secrets
 ```
 
 ### 4. (Optional) Formspree → Notion Leads auto-sync
