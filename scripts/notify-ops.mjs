@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /**
- * Write ops events to Notion (preferred) or OPS_WEBHOOK_URL (Zapier fallback).
+ * Ops notifier — GitHub Issues first (no Notion "Add connections" needed).
  *
- * Env (Notion path):
- *   NOTION_TOKEN              — internal integration secret
- *   NOTION_OPS_DATABASE_ID    — optional override (defaults to docs/notion-config.json)
+ * Priority:
+ *   1) GitHub Issue via `gh` / GITHUB_TOKEN  (default, always works in Actions)
+ *   2) Notion API if NOTION_TOKEN is set and shared
+ *   3) OPS_WEBHOOK_URL Zapier fallback
  *
- * Env (Zapier fallback):
- *   OPS_WEBHOOK_URL
- *
- * Usage: same CLI flags as before — see --help via missing event.
+ * Usage:
+ *   node scripts/notify-ops.mjs --event weekly_seo --title "..." --url ... --checklist "..."
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 function argAll(name) {
   const out = [];
@@ -54,53 +54,92 @@ const payload = {
   source: arg('source', filePayload?.source || 'github-actions'),
 };
 
-const notionToken = process.env.NOTION_TOKEN?.trim();
-const webhook = process.env.OPS_WEBHOOK_URL?.trim();
-const config = loadConfig();
-const opsDbId =
-  process.env.NOTION_OPS_DATABASE_ID?.trim() ||
-  config?.ops?.databaseId ||
-  '';
+const title = payload.title || `${payload.event} — ${payload.date}`;
+const checklistLines = payload.checklist.length
+  ? payload.checklist.map((c) => `- [ ] ${c}`)
+  : ['- [ ] (none)'];
+const urlLines = payload.urls.length
+  ? payload.urls.map((u) => `- ${u}`)
+  : [`- ${payload.site}`];
+
+const body = [
+  `**Event:** \`${payload.event}\``,
+  `**Date:** ${payload.date}`,
+  `**Source:** ${payload.source}`,
+  '',
+  '### Checklist',
+  ...checklistLines,
+  '',
+  '### URLs',
+  ...urlLines,
+  '',
+  'Playbook: `docs/OPS-AUTOMATION.md` · Distribution: `docs/DISTRIBUTION-WEEKLY.md`',
+].join('\n');
+
+
+function postGitHubIssue() {
+  // Prefer gh CLI (local + Actions with gh)
+  try {
+    execFileSync('gh', ['label', 'create', 'seo-weekly', '--description', 'Weekly SEO ops', '--color', '0E8A16', '--force'], {
+      stdio: 'ignore',
+    });
+  } catch {
+    // label may already exist or lack permission — fine
+  }
+
+  // Skip duplicate open weekly issues
+  if (payload.event === 'weekly_seo') {
+    try {
+      const open = execFileSync(
+        'gh',
+        ['issue', 'list', '--state', 'open', '--limit', '20', '--json', 'title,url'],
+        { encoding: 'utf8' },
+      );
+      const issues = JSON.parse(open);
+      const hit = issues.find((i) => String(i.title).startsWith('SEO distribution week'));
+      if (hit) {
+        console.log(`notify-ops: GitHub issue already open → ${hit.url}`);
+        return hit.url;
+      }
+    } catch {
+      // continue to create
+    }
+  }
+
+  const issueTitle =
+    payload.event === 'weekly_seo'
+      ? `SEO distribution week — ${payload.date}`
+      : title.slice(0, 200);
+
+  const created = execFileSync(
+    'gh',
+    [
+      'issue',
+      'create',
+      '--title',
+      issueTitle,
+      '--body',
+      body,
+      '--label',
+      payload.event === 'weekly_seo' ? 'seo-weekly' : 'seo-weekly',
+    ],
+    { encoding: 'utf8' },
+  ).trim();
+
+  console.log(`notify-ops: GitHub OK → ${created}`);
+  return created;
+}
 
 async function postNotionOps() {
-  const title = payload.title || `${payload.event} — ${payload.date}`;
+  const notionToken = process.env.NOTION_TOKEN?.trim();
+  const config = loadConfig();
+  const opsDbId =
+    process.env.NOTION_OPS_DATABASE_ID?.trim() || config?.ops?.databaseId || '';
+  if (!notionToken || !opsDbId) return false;
+
   const type = ['weekly_seo', 'landing_indexed', 'seo_auto_complete'].includes(payload.event)
     ? payload.event
     : 'seo_auto_complete';
-
-  const body = {
-    parent: { database_id: opsDbId },
-    properties: {
-      Name: { title: [{ text: { content: title.slice(0, 2000) } }] },
-      Type: { select: { name: type } },
-      Status: { select: { name: 'Todo' } },
-      Due: { date: { start: payload.date } },
-      URLs: {
-        rich_text: [
-          {
-            text: {
-              content: (payload.urls.join('\n') || payload.site).slice(0, 2000),
-            },
-          },
-        ],
-      },
-      Checklist: {
-        rich_text: [
-          {
-            text: {
-              content: (payload.checklist.map((c) => `• ${c}`).join('\n') || '—').slice(
-                0,
-                2000,
-              ),
-            },
-          },
-        ],
-      },
-      Notes: {
-        rich_text: [{ text: { content: `source: ${payload.source}`.slice(0, 2000) } }],
-      },
-    },
-  };
 
   const res = await fetch('https://api.notion.com/v1/pages', {
     method: 'POST',
@@ -109,19 +148,47 @@ async function postNotionOps() {
       'Notion-Version': '2022-06-28',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      parent: { database_id: opsDbId },
+      properties: {
+        Name: { title: [{ text: { content: title.slice(0, 2000) } }] },
+        Type: { select: { name: type } },
+        Status: { select: { name: 'Todo' } },
+        Due: { date: { start: payload.date } },
+        URLs: {
+          rich_text: [
+            { text: { content: (payload.urls.join('\n') || payload.site).slice(0, 2000) } },
+          ],
+        },
+        Checklist: {
+          rich_text: [
+            {
+              text: {
+                content: (payload.checklist.map((c) => `• ${c}`).join('\n') || '—').slice(0, 2000),
+              },
+            },
+          ],
+        },
+        Notes: {
+          rich_text: [{ text: { content: `source: ${payload.source}`.slice(0, 2000) } }],
+        },
+      },
+    }),
   });
 
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`Notion ${res.status}: ${text.slice(0, 400)}`);
+    console.warn(`notify-ops: Notion skipped (${res.status}) ${text.slice(0, 160)}`);
+    return false;
   }
-
   const page = await res.json();
   console.log(`notify-ops: Notion OK → ${page.url || page.id}`);
+  return true;
 }
 
 async function postWebhook() {
+  const webhook = process.env.OPS_WEBHOOK_URL?.trim();
+  if (!webhook) return false;
   const res = await fetch(webhook, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -129,28 +196,20 @@ async function postWebhook() {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`webhook ${res.status}: ${text.slice(0, 200)}`);
+    console.warn(`notify-ops: webhook skipped (${res.status}) ${text.slice(0, 160)}`);
+    return false;
   }
-  console.log(`notify-ops: webhook OK (${res.status}) event=${payload.event}`);
+  console.log(`notify-ops: webhook OK (${res.status})`);
+  return true;
 }
 
-if (notionToken && opsDbId) {
-  try {
-    await postNotionOps();
-    process.exit(0);
-  } catch (err) {
-    console.error(`notify-ops: Notion failed — ${err.message}`);
-    if (!webhook) process.exit(1);
-    console.warn('notify-ops: falling back to OPS_WEBHOOK_URL');
-  }
+// 1) GitHub Issues — always try first
+try {
+  postGitHubIssue();
+} catch (err) {
+  console.warn(`notify-ops: GitHub issue failed — ${err.message}`);
 }
 
-if (webhook) {
-  await postWebhook();
-  process.exit(0);
-}
-
-console.log(
-  'notify-ops: skipped (set NOTION_TOKEN + share Ops DB with the integration, or OPS_WEBHOOK_URL)',
-);
-process.exit(0);
+// 2) Optional Notion / Zapier
+await postNotionOps();
+await postWebhook();
