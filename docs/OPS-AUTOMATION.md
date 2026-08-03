@@ -41,12 +41,34 @@ Notion puts this under **Settings → Connections** (not a separate “integrati
 Shortcut URL if Settings is hard to find: https://www.notion.so/profile/integrations  
 (same “My connections” screen)
 
-### 2. Add the connection to the NeatClock Ops hub page
+### 2. Grant page access (••• often does nothing — use Share)
 
-1. Open the hub: https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517  
-2. Top-right **•••** → **Connections** → **Add connections** (or **Connect to**)
-3. Search **NeatClock GitHub** → select → confirm  
-4. That grants access to the hub **and** its child DBs (Leads + Ops Board)
+The top-right **•••** menu is buggy for a lot of people. Use **Share** instead:
+
+1. Open the hub in the **browser** (not the desktop app if the menu is dead):  
+   https://www.notion.so/3b138c0c73a7819aabb5c8bd00f67517  
+2. Click **Share** (top right, usually blue/black button — not the three dots)
+3. In the invite box, type: `NeatClock GitHub`  
+   (or whatever you named the connection)
+4. When the connection appears, select it → **Invite** / **Can edit**
+5. Confirm
+
+**If the connection does not show up in Share search:**
+
+1. Settings → **Connections** → find **NeatClock GitHub**
+2. Confirm it exists under *your* workspace
+3. Then retry Share on the hub page
+4. Or open each database and Share there too:  
+   - Ops Board: https://www.notion.so/e44d6a2ef9af414380178436148617b7  
+   - Leads: https://www.notion.so/0dc21b683ee94cf5b5ee5b4a7435a35b  
+
+**Still stuck?**
+
+- Use Chrome/Safari web Notion, not the Mac app  
+- Make sure you’re in the same workspace where you created the connection (workspace switcher top-left)  
+- You must be able to edit the page (if it’s view-only, duplicate it into your Private section first)
+
+Optional classic path (when it works): **•••** → **Add connections** → pick `NeatClock GitHub`.
 
 ### 3. Hand me the token (pick one)
 
