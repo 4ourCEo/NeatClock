@@ -7,19 +7,21 @@ import tailwindcss from '@tailwindcss/vite'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Parser-inserted Plausible tag — dynamic JS injection breaks document.currentScript. */
-function plausibleAnalytics(domain) {
+const PLAUSIBLE_SNIPPET = `<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>`
+
+function plausibleAnalytics(enabled) {
   return {
     name: 'plausible-analytics',
     transformIndexHtml(html, ctx) {
-      if (ctx.server) {
+      if (ctx.server || !enabled) {
         return html.replace('<!-- PLAUSIBLE_SNIPPET -->', '')
       }
-      const plausibleDomain = domain?.trim()
-      if (!plausibleDomain) {
-        return html.replace('<!-- PLAUSIBLE_SNIPPET -->', '')
-      }
-      const snippet = `<script defer data-domain="${plausibleDomain}" src="https://plausible.io/js/script.js"></script>`
-      return html.replace('<!-- PLAUSIBLE_SNIPPET -->', snippet)
+      return html.replace('<!-- PLAUSIBLE_SNIPPET -->', PLAUSIBLE_SNIPPET)
     },
   }
 }
@@ -28,7 +30,7 @@ function plausibleAnalytics(domain) {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '')
   return {
-  plugins: [react(), tailwindcss(), plausibleAnalytics(env.VITE_PLAUSIBLE_DOMAIN)],
+  plugins: [react(), tailwindcss(), plausibleAnalytics(true)],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

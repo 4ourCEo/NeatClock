@@ -1,7 +1,7 @@
 /**
- * Privacy-friendly analytics via Plausible.
- * Script tag lives in index.html (parser-inserted) so currentScript/domain work.
- * Custom events: enable "Custom events" in Plausible site settings.
+ * Privacy-friendly analytics via Plausible (pa- script + plausible.init).
+ * Homepage snippet is injected by vite.config.js; static landings embed the same tag.
+ * Custom events: enable goals in Plausible site settings (landing_cta, ics_export, …).
  */
 
 /** @param {string} name @param {Record<string, string | number | boolean>} [props] */

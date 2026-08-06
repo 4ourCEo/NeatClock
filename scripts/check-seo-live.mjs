@@ -46,18 +46,18 @@ await check('IndexNow key file', async () => {
 
 await check('Plausible on homepage', async () => {
   const html = await (await fetch(`${BASE}/`)).text();
-  if (!html.includes('data-domain="neatclock.pro"')) {
-    throw new Error('missing data-domain=neatclock.pro');
+  if (!html.includes('plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js')) {
+    throw new Error('missing Plausible pa- script');
   }
-  if (!html.includes('plausible.io/js/script.js')) {
-    throw new Error('missing Plausible script');
+  if (!html.includes('plausible.init')) {
+    throw new Error('missing plausible.init()');
   }
 });
 
 await check('Plausible on home-maintenance landing', async () => {
   const html = await (await fetch(`${BASE}/home-maintenance-calendar`)).text();
-  if (!html.includes('data-domain="neatclock.pro"')) {
-    throw new Error('missing Plausible on landing (deploy may be stale)');
+  if (!html.includes('plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js')) {
+    throw new Error('missing Plausible pa- script on landing (deploy may be stale)');
   }
 });
 
