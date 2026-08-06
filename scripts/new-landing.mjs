@@ -135,7 +135,8 @@ const html = `<!doctype html>
     <script async src="https://plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      // Force real domain (pa- script may bake a typo)
+      plausible.init({ domain: 'neatclock.pro' })
     </script>
   </head>
   <body>

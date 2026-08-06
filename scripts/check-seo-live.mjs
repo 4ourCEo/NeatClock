@@ -49,8 +49,8 @@ await check('Plausible on homepage', async () => {
   if (!html.includes('plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js')) {
     throw new Error('missing Plausible pa- script');
   }
-  if (!html.includes('plausible.init')) {
-    throw new Error('missing plausible.init()');
+  if (!html.includes("plausible.init({ domain: 'neatclock.pro' })")) {
+    throw new Error('missing plausible.init({ domain: neatclock.pro })');
   }
 });
 
