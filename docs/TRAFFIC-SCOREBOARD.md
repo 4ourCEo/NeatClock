@@ -4,7 +4,7 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 
 | Date | Sessions | Top landing path | ICS exports | Interest submits | Share copies | Notes |
 |------|----------|------------------|-------------|------------------|--------------|-------|
-| 2026-08-10 | 1 | / | 0 | 0 | 0 | auto |
+| 2026-08-10 | 1 | / | 0 | 0 | 0 | setup ping (not organic) |
 | | | | | | | |
 | | | | | | | |
 | | | | | | | |
@@ -31,11 +31,11 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 
 ## Post-deploy status (2026-08-02)
 
-- [x] Production deploy aliased to `neatclock.pro` (`0ba294a`)
-- [x] IndexNow submitted **12** sitemap URLs
+- [x] Production deploy aliased to `neatclock.pro`
+- [x] IndexNow key live; sitemap has **22** URLs
 - [x] `npm run check:seo-live` passed (Plausible on homepage + landings; `.html` → clean 308)
 - [x] Plausible site `neatclock.pro` receiving events; custom goals enabled (2026-08-10)
-- [x] GSC Inspect (2026-08-10): sitemap Success; `/` + `/smoke-detector-reminder-calendar` **on Google**; requested indexing for `/guides`, `/home-maintenance-calendar`, `/hvac-filter-reminder-calendar`, `/recurring-ics-calendar-generator`, `/google-calendar-recurring-events`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`, `/oil-change-reminder-calendar`, `/partner`, `/llms.txt`
+- [x] GSC sitemap `/sitemap.xml` **Success**, 22 discovered (last read Aug 10). Pages report still **1 indexed / 23 not indexed** (last update Aug 6 — lags URL Inspection). URL Inspection: `/` + `/smoke-detector-reminder-calendar` on Google; indexing requested for high-intent landings; daily quota hit on `/recurring-task-reminder-app`
 - [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md` (checklist: [seo-weekly issues](https://github.com/4ourCEo/NeatClock/issues?q=label%3Aseo-weekly))
 - [x] `PLAUSIBLE_API_KEY` Actions secret set → weekly auto-fill via `npm run seo:scoreboard`
 - Automation playbook: `docs/SEO-AUTOMATION.md` · Ops: `docs/OPS-AUTOMATION.md` (GitHub Issues — no Notion Add-connections required)
