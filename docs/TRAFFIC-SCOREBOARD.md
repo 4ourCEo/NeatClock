@@ -46,5 +46,5 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [x] Visible FAQ on landings with `FAQPage` schema
 - [x] Organization + WebSite schema on homepage; expanded noscript guides
 - [x] `/guides` hub + 8 long-tail landings (oil, tires, water heater, gutters, dryer vent, quarterly tax, subscription audit, Google Calendar)
-- [x] GSC Inspect for `/guides` + high-intent landings (2026-08-10) — remaining long-tails tomorrow if quota resets
+- [x] GSC Inspect for `/guides` + high-intent landings (2026-08-10); chore chart requested; **daily quota hit** on `/recurring-task-reminder-app` — finish remaining tomorrow
 - [ ] Human: Mon/Wed/Fri distribution — link `/guides` + one intent landing each post
