@@ -4,7 +4,7 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 
 | Date | Sessions | Top landing path | ICS exports | Interest submits | Share copies | Notes |
 |------|----------|------------------|-------------|------------------|--------------|-------|
-| YYYY-MM-DD | | | | | | |
+| 2026-08-10 | 1 | / | 0 | 0 | 0 | auto |
 | | | | | | | |
 | | | | | | | |
 | | | | | | | |
@@ -12,16 +12,16 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 | | | | | | | |
 | | | | | | | |
 
-## Plausible goals to enable (Custom events)
+## Plausible goals (enabled 2026-08-10)
 
-- `ics_export`
-- `interest_submit`
-- `preset_deep_link`
-- `share_link_copy`
-- `landing_cta`
-- `qr_sync_shown`
-- `partner_link_copy`
-- `backup_export`
+- [x] `ics_export`
+- [x] `interest_submit`
+- [x] `preset_deep_link`
+- [x] `share_link_copy`
+- [x] `landing_cta`
+- [x] `qr_sync_shown`
+- [x] `partner_link_copy`
+- [x] `backup_export`
 
 ## GSC checklist
 
@@ -34,10 +34,10 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [x] Production deploy aliased to `neatclock.pro` (`0ba294a`)
 - [x] IndexNow submitted **12** sitemap URLs
 - [x] `npm run check:seo-live` passed (Plausible on homepage + landings; `.html` → clean 308)
-- [ ] Human: enable Plausible custom-event goals (list above)
+- [x] Plausible site `neatclock.pro` receiving events; custom goals enabled (2026-08-10)
 - [x] GSC Inspect (2026-08-10): sitemap Success; `/` + `/smoke-detector-reminder-calendar` **on Google**; requested indexing for `/guides`, `/home-maintenance-calendar`, `/hvac-filter-reminder-calendar`, `/recurring-ics-calendar-generator`, `/google-calendar-recurring-events`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`, `/oil-change-reminder-calendar`, `/partner`, `/llms.txt`
 - [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md` (checklist: [seo-weekly issues](https://github.com/4ourCEo/NeatClock/issues?q=label%3Aseo-weekly))
-- [ ] Human: fill 7 daily scoreboard rows (or set `PLAUSIBLE_API_KEY` Actions secret → weekly auto-fill via `npm run seo:scoreboard`)
+- [x] `PLAUSIBLE_API_KEY` Actions secret set → weekly auto-fill via `npm run seo:scoreboard`
 - Automation playbook: `docs/SEO-AUTOMATION.md` · Ops: `docs/OPS-AUTOMATION.md` (GitHub Issues — no Notion Add-connections required)
 
 ## 10x discovery push (2026-08-02)
