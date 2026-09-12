@@ -6,6 +6,7 @@ import {
   printProducts,
 } from '../config/monetization.js';
 import { isMonetizationPreview, shouldShowMonetization } from '../lib/preview.js';
+import { trackEvent } from '../lib/analytics.js';
 import { InterestFooterSection } from './InterestInvite.jsx';
 import SeoFooterLinks from './SeoFooterLinks.jsx';
 
@@ -23,11 +24,20 @@ function ProductCard({ product, compact = false }) {
     );
   }
 
+  const handleClick = () => {
+    trackEvent('print_cta_click', {
+      product_id: product.id,
+      product_name: product.name,
+      price: product.price,
+    });
+  };
+
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleClick}
       className={`block rounded-lg border border-theme-border bg-theme-bg/30 hover:border-theme-accent hover:bg-theme-bg/50 transition-all cursor-pointer group ${compact ? 'p-3' : 'p-4'}`}
     >
       <div className="flex justify-between items-start gap-2">

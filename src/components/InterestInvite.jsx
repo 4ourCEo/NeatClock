@@ -1,6 +1,7 @@
 import { MessageCircle, Sparkles, X } from 'lucide-react';
-import { interestFormEnabled } from '../config/monetization.js';
+import { getFeedbackMode, interestFormEnabled } from '../config/monetization.js';
 import { dismissExportInterest, isExportInterestDismissed } from '../lib/submitInterest.js';
+import { trackEvent } from '../lib/analytics.js';
 import { useState } from 'react';
 
 /**
@@ -9,6 +10,7 @@ import { useState } from 'react';
  */
 export function InterestInvite({ variant = 'footer', onOpen }) {
   const [hidden, setHidden] = useState(() => variant === 'export' && isExportInterestDismissed());
+  const mode = getFeedbackMode();
 
   if (!interestFormEnabled || hidden) return null;
 
@@ -17,6 +19,11 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
       dismissExportInterest();
     }
     setHidden(true);
+  };
+
+  const handleOpen = () => {
+    trackEvent('feedback_open', { source: variant, mode });
+    onOpen();
   };
 
   if (variant === 'export') {
@@ -36,15 +43,17 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
           </div>
           <div className="min-w-0">
             <p className="font-serif text-sm font-semibold text-theme-text leading-snug">
-              Quick question while you&apos;re here
+              {mode === 'post_launch' ? 'Quick feedback?' : 'Quick question while you're here'}
             </p>
             <p className="text-xs text-theme-text-muted mt-1 leading-relaxed">
-              Would styled print templates help after export? Half a minute — helps us know what to build.
+              {mode === 'post_launch'
+                ? 'How are the print CTAs working? Half a minute — helps us calibrate.'
+                : 'Would styled print templates help after export? Half a minute — helps us know what to build.'}
             </p>
             <div className="flex flex-wrap gap-3 mt-4 justify-center">
               <button
                 type="button"
-                onClick={onOpen}
+                onClick={handleOpen}
                 className="px-4 py-2 rounded-lg bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-medium cursor-pointer transition-colors"
               >
                 Share feedback
@@ -71,22 +80,25 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[10px] uppercase tracking-widest font-semibold text-theme-accent mb-1">
-            Your turn
+            {mode === 'post_launch' ? 'Quick feedback' : 'Your turn'}
           </p>
           <h3 className="font-serif text-base font-semibold text-theme-text">
-            Help shape what we build next
+            {mode === 'post_launch'
+              ? 'How are the print packs working?'
+              : 'Help shape what we build next'}
           </h3>
           <p className="text-xs text-theme-text-muted mt-2 leading-relaxed">
-            NeatClock stays free forever. Tell us which extras — print packs, wallpapers, themes — would
-            actually help after you export. We launch when enough people ask.
+            {mode === 'post_launch'
+              ? 'Share quick feedback on pricing and CTAs. Helps us calibrate without bothering everyone.'
+              : 'NeatClock stays free forever. Tell us which extras — print packs, wallpapers, themes — would actually help after you export. We launch when enough people ask.'}
           </p>
           <div className="mt-4 flex justify-center">
             <button
               type="button"
-              onClick={onOpen}
+              onClick={handleOpen}
               className="px-5 py-2.5 rounded-lg bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-medium cursor-pointer transition-colors shadow-sm"
             >
-              Share feedback — 30 sec
+              {mode === 'post_launch' ? 'Share feedback — 30 sec' : 'Share feedback — 30 sec'}
             </button>
           </div>
         </div>

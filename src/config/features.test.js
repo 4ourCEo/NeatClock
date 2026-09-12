@@ -12,6 +12,7 @@ describe('features', () => {
     vi.stubEnv('VITE_FEATURE_PREMIUM_THEMES', '');
     vi.stubEnv('VITE_FEATURE_SPONSOR_FOOTER', '');
     vi.stubEnv('VITE_FEATURE_AFFILIATE_LINKS', '');
+    vi.stubEnv('VITE_FEATURE_PRODUCT_FEEDBACK', '');
     const { features } = await import('./features.js');
     expect(features).toEqual({
       neatclockPrints: false,
@@ -19,6 +20,7 @@ describe('features', () => {
       premiumThemes: false,
       sponsorFooter: false,
       affiliateLinks: false,
+      productFeedback: false,
     });
   });
 

@@ -63,8 +63,8 @@ describe('monetization', () => {
     expect(monetizationActive).toBe(true);
   });
 
-  it('interestFormEnabled is true only when the endpoint is configured and prints are not live', async () => {
-    vi.doMock('./features.js', () => ({ features: { neatclockPrints: false } }));
+  it('interestFormEnabled is true only when the endpoint is configured (independent of prints flag)', async () => {
+    vi.doMock('./features.js', () => ({ features: { neatclockPrints: false, productFeedback: undefined } }));
     vi.doMock('./interestEndpoint.js', () => ({
       interestFormEndpoint: 'https://formspree.io/f/abc',
       isInterestEndpointConfigured: () => true,
@@ -73,13 +73,35 @@ describe('monetization', () => {
     expect(interestFormEnabled).toBe(true);
   });
 
-  it('interestFormEnabled is false once prints go live', async () => {
-    vi.doMock('./features.js', () => ({ features: { neatclockPrints: true } }));
+  it('interestFormEnabled remains true when prints go live (feedback mode changes but form stays visible)', async () => {
+    vi.doMock('./features.js', () => ({ features: { neatclockPrints: true, productFeedback: undefined } }));
+    vi.doMock('./interestEndpoint.js', () => ({
+      interestFormEndpoint: 'https://formspree.io/f/abc',
+      isInterestEndpointConfigured: () => true,
+    }));
+    const { interestFormEnabled } = await import('./monetization.js');
+    expect(interestFormEnabled).toBe(true);
+  });
+
+  it('interestFormEnabled respects explicit productFeedback=false even with endpoint configured', async () => {
+    vi.doMock('./features.js', () => ({ features: { neatclockPrints: false, productFeedback: false } }));
     vi.doMock('./interestEndpoint.js', () => ({
       interestFormEndpoint: 'https://formspree.io/f/abc',
       isInterestEndpointConfigured: () => true,
     }));
     const { interestFormEnabled } = await import('./monetization.js');
     expect(interestFormEnabled).toBe(false);
+  });
+
+  it('getFeedbackMode returns pre_launch when prints are not live', async () => {
+    vi.doMock('./features.js', () => ({ features: { neatclockPrints: false } }));
+    const { getFeedbackMode } = await import('./monetization.js');
+    expect(getFeedbackMode()).toBe('pre_launch');
+  });
+
+  it('getFeedbackMode returns post_launch when prints are live', async () => {
+    vi.doMock('./features.js', () => ({ features: { neatclockPrints: true } }));
+    const { getFeedbackMode } = await import('./monetization.js');
+    expect(getFeedbackMode()).toBe('post_launch');
   });
 });

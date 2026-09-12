@@ -23,6 +23,7 @@ Flags default to **off** in production until you enable them.
 | `VITE_FEATURE_PREMIUM_THEMES` | Premium theme packs banner in header |
 | `VITE_FEATURE_SPONSOR_FOOTER` | Text-only sponsor line in site footer |
 | `VITE_FEATURE_AFFILIATE_LINKS` | Helpful resource hints inside `.ics` descriptions |
+| `VITE_FEATURE_PRODUCT_FEEDBACK` | Product feedback form (pre-launch greenlight + post-launch calibration) |
 
 ## Optional URLs (when flags are on)
 
@@ -40,7 +41,11 @@ Nothing is shown — no "Coming soon" cards. The UI stays clean for visitors.
 
 **Owner preview:** append `?preview=monetization` to the URL to see gated UI locally before enabling flags.
 
-**Greenlight feedback:** set `VITE_INTEREST_FORM_ENDPOINT` to a Formspree URL. Native in-app modal + footer card (see `WAITLIST.md`). Hidden once prints go live.
+**Product feedback:** Set `VITE_INTEREST_FORM_ENDPOINT` to a Formspree URL and optionally `VITE_FEATURE_PRODUCT_FEEDBACK=true`. The native in-app feedback modal shows:
+  - **Pre-launch mode** (when Prints is off): Greenlight questions for product interest
+  - **Post-launch mode** (when Prints is on): Calibration questions for pricing/CTA feel
+  
+Feedback is enabled by default when an endpoint is configured. Set `VITE_FEATURE_PRODUCT_FEEDBACK=false` to hide it. See `WAITLIST.md` for setup details.
 
 ## Deploy
 

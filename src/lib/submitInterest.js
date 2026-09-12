@@ -23,7 +23,7 @@ export async function submitInterestForm(payload) {
     },
     body: JSON.stringify({
       ...payload,
-      _subject: payload._subject || 'NeatClock — product interest',
+      _subject: payload._subject || `NeatClock — ${payload.mode === 'post_launch' ? 'product feedback' : 'product interest'}`,
       _template: 'table',
       _captcha: 'false',
     }),
