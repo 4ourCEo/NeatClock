@@ -17,6 +17,8 @@ export const features = {
   sponsorFooter: envFlag('VITE_FEATURE_SPONSOR_FOOTER'),
   /** Resource links appended to .ics event descriptions */
   affiliateLinks: envFlag('VITE_FEATURE_AFFILIATE_LINKS'),
+  /** Product feedback form (pre-launch greenlight + post-launch calibration) */
+  productFeedback: envFlag('VITE_FEATURE_PRODUCT_FEEDBACK'),
 };
 
 export const sponsorConfig = {

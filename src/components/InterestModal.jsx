@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { Check, Loader2, Sparkles } from 'lucide-react';
 import {
   buildInitialInterestState,
+  CTA_FEEL_OPTIONS,
   INTEREST_OPTIONS,
+  NEXT_INTEREST_OPTIONS,
   PRESET_OPTIONS,
+  PRICE_FEEL_OPTIONS,
   PURCHASE_OPTIONS,
   validateInterestForm,
 } from '../config/interestForm.js';
+import { getFeedbackMode } from '../config/monetization.js';
 import { submitInterestForm } from '../lib/submitInterest.js';
 import { trackEvent } from '../lib/analytics.js';
 import { Button } from '@/components/ui/button';
@@ -61,7 +65,8 @@ export default function InterestModal({
   source = 'footer',
   onSuccess,
 }) {
-  const [form, setForm] = useState(() => buildInitialInterestState(activePreset));
+  const mode = getFeedbackMode();
+  const [form, setForm] = useState(() => buildInitialInterestState(activePreset, mode));
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -80,9 +85,23 @@ export default function InterestModal({
     setError('');
   };
 
+  const toggleNextInterest = (id) => {
+    setForm((prev) => {
+      if (id === 'free-enough') {
+        return { ...prev, nextInterest: prev.nextInterest.includes(id) ? [] : [id] };
+      }
+      const withoutFree = prev.nextInterest.filter((i) => i !== 'free-enough');
+      const next = withoutFree.includes(id)
+        ? withoutFree.filter((i) => i !== id)
+        : [...withoutFree, id];
+      return { ...prev, nextInterest: next };
+    });
+    setError('');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const validationError = validateInterestForm(form);
+    const validationError = validateInterestForm(form, mode);
     if (validationError) {
       setError(validationError);
       return;
@@ -92,19 +111,29 @@ export default function InterestModal({
     setError('');
 
     try {
-      await submitInterestForm({
+      const payload = {
+        mode,
         preset: form.preset,
-        interests: form.interests.join(', '),
-        purchase_intent: form.purchaseIntent,
+        source,
         email: form.email || '(not provided)',
-        source,
-      });
+      };
+
+      if (mode === 'post_launch') {
+        payload.cta_feel = form.ctaFeel;
+        payload.price_feel = form.priceFeel;
+        payload.next_interest = form.nextInterest.join(', ');
+        payload.note = form.note || '(none)';
+      } else {
+        payload.interests = form.interests.join(', ');
+        payload.purchase_intent = form.purchaseIntent;
+      }
+
+      await submitInterestForm(payload);
       setDone(true);
-      trackEvent('interest_submit', {
+      trackEvent('feedback_submit', {
         source,
+        mode,
         preset: form.preset,
-        interests: form.interests.join(','),
-        purchase_intent: form.purchaseIntent,
       });
       onSuccess?.();
     } catch (err) {
@@ -130,7 +159,9 @@ export default function InterestModal({
             <DialogHeader className="items-center text-center">
               <DialogTitle>Thank you</DialogTitle>
               <DialogDescription className="max-w-xs mx-auto">
-                Your feedback helps us know when to launch extras — without changing the free tool you use today.
+                {mode === 'post_launch'
+                  ? 'Your feedback helps us calibrate pricing and prioritize what to build next.'
+                  : 'Your feedback helps us know when to launch extras - without changing the free tool you use today.'}
               </DialogDescription>
             </DialogHeader>
             <Button type="button" onClick={onClose} className="mt-6">
@@ -141,19 +172,23 @@ export default function InterestModal({
           <form onSubmit={handleSubmit} className="space-y-6">
             <DialogHeader>
               <p className="text-[10px] uppercase tracking-widest font-semibold text-primary mb-2">
-                Shape what&apos;s next
+                {mode === 'post_launch' ? 'Quick feedback' : 'Shape what\'s next'}
               </p>
               <DialogTitle className="pr-8 md:text-2xl">
-                What would help after export?
+                {mode === 'post_launch'
+                  ? 'How are the print packs working?'
+                  : 'What would help after export?'}
               </DialogTitle>
               <DialogDescription>
-                NeatClock stays free. This takes half a minute and tells us what&apos;s worth building.
+                {mode === 'post_launch'
+                  ? 'Help us calibrate pricing and CTAs. Takes 30 seconds.'
+                  : 'NeatClock stays free. This takes half a minute and tells us what\'s worth building.'}
               </DialogDescription>
             </DialogHeader>
 
             <fieldset className="space-y-3">
               <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                1 — Which schedule do you use most?
+                1 - Which schedule do you use most?
               </legend>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {PRESET_OPTIONS.map((option) => (
@@ -171,65 +206,172 @@ export default function InterestModal({
               </div>
             </fieldset>
 
-            <fieldset className="space-y-3">
-              <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                2 — After exporting, what would be useful?
-              </legend>
-              <div className="space-y-2">
-                {INTEREST_OPTIONS.map((option) => (
-                  <SelectCard
-                    key={option.id}
-                    selected={form.interests.includes(option.id)}
-                    onClick={() => toggleInterest(option.id)}
-                    title={option.label}
-                    description={option.description}
-                  />
-                ))}
-              </div>
-            </fieldset>
+            {mode === 'post_launch' ? (
+              <>
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    2 - How do the print CTAs feel?
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {CTA_FEEL_OPTIONS.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({ ...prev, ctaFeel: option.value }));
+                          setError('');
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                          form.ctaFeel === option.value
+                            ? 'border-primary bg-accent/50 text-foreground'
+                            : 'border-border text-muted-foreground hover:border-muted-foreground'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
 
-            <fieldset className="space-y-3">
-              <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                3 — Would you pay ~$5 for a styled print pack?
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {PURCHASE_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => {
-                      setForm((prev) => ({ ...prev, purchaseIntent: option.value }));
-                      setError('');
-                    }}
-                    className={`px-4 py-2 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                      form.purchaseIntent === option.value
-                        ? 'border-primary bg-accent/50 text-foreground'
-                        : 'border-border text-muted-foreground hover:border-muted-foreground'
-                    }`}
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    3 - Price reaction for the print packs?
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {PRICE_FEEL_OPTIONS.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({ ...prev, priceFeel: option.value }));
+                          setError('');
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                          form.priceFeel === option.value
+                            ? 'border-primary bg-accent/50 text-foreground'
+                            : 'border-border text-muted-foreground hover:border-muted-foreground'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    4 - What's most useful next?
+                  </legend>
+                  <div className="space-y-2">
+                    {NEXT_INTEREST_OPTIONS.map((option) => (
+                      <SelectCard
+                        key={option.id}
+                        selected={form.nextInterest.includes(option.id)}
+                        onClick={() => toggleNextInterest(option.id)}
+                        title={option.label}
+                        description={option.description}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="interest-note"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+                    5 - Anything else? (optional)
+                  </Label>
+                  <Input
+                    id="interest-note"
+                    value={form.note}
+                    onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
+                    placeholder="Too pushy, pricing thoughts, missing features..."
+                    className="h-auto px-4 py-3 rounded-xl bg-card/30 focus:bg-card"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="interest-email"
-                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-              >
-                4 — Email (optional)
-              </Label>
-              <Input
-                id="interest-email"
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
-                placeholder="Notify me when print packs launch"
-                className="h-auto px-4 py-3 rounded-xl bg-card/30 focus:bg-card"
-                autoComplete="email"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="interest-email"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  >
+                    6 - Email (optional)
+                  </Label>
+                  <Input
+                    id="interest-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                    placeholder="Follow up if we need clarity"
+                    className="h-auto px-4 py-3 rounded-xl bg-card/30 focus:bg-card"
+                    autoComplete="email"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    2 - After exporting, what would be useful?
+                  </legend>
+                  <div className="space-y-2">
+                    {INTEREST_OPTIONS.map((option) => (
+                      <SelectCard
+                        key={option.id}
+                        selected={form.interests.includes(option.id)}
+                        onClick={() => toggleInterest(option.id)}
+                        title={option.label}
+                        description={option.description}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    3 - Would you pay ~$5 for a styled print pack?
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {PURCHASE_OPTIONS.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({ ...prev, purchaseIntent: option.value }));
+                          setError('');
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                          form.purchaseIntent === option.value
+                            ? 'border-primary bg-accent/50 text-foreground'
+                            : 'border-border text-muted-foreground hover:border-muted-foreground'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="interest-email"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  >
+                    4 - Email (optional)
+                  </Label>
+                  <Input
+                    id="interest-email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                    placeholder="Notify me when print packs launch"
+                    className="h-auto px-4 py-3 rounded-xl bg-card/30 focus:bg-card"
+                    autoComplete="email"
+                  />
+                </div>
+              </>
+            )}
 
             {error && (
               <p className="text-xs text-destructive font-medium" role="alert">
@@ -242,7 +384,7 @@ export default function InterestModal({
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Sending…
+                    Sending...
                   </>
                 ) : (
                   'Send feedback'

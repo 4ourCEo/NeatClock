@@ -35,8 +35,60 @@ export const PURCHASE_OPTIONS = [
   { id: 'no', label: 'No — free only', value: 'no' },
 ];
 
-export function buildInitialInterestState(activePreset) {
+/** Post-launch feedback: CTA feel */
+export const CTA_FEEL_OPTIONS = [
+  { id: 'helpful', label: 'Helpful', value: 'helpful' },
+  { id: 'fine', label: 'Fine', value: 'fine' },
+  { id: 'too-pushy', label: 'Too pushy', value: 'too_pushy' },
+];
+
+/** Post-launch feedback: Price reaction */
+export const PRICE_FEEL_OPTIONS = [
+  { id: 'fair', label: 'Fair', value: 'fair' },
+  { id: 'high', label: 'Too high', value: 'high' },
+  { id: 'low', label: 'Lower than expected', value: 'low' },
+  { id: 'no-opinion', label: "Don't care / didn't check", value: 'no_opinion' },
+];
+
+/** Post-launch feedback: What to build next */
+export const NEXT_INTEREST_OPTIONS = [
+  {
+    id: 'more-print-themes',
+    label: 'More print themes',
+    description: 'Different styles or layouts for the print packs',
+  },
+  {
+    id: 'lockscreen',
+    label: 'Lockscreen wallpapers',
+    description: 'Calm backgrounds for your phone',
+  },
+  {
+    id: 'themes',
+    label: 'Extra color themes',
+    description: 'Premium palettes beyond the free themes',
+  },
+  {
+    id: 'free-enough',
+    label: 'Nothing extra',
+    description: 'Free export + prints are enough for me',
+  },
+];
+
+export function buildInitialInterestState(activePreset, mode = 'pre_launch') {
   const presetMatch = PRESET_OPTIONS.find((p) => p.value === activePreset);
+  
+  if (mode === 'post_launch') {
+    return {
+      preset: presetMatch ? presetMatch.value : 'Custom',
+      ctaFeel: '',
+      priceFeel: '',
+      nextInterest: [],
+      note: '',
+      email: '',
+    };
+  }
+  
+  // Pre-launch mode
   return {
     preset: presetMatch ? presetMatch.value : 'Custom',
     interests: [],
@@ -45,10 +97,22 @@ export function buildInitialInterestState(activePreset) {
   };
 }
 
-export function validateInterestForm(state) {
+export function validateInterestForm(state, mode = 'pre_launch') {
   if (!state.preset) return 'Pick the schedule type you use most.';
-  if (state.interests.length === 0) return 'Pick at least one option — including “Nothing extra” if that fits.';
-  if (!state.purchaseIntent) return 'Let us know if a ~$5 print pack is something you’d consider.';
+  
+  if (mode === 'post_launch') {
+    if (!state.ctaFeel) return 'Let us know how the print CTAs feel.';
+    if (!state.priceFeel) return 'Share your reaction to the pricing.';
+    if (state.nextInterest.length === 0) return 'Pick at least one option — including "Nothing extra" if that fits.';
+    if (state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
+      return 'Enter a valid email or leave it blank.';
+    }
+    return null;
+  }
+  
+  // Pre-launch validation
+  if (state.interests.length === 0) return 'Pick at least one option — including "Nothing extra" if that fits.';
+  if (!state.purchaseIntent) return 'Let us know if a $5 print pack is something you\'d consider.';
   if (state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
     return 'Enter a valid email or leave it blank.';
   }

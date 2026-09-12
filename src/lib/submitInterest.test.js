@@ -53,7 +53,7 @@ describe('submitInterestForm', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const result = await submitInterestForm({ email: 'a@b.com' });
+    const result = await submitInterestForm({ email: 'a@b.com', mode: 'pre_launch' });
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://formspree.io/f/abc123',
@@ -68,11 +68,24 @@ describe('submitInterestForm', () => {
     const body = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(body).toMatchObject({
       email: 'a@b.com',
+      mode: 'pre_launch',
       _subject: 'NeatClock — product interest',
       _template: 'table',
       _captcha: 'false',
     });
     expect(result).toEqual({ ok: true });
+  });
+
+  it('uses "product feedback" subject for post_launch mode', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({}),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await submitInterestForm({ mode: 'post_launch' });
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body._subject).toBe('NeatClock — product feedback');
   });
 
   it('preserves a caller-provided _subject', async () => {

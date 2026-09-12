@@ -18,9 +18,25 @@ export { interestFormEndpoint };
 export const shopUrl = env('VITE_PRINTS_SHOP_URL');
 export const themePackUrl = env('VITE_THEME_PACK_URL', shopUrl);
 
-/** Show native interest UI when prints aren't live and a form endpoint is configured */
+/**
+ * Show native feedback UI when:
+ * - A form endpoint is configured, AND
+ * - Either productFeedback flag is explicitly on, OR it's unset and endpoint exists
+ */
 export const interestFormEnabled =
-  isInterestEndpointConfigured() && !features.neatclockPrints;
+  isInterestEndpointConfigured() &&
+  (features.productFeedback !== undefined
+    ? features.productFeedback
+    : true);
+
+/**
+ * Feedback mode:
+ * - "pre_launch" when prints are not live (greenlight questions)
+ * - "post_launch" when prints are live (calibration questions)
+ */
+export function getFeedbackMode() {
+  return features.neatclockPrints ? 'post_launch' : 'pre_launch';
+}
 
 /** Preset-matched print packs ($3–5 each or bundle) */
 export const printProducts = [

@@ -1,12 +1,25 @@
-# Interest form setup (greenlight feedback)
+# Product feedback setup (continuous feedback + greenlight)
 
 NeatClock includes a **native feedback flow** styled like the rest of the app — not an external form link.
 
-It appears when:
-- Print packs are **not** live yet (`VITE_FEATURE_NEATCLOCK_PRINTS` is not `true`)
-- A form endpoint is configured (`VITE_INTEREST_FORM_ENDPOINT` **or** `VITE_INTEREST_FORM_EMAIL`)
+## Two modes, one sink
 
-It hides automatically once print packs launch.
+The feedback form adapts based on whether Prints are live:
+
+- **Pre-launch mode** (`VITE_FEATURE_NEATCLOCK_PRINTS` off): Greenlight questions (purchase intent for ~$5 packs, interest checkboxes)
+- **Post-launch mode** (`VITE_FEATURE_NEATCLOCK_PRINTS` on): Calibration questions (CTA feel, price reaction, what to build next)
+
+Both modes post to the same Formspree endpoint with clean field names (`mode=pre_launch|post_launch`, `cta_feel`, `price_feel`, etc.).
+
+## Visibility
+
+Feedback shows when:
+- A form endpoint is configured (`VITE_INTEREST_FORM_ENDPOINT` **or** `VITE_INTEREST_FORM_EMAIL`)
+- **And** either:
+  - `VITE_FEATURE_PRODUCT_FEEDBACK` is explicitly `true`, **or**
+  - `VITE_FEATURE_PRODUCT_FEEDBACK` is unset (defaults to on when endpoint exists)
+
+Set `VITE_FEATURE_PRODUCT_FEEDBACK=false` to hide feedback even when an endpoint is configured.
 
 ---
 
@@ -43,8 +56,11 @@ a launch decision.
 
 ### Fields received (auto-mapped)
 
+**Pre-launch mode:**
+
 | Field | Example |
 |-------|---------|
+| `mode` | pre_launch |
 | `preset` | Homeowner's Sentinel |
 | `interests` | prints, lockscreen |
 | `purchase_intent` | maybe |
@@ -52,14 +68,39 @@ a launch decision.
 | `source` | export \| footer |
 | `_subject` | NeatClock — product interest |
 
-### Greenlight rule of thumb
+**Post-launch mode:**
+
+| Field | Example |
+|-------|---------|
+| `mode` | post_launch |
+| `preset` | Preventive Gearhead |
+| `cta_feel` | helpful \| fine \| too_pushy |
+| `price_feel` | fair \| high \| low \| no_opinion |
+| `next_interest` | more-print-themes, lockscreen |
+| `note` | Optional free text or (none) |
+| `email` | user@example.com or (not provided) |
+| `source` | export \| footer |
+| `_subject` | NeatClock — product feedback |
+
+### Greenlight / calibration strategy
+
+**Pre-launch (greenlight):**
 
 | Signal | Action |
 |--------|--------|
-| 20+ responses wanting **prints** + mostly yes/maybe on $4 | Enable `VITE_FEATURE_NEATCLOCK_PRINTS` + create Gumroad product |
+| 20+ responses wanting **prints** + mostly yes/maybe on $5 | Enable `VITE_FEATURE_NEATCLOCK_PRINTS` + create Gumroad product |
 | Strong **lockscreen** interest, weak prints | Enable lockscreen first (free) |
 | Majority **free-enough** | Delay all paid extras |
 | 10+ emails collected | Email when prints launch |
+
+**Post-launch (calibration):**
+
+| Signal | Action |
+|--------|--------|
+| Majority **too pushy** on CTAs | Reduce prominence or move to footer only |
+| Majority **high** on price | Consider lowering bundle or individual pack prices |
+| Strong demand for **more-print-themes** | Prioritize additional print pack designs |
+| Majority **free-enough** after launch | Focus on improving free export; delay more paid features |
 
 ---
 
@@ -103,12 +144,26 @@ Use the **in-app modal** (recommended) — Tally is for your reference if you wa
 
 ---
 
+## Analytics (Plausible goals)
+
+The following custom events are tracked (configure as goals in Plausible dashboard):
+
+| Event | Properties | When |
+|-------|-----------|------|
+| `feedback_open` | `source` (footer\|export), `mode` (pre_launch\|post_launch) | User opens feedback modal |
+| `feedback_submit` | `source`, `mode`, `preset` | User submits feedback |
+| `print_cta_click` | `product_id`, `product_name`, `price` | User clicks a print pack ProductCard link |
+
+Document these in `MONETIZATION.md` or your internal analytics playbook.
+
+---
+
 ## Where users see it
 
-1. **Footer card** — “Help shape what we build next” (always when form enabled)
+1. **Footer card** — "Help shape what we build next" (pre-launch) / "How are the print packs working?" (post-launch)
 2. **Export success modal** — compact invite after `.ics` download (dismissible once per browser)
 
-Neither shows when prints are live or when no endpoint is configured.
+Shows whenever a form endpoint is configured and `VITE_FEATURE_PRODUCT_FEEDBACK` is not explicitly `false`. Mode adapts automatically based on `VITE_FEATURE_NEATCLOCK_PRINTS`.
 
 ---
 
