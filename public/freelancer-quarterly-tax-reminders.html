@@ -22,7 +22,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/page-base.css" />
     <script type="application/ld+json">
     {
@@ -42,7 +42,7 @@
           "name": "Is this tax advice or accounting software?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. NeatClock only generates recurring calendar reminders. It does not calculate taxes, file returns, or store financial data on servers. Consult a CPA for tax advice."
+            "text": "No. NeatClock only generates recurring calendar reminders. It does not calculate taxes, file returns, or store financial data on servers. Consult a CPA for tax advice. Optional print packs are available for purchase if you want physical desk-ready trackers."
           }
         },
         {
@@ -70,7 +70,14 @@
       ul { color: var(--muted); }
       .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; transition: background .15s; }
       .cta:hover { background: var(--accent-hover); }
+      .cta-secondary { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: transparent; border: 2px solid var(--accent); color: var(--accent); font-weight: 600; text-decoration: none; border-radius: 9999px; transition: all .15s; }
+      .cta-secondary:hover { background: var(--accent); color: #fff; }
       .disclaimer { font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+      .print-cta { margin-top: 1.5rem; padding: 1rem; background: rgba(224,122,95,.06); border-left: 3px solid var(--accent); border-radius: 0.5rem; }
+      .print-cta h3 { font-size: 1rem; margin-bottom: 0.35rem; font-weight: 600; }
+      .print-cta p { font-size: 0.875rem; color: var(--muted); margin-bottom: 0.75rem; }
+      .print-cta .bundle-link { display: block; margin-top: 0.5rem; font-size: 0.8rem; color: var(--muted); }
+      .print-cta .bundle-link:hover { color: var(--accent); }
       .related { text-align: center; margin: 2rem 0 0; padding-top: 1.5rem; border-top: 1px solid rgba(28,28,28,.08); }
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
@@ -108,6 +115,13 @@
         </ul>
         <a class="cta" href="/?preset=cfo&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=freelancer_taxes" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'freelancer_taxes'}})">Open CFO preset →</a>
         <p class="disclaimer">Reminder generator only — not tax advice or accounting software.</p>
+        
+        <div class="print-cta">
+          <h3>Prefer a printable Letter pack?</h3>
+          <p>Get a desk-ready tax deadline tracker — quarterly tax + bookkeeping checklist for solopreneurs.</p>
+          <a class="cta-secondary" href="https://gorillamotors.gumroad.com/l/zdwmy?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=freelancer_taxes&amp;utm_content=print_pack" target="_blank" rel="noopener noreferrer" onclick="window.plausible&&window.plausible('print_cta_click',{props:{source:'landing',campaign:'freelancer_taxes'}})">View Finance Print Pack ($6.99) →</a>
+          <a class="bundle-link" href="https://gorillamotors.gumroad.com/l/qyyoe?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=freelancer_taxes&amp;utm_content=bundle" target="_blank" rel="noopener noreferrer">or get all three packs for $14.99</a>
+        </div>
       </div>
 
       <div class="card">
@@ -123,7 +137,7 @@
         </details>
         <details>
           <summary>Is this tax advice or accounting software?</summary>
-          <p>No. NeatClock only generates recurring calendar reminders. It does not calculate taxes, file returns, or store financial data on servers. Consult a CPA for tax advice.</p>
+          <p>No. NeatClock only generates recurring calendar reminders. It does not calculate taxes, file returns, or store financial data on servers. Consult a CPA for tax advice. Optional print packs are available for purchase if you want physical desk-ready trackers.</p>
         </details>
         <details>
           <summary>Can I add custom finance reminders?</summary>

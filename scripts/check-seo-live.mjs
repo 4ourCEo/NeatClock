@@ -61,6 +61,66 @@ await check('Plausible on home-maintenance landing', async () => {
   }
 });
 
+await check('Home landing has primary + print CTAs', async () => {
+  const html = await (await fetch(`${BASE}/home-maintenance-calendar`)).text();
+  if (!html.includes('Open Home Sentinel preset')) {
+    throw new Error('missing primary CTA');
+  }
+  if (!html.includes('gorillamotors.gumroad.com/l/oikeyi')) {
+    throw new Error('missing Gumroad print pack link');
+  }
+  if (!html.includes("plausible('print_cta_click'")) {
+    throw new Error('missing print_cta_click tracking');
+  }
+  if (!html.includes('utm_content=print_pack')) {
+    throw new Error('missing print_pack UTM on CTA');
+  }
+});
+
+await check('Car landing has primary + print CTAs', async () => {
+  const html = await (await fetch(`${BASE}/car-maintenance-schedule-ics`)).text();
+  if (!html.includes('Open Gearhead preset')) {
+    throw new Error('missing primary CTA');
+  }
+  if (!html.includes('gorillamotors.gumroad.com/l/undcqo')) {
+    throw new Error('missing Gumroad print pack link');
+  }
+  if (!html.includes("plausible('print_cta_click'")) {
+    throw new Error('missing print_cta_click tracking');
+  }
+});
+
+await check('Freelancer landing has primary + print CTAs', async () => {
+  const html = await (await fetch(`${BASE}/freelancer-quarterly-tax-reminders`)).text();
+  if (!html.includes('Open CFO preset')) {
+    throw new Error('missing primary CTA');
+  }
+  if (!html.includes('gorillamotors.gumroad.com/l/zdwmy')) {
+    throw new Error('missing Gumroad print pack link');
+  }
+  if (!html.includes("plausible('print_cta_click'")) {
+    throw new Error('missing print_cta_click tracking');
+  }
+});
+
+await check('Friendly URL aliases redirect', async () => {
+  const aliases = [
+    ['/car-maintenance-schedule', '/car-maintenance-schedule-ics'],
+    ['/freelancer-tax-calendar', '/freelancer-quarterly-tax-reminders'],
+    ['/freelancer-tax-reminders', '/freelancer-quarterly-tax-reminders'],
+  ];
+  for (const [alias, canonical] of aliases) {
+    const res = await fetch(`${BASE}${alias}`, { redirect: 'manual' });
+    if (![301, 302, 307, 308].includes(res.status)) {
+      throw new Error(`${alias} expected redirect, got ${res.status}`);
+    }
+    const loc = res.headers.get('location') || '';
+    if (!loc.includes(canonical)) {
+      throw new Error(`${alias} should redirect to ${canonical}, got ${loc}`);
+    }
+  }
+});
+
 await check('www → apex redirect', async () => {
   const res = await fetch('https://www.neatclock.pro/', { redirect: 'manual' });
   if (![301, 302, 307, 308].includes(res.status)) {

@@ -178,6 +178,21 @@
       "source": "/partner.html",
       "destination": "/partner",
       "permanent": true
+    },
+    {
+      "source": "/car-maintenance-schedule",
+      "destination": "/car-maintenance-schedule-ics",
+      "permanent": true
+    },
+    {
+      "source": "/freelancer-tax-calendar",
+      "destination": "/freelancer-quarterly-tax-reminders",
+      "permanent": true
+    },
+    {
+      "source": "/freelancer-tax-reminders",
+      "destination": "/freelancer-quarterly-tax-reminders",
+      "permanent": true
     }
   ],
   "rewrites": [

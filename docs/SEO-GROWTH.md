@@ -14,6 +14,16 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 ---
 
+## 1a. Preset landing monetization CTAs
+
+**Problem:** Preset landings drive traffic but no conversion path to prints.
+
+**Shipped:** Secondary Gumroad print CTAs on three preset landings (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`) with proper UTMs and Plausible `print_cta_click` tracking. Friendly URL alias redirects added (`/car-maintenance-schedule` → canonical, `/freelancer-tax-calendar` → canonical).
+
+**PM next:** Monitor CTA click-through rate in Plausible. Update FAQ copy if users confuse free export with paid prints.
+
+---
+
 ## 2. Internal linking hub (app → landings)
 
 **Problem:** SPA had zero crawlable links to SEO landings; link equity stayed on one URL.
@@ -136,12 +146,16 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 |------|--------|
 | `public/recurring-ics-calendar-generator.html` | New head-term landing |
 | `public/*-calendar*.html` | Cross-links, UTM, breadcrumbs |
+| `public/home-maintenance-calendar.html` | Secondary Gumroad print CTA + Inter font |
+| `public/car-maintenance-schedule-ics.html` | Secondary Gumroad print CTA + Inter font |
+| `public/freelancer-quarterly-tax-reminders.html` | Secondary Gumroad print CTA + Inter font |
+| `public/page-base.css` | Font update: Inter for body (was Outfit) |
 | `src/components/SeoFooterLinks.jsx` | App footer hub |
 | `src/components/SharePresetLink.jsx` | Share loop |
 | `src/lib/shareLinks.js` | UTM preset URLs |
 | `index.html` | FAQ schema |
 | `public/sitemap.xml` | New URL + lastmod |
-| `vercel.json` | Rewrite for new landing |
+| `vercel.json` | Rewrite for new landing + friendly URL alias redirects |
 
 ---
 
