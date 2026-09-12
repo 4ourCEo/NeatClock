@@ -36,13 +36,13 @@ test.describe('schedule flow', () => {
     expect(download.suggestedFilename()).toBe('neatclock-schedule.ics');
 
     await expect(page.getByRole('heading', { name: /You're all set/i })).toBeVisible();
-    await expect(page.getByText('Sync to Mobile')).toBeVisible();
+    await expect(page.getByText(/Quick mobile sync/i)).toBeVisible();
     await expect(page.getByAltText('Sync QR Code')).toBeVisible();
     await expect(page.getByText('Google:').first()).toBeVisible();
     await expect(page.getByText('Apple:').first()).toBeVisible();
 
     await page.getByRole('button', { name: 'Keep editing this schedule' }).click();
-    await expect(page.getByRole('heading', { name: 'Calendar downloaded' })).toBeHidden();
+    await expect(page.getByRole('heading', { name: /You're all set/i })).toBeHidden();
 
     const backupButton = page.getByRole('button', { name: 'Backup' });
     await expect(backupButton).toBeVisible();
