@@ -18,9 +18,14 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 **Problem:** Preset landings drive traffic but no conversion path to prints.
 
-**Shipped:** Secondary Gumroad print CTAs on three preset landings (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`) with proper UTMs and GoatCounter `print_cta_click` tracking. Friendly URL alias redirects added (`/car-maintenance-schedule` → canonical, `/freelancer-tax-calendar` → canonical).
+**Shipped:** Secondary Gumroad print CTAs on three preset landings (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`) with proper UTMs and GoatCounter `print_cta_click` tracking. Extended to 9 additional long-tail pages:
+- Home pack (5): hvac-filter, smoke-detector, gutters, water-heater, dryer-vent
+- Vehicle pack (2): oil-change, tire-rotation
+- Finance pack (2): quarterly-tax, subscription-audit
 
-**PM next:** Monitor CTA click-through rate in GoatCounter. Update FAQ copy if users confuse free export with paid prints.
+All pages include secondary print CTA block with pack-appropriate Gumroad links, bundle option, GoatCounter tracking, and FAQ updates mentioning optional prints. Friendly URL alias redirects added (`/car-maintenance-schedule` → canonical, `/freelancer-tax-calendar` → canonical).
+
+**PM next:** Monitor CTA click-through rate in GoatCounter per campaign. Update FAQ copy if users confuse free export with paid prints.
 
 ---
 
