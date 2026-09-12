@@ -161,7 +161,7 @@ export default function InterestModal({
               <DialogDescription className="max-w-xs mx-auto">
                 {mode === 'post_launch'
                   ? 'Your feedback helps us calibrate pricing and prioritize what to build next.'
-                  : 'Your feedback helps us know when to launch extras — without changing the free tool you use today.'}
+                  : 'Your feedback helps us know when to launch extras - without changing the free tool you use today.'}
               </DialogDescription>
             </DialogHeader>
             <Button type="button" onClick={onClose} className="mt-6">
@@ -172,7 +172,7 @@ export default function InterestModal({
           <form onSubmit={handleSubmit} className="space-y-6">
             <DialogHeader>
               <p className="text-[10px] uppercase tracking-widest font-semibold text-primary mb-2">
-                {mode === 'post_launch' ? 'Quick feedback' : 'Shape what's next'}
+                {mode === 'post_launch' ? 'Quick feedback' : 'Shape what\'s next'}
               </p>
               <DialogTitle className="pr-8 md:text-2xl">
                 {mode === 'post_launch'
@@ -182,13 +182,13 @@ export default function InterestModal({
               <DialogDescription>
                 {mode === 'post_launch'
                   ? 'Help us calibrate pricing and CTAs. Takes 30 seconds.'
-                  : 'NeatClock stays free. This takes half a minute and tells us what's worth building.'}
+                  : 'NeatClock stays free. This takes half a minute and tells us what\'s worth building.'}
               </DialogDescription>
             </DialogHeader>
 
             <fieldset className="space-y-3">
               <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                1 — Which schedule do you use most?
+                1 - Which schedule do you use most?
               </legend>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {PRESET_OPTIONS.map((option) => (
@@ -210,7 +210,7 @@ export default function InterestModal({
               <>
                 <fieldset className="space-y-3">
                   <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    2 — How do the print CTAs feel?
+                    2 - How do the print CTAs feel?
                   </legend>
                   <div className="flex flex-wrap gap-2">
                     {CTA_FEEL_OPTIONS.map((option) => (
@@ -235,7 +235,7 @@ export default function InterestModal({
 
                 <fieldset className="space-y-3">
                   <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    3 — Price reaction for the print packs?
+                    3 - Price reaction for the print packs?
                   </legend>
                   <div className="flex flex-wrap gap-2">
                     {PRICE_FEEL_OPTIONS.map((option) => (
@@ -260,7 +260,7 @@ export default function InterestModal({
 
                 <fieldset className="space-y-3">
                   <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    4 — What's most useful next?
+                    4 - What's most useful next?
                   </legend>
                   <div className="space-y-2">
                     {NEXT_INTEREST_OPTIONS.map((option) => (
@@ -280,13 +280,13 @@ export default function InterestModal({
                     htmlFor="interest-note"
                     className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
-                    5 — Anything else? (optional)
+                    5 - Anything else? (optional)
                   </Label>
                   <Input
                     id="interest-note"
                     value={form.note}
                     onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
-                    placeholder="Too pushy, pricing thoughts, missing features…"
+                    placeholder="Too pushy, pricing thoughts, missing features..."
                     className="h-auto px-4 py-3 rounded-xl bg-card/30 focus:bg-card"
                   />
                 </div>
@@ -296,7 +296,7 @@ export default function InterestModal({
                     htmlFor="interest-email"
                     className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
-                    6 — Email (optional)
+                    6 - Email (optional)
                   </Label>
                   <Input
                     id="interest-email"
@@ -313,7 +313,7 @@ export default function InterestModal({
               <>
                 <fieldset className="space-y-3">
                   <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    2 — After exporting, what would be useful?
+                    2 - After exporting, what would be useful?
                   </legend>
                   <div className="space-y-2">
                     {INTEREST_OPTIONS.map((option) => (
@@ -330,7 +330,7 @@ export default function InterestModal({
 
                 <fieldset className="space-y-3">
                   <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                    3 — Would you pay ~$5 for a styled print pack?
+                    3 - Would you pay ~$5 for a styled print pack?
                   </legend>
                   <div className="flex flex-wrap gap-2">
                     {PURCHASE_OPTIONS.map((option) => (
@@ -358,7 +358,7 @@ export default function InterestModal({
                     htmlFor="interest-email"
                     className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
-                    4 — Email (optional)
+                    4 - Email (optional)
                   </Label>
                   <Input
                     id="interest-email"
@@ -384,7 +384,7 @@ export default function InterestModal({
                 {submitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Sending…
+                    Sending...
                   </>
                 ) : (
                   'Send feedback'

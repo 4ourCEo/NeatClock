@@ -5,7 +5,7 @@ import { trackEvent } from '../lib/analytics.js';
 import { useState } from 'react';
 
 /**
- * Invites feedback — styled like preset cards, not a bare link.
+ * Invites feedback - styled like preset cards, not a bare link.
  * variant: 'footer' (full card) | 'export' (compact, dismissible)
  */
 export function InterestInvite({ variant = 'footer', onOpen }) {
@@ -43,12 +43,12 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
           </div>
           <div className="min-w-0">
             <p className="font-serif text-sm font-semibold text-theme-text leading-snug">
-              {mode === 'post_launch' ? 'Quick feedback?' : 'Quick question while you're here'}
+              {mode === 'post_launch' ? 'Quick feedback?' : 'Quick question while you\'re here'}
             </p>
             <p className="text-xs text-theme-text-muted mt-1 leading-relaxed">
               {mode === 'post_launch'
-                ? 'How are the print CTAs working? Half a minute — helps us calibrate.'
-                : 'Would styled print templates help after export? Half a minute — helps us know what to build.'}
+                ? 'How are the print CTAs working? Half a minute - helps us calibrate.'
+                : 'Would styled print templates help after export? Half a minute - helps us know what to build.'}
             </p>
             <div className="flex flex-wrap gap-3 mt-4 justify-center">
               <button
@@ -90,7 +90,7 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
           <p className="text-xs text-theme-text-muted mt-2 leading-relaxed">
             {mode === 'post_launch'
               ? 'Share quick feedback on pricing and CTAs. Helps us calibrate without bothering everyone.'
-              : 'NeatClock stays free forever. Tell us which extras — print packs, wallpapers, themes — would actually help after you export. We launch when enough people ask.'}
+              : 'NeatClock stays free forever. Tell us which extras - print packs, wallpapers, themes - would actually help after you export. We launch when enough people ask.'}
           </p>
           <div className="mt-4 flex justify-center">
             <button
@@ -98,7 +98,7 @@ export function InterestInvite({ variant = 'footer', onOpen }) {
               onClick={handleOpen}
               className="px-5 py-2.5 rounded-lg bg-theme-accent hover:bg-theme-accent-hover text-white text-xs font-medium cursor-pointer transition-colors shadow-sm"
             >
-              {mode === 'post_launch' ? 'Share feedback — 30 sec' : 'Share feedback — 30 sec'}
+              {mode === 'post_launch' ? 'Share feedback - 30 sec' : 'Share feedback - 30 sec'}
             </button>
           </div>
         </div>
