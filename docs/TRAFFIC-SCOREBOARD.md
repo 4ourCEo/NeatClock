@@ -22,6 +22,9 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [x] `qr_sync_shown`
 - [x] `partner_link_copy`
 - [x] `backup_export`
+- [ ] `print_cta_click`
+- [ ] `feedback_open`
+- [ ] `feedback_submit`
 
 ## GSC checklist
 
@@ -39,6 +42,12 @@ Fill daily from Plausible (https://plausible.io) after deploy. Goal: 7 consecuti
 - [ ] Human: start Mon/Wed/Fri posts per `docs/DISTRIBUTION-WEEKLY.md` (checklist: [seo-weekly issues](https://github.com/4ourCEo/NeatClock/issues?q=label%3Aseo-weekly))
 - [x] `PLAUSIBLE_API_KEY` Actions secret set → weekly auto-fill via `npm run seo:scoreboard`
 - Automation playbook: `docs/SEO-AUTOMATION.md` · Ops: `docs/OPS-AUTOMATION.md` (GitHub Issues — no Notion Add-connections required)
+
+## Post #15 (2026-09-12)
+
+- [x] Prints secondary CTAs live on three preset landings (Homeowner's Sentinel, Preventive Gearhead, Automated CFO)
+- [x] IndexNow + `npm run check:seo-live` green
+- **Plausible Stats API currently 402 locked (missing subscription)** — scoreboard auto-fill via `npm run seo:scoreboard` fails until plan renewed
 
 ## 10x discovery push (2026-08-02)
 
