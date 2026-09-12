@@ -12,10 +12,10 @@ export default function HomeFaq() {
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 text-center">
           <h2 id="home-faq-heading" className="font-serif text-2xl font-semibold text-foreground mb-3">
-            Frequently asked questions
+            Common questions
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xl mx-auto">
-            Quick answers about exporting recurring calendars — no account, no lock-in.
+            Everything you need to know about exporting your calendar — no account, no lock-in, just works.
           </p>
         </div>
         <Accordion type="single" collapsible className="w-full text-left">

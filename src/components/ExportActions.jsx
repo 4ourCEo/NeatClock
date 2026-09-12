@@ -50,7 +50,7 @@ export default function ExportActions({
           className="px-7 py-3 bg-theme-accent hover:bg-theme-accent-hover text-theme-accent-text font-medium rounded-lg text-sm transition-all flex items-center justify-center gap-2 cursor-pointer min-w-[220px] shadow-[var(--theme-shadow-md)] hover:shadow-[var(--theme-shadow-lg)]"
         >
           <Download className="w-4 h-4" />
-          Generate & Export .ics
+          Export Your Calendar
         </button>
       </div>
     </footer>

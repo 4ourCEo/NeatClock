@@ -31,11 +31,11 @@ test.describe('schedule flow', () => {
     await expect(firstTaskInput).toHaveValue('Custom Oil Change Reminder');
 
     const icsDownload = page.waitForEvent('download');
-    await page.getByRole('button', { name: /Generate & Export \.ics/i }).click();
+    await page.getByRole('button', { name: /Export Your Calendar/i }).click();
     const download = await icsDownload;
     expect(download.suggestedFilename()).toBe('neatclock-schedule.ics');
 
-    await expect(page.getByRole('heading', { name: 'Calendar downloaded' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /You're all set/i })).toBeVisible();
     await expect(page.getByText('Sync to Mobile')).toBeVisible();
     await expect(page.getByAltText('Sync QR Code')).toBeVisible();
     await expect(page.getByText('Google:').first()).toBeVisible();
