@@ -131,13 +131,9 @@ const html = `<!doctype html>
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
     </style>
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js"></script>
-    <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      // Force real domain (pa- script may bake a typo)
-      plausible.init({ domain: 'neatclock.pro' })
-    </script>
+    <!-- Privacy-friendly analytics by GoatCounter -->
+    <script data-goatcounter="https://neatclock.goatcounter.com/count"
+            async src="https://gc.zgo.at/count.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -155,7 +151,7 @@ const html = `<!doctype html>
           <li>Standard .ics for Google, Apple, or Outlook</li>
           <li>No account — data stays on your device</li>
         </ul>
-        <a class="cta" href="${ctaHref}" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'${campaign}'}})">Open NeatClock →</a>
+        <a class="cta" href="${ctaHref}" onclick="window.goatcounter&&window.goatcounter.count({path:'landing_cta',title:'campaign:${campaign}',event:true})">Open NeatClock →</a>
       </div>
 
       <div class="card">

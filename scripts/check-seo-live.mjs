@@ -44,20 +44,20 @@ await check('IndexNow key file', async () => {
   if (body !== INDEXNOW_KEY) throw new Error(`key mismatch: ${body}`);
 });
 
-await check('Plausible on homepage', async () => {
+await check('GoatCounter on homepage', async () => {
   const html = await (await fetch(`${BASE}/`)).text();
-  if (!html.includes('plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js')) {
-    throw new Error('missing Plausible pa- script');
+  if (!html.includes('gc.zgo.at/count.js')) {
+    throw new Error('missing GoatCounter script');
   }
-  if (!html.includes("plausible.init({ domain: 'neatclock.pro' })")) {
-    throw new Error('missing plausible.init({ domain: neatclock.pro })');
+  if (!html.includes('data-goatcounter="https://neatclock.goatcounter.com/count"')) {
+    throw new Error('missing GoatCounter data-goatcounter attribute');
   }
 });
 
-await check('Plausible on home-maintenance landing', async () => {
+await check('GoatCounter on home-maintenance landing', async () => {
   const html = await (await fetch(`${BASE}/home-maintenance-calendar`)).text();
-  if (!html.includes('plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js')) {
-    throw new Error('missing Plausible pa- script on landing (deploy may be stale)');
+  if (!html.includes('gc.zgo.at/count.js')) {
+    throw new Error('missing GoatCounter script on landing (deploy may be stale)');
   }
 });
 
@@ -69,7 +69,7 @@ await check('Home landing has primary + print CTAs', async () => {
   if (!html.includes('gorillamotors.gumroad.com/l/oikeyi')) {
     throw new Error('missing Gumroad print pack link');
   }
-  if (!html.includes("plausible('print_cta_click'")) {
+  if (!html.includes("goatcounter.count({path:'print_cta_click'")) {
     throw new Error('missing print_cta_click tracking');
   }
   if (!html.includes('utm_content=print_pack')) {
@@ -85,7 +85,7 @@ await check('Car landing has primary + print CTAs', async () => {
   if (!html.includes('gorillamotors.gumroad.com/l/undcqo')) {
     throw new Error('missing Gumroad print pack link');
   }
-  if (!html.includes("plausible('print_cta_click'")) {
+  if (!html.includes("goatcounter.count({path:'print_cta_click'")) {
     throw new Error('missing print_cta_click tracking');
   }
 });
@@ -98,7 +98,7 @@ await check('Freelancer landing has primary + print CTAs', async () => {
   if (!html.includes('gorillamotors.gumroad.com/l/zdwmy')) {
     throw new Error('missing Gumroad print pack link');
   }
-  if (!html.includes("plausible('print_cta_click'")) {
+  if (!html.includes("goatcounter.count({path:'print_cta_click'")) {
     throw new Error('missing print_cta_click tracking');
   }
 });

@@ -78,7 +78,6 @@ Configure these in your host dashboard to enable live analytics and feedback fea
 | Environment Variable | Description |
 |---|---|
 | `VITE_SITE_URL` | Set to `https://neatclock.pro` for canonical tags and metadata. |
-| `VITE_PLAUSIBLE_DOMAIN` | Set to `neatclock.pro` to enable privacy-friendly page analytics. |
 | `VITE_INTEREST_FORM_EMAIL` | Set to your email to enable waitlist submissions (routed via FormSubmit). |
 | `VITE_INTEREST_FORM_ENDPOINT` | Set to your Formspree endpoint (e.g. `https://formspree.io/f/xxxx`). |
 

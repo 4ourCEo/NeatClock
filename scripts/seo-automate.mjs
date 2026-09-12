@@ -8,7 +8,7 @@
  *  3) live SEO smoke (production)
  *  4) IndexNow submit (all sitemap URLs)
  *  5) sync llms.txt / llms-full.txt / catalog.json from sitemap
- *  6) Plausible → TRAFFIC-SCOREBOARD (if PLAUSIBLE_API_KEY set)
+ *  6) GoatCounter scoreboard pull (deprecated; manual export required)
  *  7) print today's distribution reminder
  *  8) optional OPS_WEBHOOK_URL notify (Zapier → Notion)
  *
@@ -60,7 +60,9 @@ if (!flags.has('--skip-indexnow')) {
 }
 
 if (!flags.has('--skip-scoreboard')) {
-  run('plausible-scoreboard', 'node', ['scripts/plausible-scoreboard.mjs'], { optional: true });
+  // Deprecated: Plausible API key no longer used after GoatCounter migration
+  // Manual scoreboard fill via GoatCounter dashboard export
+  // run('plausible-scoreboard', 'node', ['scripts/plausible-scoreboard.mjs'], { optional: true });
 }
 
 console.log('\n==> distribution reminder (UTC weekday:', weekday + ')');

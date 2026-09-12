@@ -18,9 +18,9 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 **Problem:** Preset landings drive traffic but no conversion path to prints.
 
-**Shipped:** Secondary Gumroad print CTAs on three preset landings (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`) with proper UTMs and Plausible `print_cta_click` tracking. Friendly URL alias redirects added (`/car-maintenance-schedule` → canonical, `/freelancer-tax-calendar` → canonical).
+**Shipped:** Secondary Gumroad print CTAs on three preset landings (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`) with proper UTMs and GoatCounter `print_cta_click` tracking. Friendly URL alias redirects added (`/car-maintenance-schedule` → canonical, `/freelancer-tax-calendar` → canonical).
 
-**PM next:** Monitor CTA click-through rate in Plausible. Update FAQ copy if users confuse free export with paid prints.
+**PM next:** Monitor CTA click-through rate in GoatCounter. Update FAQ copy if users confuse free export with paid prints.
 
 ---
 
@@ -46,11 +46,11 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 ## 4. UTM attribution on SEO CTAs
 
-**Problem:** Plausible shows traffic; can't tell which landing drove exports or preset loads.
+**Problem:** Analytics shows traffic; can't tell which landing drove exports or preset loads.
 
 **Shipped:** All landing CTAs use `utm_source=landing&utm_medium=seo&utm_campaign=<slug>`.
 
-**PM next:** In Plausible → **Settings → Goals**, add custom events: `ics_export`, `interest_submit`, `preset_deep_link`, `share_link_copy`. Filter by UTM in outbound link campaigns manually until Plausible UTM dashboard is configured.
+**PM next:** View event breakdowns in GoatCounter dashboard. Custom events like `ics_export`, `interest_submit`, `preset_deep_link`, `share_link_copy` are tracked automatically with title metadata for campaign attribution.
 
 ---
 
@@ -114,7 +114,7 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 
 | Metric | Target | Where |
 |--------|--------|-------|
-| Organic sessions | 50/week | Plausible |
+| Organic sessions | 50/week | GoatCounter |
 | ICS exports | 10/week | `ics_export` event |
 | Interest submits | 1/week | `interest_submit` |
 | Share copies | 5/week | `share_link_copy` |
@@ -162,10 +162,10 @@ Ten opportunities identified as senior SEO + PM — each **implemented in code**
 ## Human actions tonight
 
 1. GSC property verify + sitemap submit (`https://neatclock.pro/sitemap.xml`)
-2. Plausible: enable Custom events + goals listed in `docs/TRAFFIC-SCOREBOARD.md` (`ics_export`, `interest_submit`, `preset_deep_link`, `share_link_copy`, `landing_cta`, `qr_sync_shown`, …)
+2. ~~Plausible: enable Custom events + goals~~ — migrated to GoatCounter; custom events tracked automatically
 3. One distribution post per `docs/DISTRIBUTION-WEEKLY.md` (link intent landing, not only `/`)
 4. `npm run go-live:check` → deploy → `npm run seo:auto` (sitemap + live smoke + IndexNow + optional scoreboard)
-5. Start filling `docs/TRAFFIC-SCOREBOARD.md` daily for 7 days (or set `PLAUSIBLE_API_KEY` for weekly auto-fill)
+5. Start filling `docs/TRAFFIC-SCOREBOARD.md` daily for 7 days (manual or via GoatCounter dashboard export)
 6. Automation details: `docs/SEO-AUTOMATION.md`
 
-**Validated live (2026-08):** Plausible script already on homepage (`data-domain=neatclock.pro`); Formspree interest endpoint present in production bundle. Static landings must ship with the same Plausible snippet so SEO pageviews are visible.
+**Validated live (2026-09):** GoatCounter script on homepage + landings (`data-goatcounter` attribute); Formspree interest endpoint present in production bundle. Static landings ship with GoatCounter snippet so SEO pageviews are visible.
