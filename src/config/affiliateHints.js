@@ -22,6 +22,9 @@ export const AFFILIATE_HINTS = {
   'Quarterly Estimated Taxes': 'Tip: IRS Direct Pay — irs.gov/payments',
   'Dryer Vent Vacuuming': 'Tip: use a vent brush kit annually to reduce fire risk.',
   'Air Filter Check': 'Tip: cabin and engine filters are often different sizes.',
+  'Smoke Detector': 'Tip: test monthly, replace batteries annually, replace units every 10 years.',
+  'Tire Rotation': 'Tip: rotate every 5,000–8,000 miles to extend tire life.',
+  'Gutter': 'Tip: clean gutters twice yearly (spring and fall) to prevent water damage.',
 };
 
 function extractSpec(taskName) {
@@ -51,6 +54,9 @@ export function getAffiliateHint(taskName) {
     'Engine Oil Change': 'motor oil',
     'Air Filter Check': 'engine air filter car',
     'Dryer Vent Vacuuming': 'dryer vent cleaning kit',
+    'Smoke Detector': 'smoke detector 10 year battery',
+    'Tire Rotation': 'tire jack car',
+    'Gutter': 'gutter cleaning tool',
   };
 
   const baseQuery = searchMap[baseKey];
