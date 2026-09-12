@@ -54,7 +54,7 @@ export default function PresetSelector({
     <div className="flex flex-col gap-6">
       <div id="preset-section">
         <span className="block text-xs font-semibold uppercase tracking-wider text-theme-text-muted mb-3 text-center md:text-left">
-          Select Schedule Preset
+          Pick a starting point
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {Object.entries(PRESETS).map(([presetName, presetTasks]) => {

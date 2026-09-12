@@ -120,9 +120,9 @@ export default function ScheduleModals({
       >
         <DialogContent showCloseButton={false} size="lg" className="md:p-8">
           <DialogHeader>
-            <DialogTitle>Calendar downloaded</DialogTitle>
+            <DialogTitle>You're all set!</DialogTitle>
             <DialogDescription>
-              Your <strong className="text-foreground">neatclock-schedule.ics</strong> file is ready.
+              Your <strong className="text-foreground">neatclock-schedule.ics</strong> file is ready to import.
             </DialogDescription>
           </DialogHeader>
           <p className="text-xs text-muted-foreground leading-relaxed space-y-1">
@@ -156,9 +156,9 @@ export default function ScheduleModals({
           </div>
 
           <div className="hidden md:flex flex-col items-center p-4 border border-border/30 bg-background/40 rounded-xl">
-            <p className="text-xs font-semibold text-foreground mb-1">📱 Sync to Mobile</p>
+            <p className="text-xs font-semibold text-foreground mb-1">📱 Quick mobile sync</p>
             <p className="text-[10px] text-muted-foreground text-center mb-3">
-              Scan to load this schedule on your phone and add it directly to your mobile calendar.
+              Scan this QR code to open NeatClock on your phone and import straight to your calendar app.
             </p>
             <div className="bg-white p-2 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-none">
               <img

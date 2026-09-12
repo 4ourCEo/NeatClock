@@ -78,7 +78,7 @@ export function ExportExtras({ onPrint, activePreset }) {
       <FeatureGate enabled={features.neatclockPrints}>
         <div className="space-y-3">
           <p className="text-xs font-medium text-theme-text">
-            {matchedProduct.ctaHeadline ?? 'Want a print-ready version of this schedule?'}
+            {matchedProduct.ctaHeadline ?? 'Want a physical backup you can hang?'}
           </p>
           <p className="text-[11px] text-theme-text-muted leading-relaxed">
             {matchedProduct.description}
@@ -169,11 +169,11 @@ export function SiteFooter({ onOpenInterest }) {
 
       <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 select-none bg-emerald-500/5 dark:bg-emerald-500/10 py-1.5 px-3 rounded-full border border-emerald-500/20 max-w-max mx-auto">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-        <span>Private & Serverless — Your schedule never leaves your device.</span>
+        <span>Your data stays yours — everything runs in your browser.</span>
       </div>
 
       <p className="text-[10px] text-muted-foreground/70 max-w-md mx-auto leading-relaxed pt-1 select-none">
-        Free on the web. Your schedule stays on this device — no account required.
+        Free to use, always. Your schedule never leaves this device — no account, no tracking.
         {' · '}
         <a
           href="/llms.txt"
@@ -228,7 +228,7 @@ export function PrintsFooterCta({ activePreset }) {
     <div className="surface-panel p-5 text-center no-print mt-6">
       <p className="text-xs font-medium text-theme-text flex items-center justify-center gap-1.5">
         <Printer className="w-3.5 h-3.5 text-theme-accent" />
-        {product.ctaHeadline ?? 'Want a print-ready version?'}
+        {product.ctaHeadline ?? 'Want a physical backup you can hang?'}
       </p>
       <p className="text-[10px] text-theme-text-muted mt-1.5 mb-4">{product.name} — {product.price}</p>
       <ProductCard product={product} compact />

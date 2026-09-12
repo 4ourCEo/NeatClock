@@ -17,7 +17,7 @@ export default function AppHeader({ theme, setTheme }) {
         />
       </h1>
       <p className="font-serif italic text-base md:text-lg text-theme-text-muted text-center px-2 max-w-md">
-        A minimalist, zero-friction recurring calendar generator.
+        Build recurring calendars without the hassle — export and you're done.
       </p>
 
       {/* Theme picker — centered on mobile, top-right on desktop */}
