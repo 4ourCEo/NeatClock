@@ -38,15 +38,15 @@ export function getFeedbackMode() {
   return features.neatclockPrints ? 'post_launch' : 'pre_launch';
 }
 
-/** Preset-matched print packs ($3–5 each or bundle) */
+/** Preset-matched print packs ($6.99 each or $14.99 bundle) */
 export const printProducts = [
   {
     id: 'prints-homeowner',
     presetMatch: "Homeowner's Sentinel",
     name: 'Home Maintenance Print Pack',
     description: 'Checklist poster + fridge magnet layout for household upkeep.',
-    ctaHeadline: 'Want a fridge-ready version you can touch?',
-    price: env('VITE_PRINTS_HOME_PRICE', '$4'),
+    ctaHeadline: 'Want a fridge-ready maintenance backup?',
+    price: env('VITE_PRINTS_HOME_PRICE', '$6.99'),
     url: env('VITE_PRINTS_HOME_URL', shopUrl),
   },
   {
@@ -54,8 +54,8 @@ export const printProducts = [
     presetMatch: 'Preventive Gearhead',
     name: 'Vehicle Care Print Pack',
     description: 'Garage-ready checklist with mileage notes column.',
-    ctaHeadline: 'Want a hardcopy for the garage wall?',
-    price: env('VITE_PRINTS_CAR_PRICE', '$4'),
+    ctaHeadline: 'Want a garage-ready hardcopy?',
+    price: env('VITE_PRINTS_CAR_PRICE', '$6.99'),
     url: env('VITE_PRINTS_CAR_URL', shopUrl),
   },
   {
@@ -63,8 +63,8 @@ export const printProducts = [
     presetMatch: 'Automated CFO',
     name: 'Freelancer Finance Print Pack',
     description: 'Quarterly tax + bookkeeping tracker for solopreneurs.',
-    ctaHeadline: 'Keep tax deadlines where you can see them?',
-    price: env('VITE_PRINTS_CFO_PRICE', '$4'),
+    ctaHeadline: 'Want a desk-ready tax deadline tracker?',
+    price: env('VITE_PRINTS_CFO_PRICE', '$6.99'),
     url: env('VITE_PRINTS_CFO_URL', shopUrl),
   },
   {
@@ -72,7 +72,7 @@ export const printProducts = [
     presetMatch: null,
     name: 'All Three Print Packs',
     description: 'Home + car + finance templates in one download.',
-    price: env('VITE_PRINTS_BUNDLE_PRICE', '$9'),
+    price: env('VITE_PRINTS_BUNDLE_PRICE', '$14.99'),
     url: env('VITE_PRINTS_BUNDLE_URL', shopUrl),
     featured: true,
   },

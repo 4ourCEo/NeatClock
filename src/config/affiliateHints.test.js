@@ -56,4 +56,52 @@ describe('getAffiliateHint', () => {
     const result = getAffiliateHint('Engine Oil Change (5W-30)');
     expect(result).toContain('https://www.amazon.com/s?k=5W-30%20motor%20oil&tag=my-tag-20');
   });
+
+  it('returns smoke detector hint with tip only when no affiliate tag', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', '');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    expect(getAffiliateHint('Smoke Detector Battery Check')).toBe(
+      'Tip: test monthly, replace batteries annually, replace units every 10 years.'
+    );
+  });
+
+  it('returns smoke detector hint with Amazon link when affiliate tag is set', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    const result = getAffiliateHint('Smoke Detector Battery Check');
+    expect(result).toContain('Tip: test monthly, replace batteries annually, replace units every 10 years.');
+    expect(result).toContain('https://www.amazon.com/s?k=smoke%20detector%2010%20year%20battery&tag=my-tag-20');
+  });
+
+  it('returns tire rotation hint with tip only when no affiliate tag', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', '');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    expect(getAffiliateHint('Tire Rotation and Alignment')).toBe(
+      'Tip: rotate every 5,000–8,000 miles to extend tire life.'
+    );
+  });
+
+  it('returns tire rotation hint with Amazon link when affiliate tag is set', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    const result = getAffiliateHint('Tire Rotation and Alignment');
+    expect(result).toContain('Tip: rotate every 5,000–8,000 miles to extend tire life.');
+    expect(result).toContain('https://www.amazon.com/s?k=tire%20jack%20car&tag=my-tag-20');
+  });
+
+  it('returns gutter cleaning hint with tip only when no affiliate tag', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', '');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    expect(getAffiliateHint('Gutter Cleaning')).toBe(
+      'Tip: clean gutters twice yearly (spring and fall) to prevent water damage.'
+    );
+  });
+
+  it('returns gutter cleaning hint with Amazon link when affiliate tag is set', async () => {
+    vi.stubEnv('VITE_AMAZON_AFFILIATE_TAG', 'my-tag-20');
+    const { getAffiliateHint } = await import('./affiliateHints.js');
+    const result = getAffiliateHint('Gutter Cleaning');
+    expect(result).toContain('Tip: clean gutters twice yearly (spring and fall) to prevent water damage.');
+    expect(result).toContain('https://www.amazon.com/s?k=gutter%20cleaning%20tool&tag=my-tag-20');
+  });
 });

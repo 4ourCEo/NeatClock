@@ -38,17 +38,17 @@ function ProductCard({ product, compact = false }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
-      className={`block rounded-lg border border-theme-border bg-theme-bg/30 hover:border-theme-accent hover:bg-theme-bg/50 transition-all cursor-pointer group ${compact ? 'p-3' : 'p-4'}`}
+      className={`block rounded-lg border-2 border-theme-accent/40 bg-gradient-to-br from-theme-bg/40 to-theme-bg/20 hover:border-theme-accent hover:from-theme-bg/60 hover:to-theme-bg/40 hover:shadow-lg transition-all cursor-pointer group ${compact ? 'p-3' : 'p-5'}`}
     >
       <div className="flex justify-between items-start gap-2">
-        <p className="text-xs font-semibold text-theme-text group-hover:text-theme-accent transition-colors">{product.name}</p>
-        <span className="text-xs font-bold text-theme-accent shrink-0">{product.price}</span>
+        <p className={`font-semibold text-theme-text group-hover:text-theme-accent transition-colors ${compact ? 'text-xs' : 'text-sm'}`}>{product.name}</p>
+        <span className={`font-bold text-theme-accent shrink-0 ${compact ? 'text-xs' : 'text-base'}`}>{product.price}</span>
       </div>
       {!compact && (
-        <p className="text-[10px] text-theme-text-muted mt-1.5 leading-relaxed">{product.description}</p>
+        <p className="text-xs text-theme-text-muted mt-2 leading-relaxed">{product.description}</p>
       )}
-      <span className="inline-flex items-center gap-1 text-[10px] text-theme-accent mt-2 font-medium">
-        Get print pack <ExternalLink className="w-3 h-3" />
+      <span className={`inline-flex items-center gap-1.5 text-theme-accent mt-3 font-semibold group-hover:gap-2 transition-all ${compact ? 'text-[10px]' : 'text-xs'}`}>
+        Get print pack <ExternalLink className={compact ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
       </span>
     </a>
   );
@@ -76,13 +76,15 @@ export function ExportExtras({ onPrint, activePreset }) {
   return (
     <div className="mt-6 pt-6 border-t border-theme-border/60 space-y-5">
       <FeatureGate enabled={features.neatclockPrints}>
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-theme-text">
-            {matchedProduct.ctaHeadline ?? 'Want a physical backup you can hang?'}
-          </p>
-          <p className="text-[11px] text-theme-text-muted leading-relaxed">
-            {matchedProduct.description}
-          </p>
+        <div className="space-y-4">
+          <div className="text-center space-y-2">
+            <p className="text-sm font-semibold text-theme-text">
+              {matchedProduct.ctaHeadline ?? 'Want a print-ready version of this schedule?'}
+            </p>
+            <p className="text-xs text-theme-text-muted leading-relaxed">
+              {matchedProduct.description}
+            </p>
+          </div>
           <ProductCard product={matchedProduct} />
           {showBundle && <ProductCard product={featuredBundle} />}
           <details className="text-xs">
@@ -98,7 +100,7 @@ export function ExportExtras({ onPrint, activePreset }) {
           <button
             type="button"
             onClick={onPrint}
-            className="text-xs text-theme-text-muted hover:text-theme-text transition-colors cursor-pointer py-1"
+            className="w-full text-xs text-theme-text-muted hover:text-theme-text transition-colors cursor-pointer py-2 text-center"
           >
             Or use the free print checklist →
           </button>
@@ -228,7 +230,7 @@ export function PrintsFooterCta({ activePreset }) {
     <div className="surface-panel p-5 text-center no-print mt-6">
       <p className="text-xs font-medium text-theme-text flex items-center justify-center gap-1.5">
         <Printer className="w-3.5 h-3.5 text-theme-accent" />
-        {product.ctaHeadline ?? 'Want a physical backup you can hang?'}
+        {product.ctaHeadline ?? 'Want a print-ready version of this schedule?'}
       </p>
       <p className="text-[10px] text-theme-text-muted mt-1.5 mb-4">{product.name} — {product.price}</p>
       <ProductCard product={product} compact />
