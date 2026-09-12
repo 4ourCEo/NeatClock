@@ -89,14 +89,14 @@ Target groups with demonstrated spending behavior:
 #### Day 5–6: SEO Landing Pages (Long-Tail Captures)
 
 Deploy targeted landing pages matching each preset:
-- `/home-maintenance-calendar` → drives to Homeowner preset + print pack CTA
-- `/car-maintenance-schedule` → drives to Gearhead preset + print pack CTA
-- `/freelancer-tax-calendar` → drives to CFO preset + print pack CTA
+- `/home-maintenance-calendar` → drives to Homeowner preset + print pack CTA (live)
+- `/car-maintenance-schedule-ics` → drives to Gearhead preset + print pack CTA (live)
+- `/freelancer-quarterly-tax-reminders` → drives to CFO preset + print pack CTA (live)
 
 **Content structure:**
 - H1: [Benefit] (e.g., "Never Miss an Oil Change Again")
 - Free tool CTA (primary)
-- "Want a garage-ready hardcopy?" section (secondary, links to Gumroad)
+- "Prefer a printable Letter pack?" secondary CTA with Gumroad link + UTMs + Plausible tracking
 - Schema markup for rich snippets (FAQ, HowTo)
 
 **Promotion:** Share each landing page in corresponding Reddit threads as "here's a free tool I built for this exact problem."

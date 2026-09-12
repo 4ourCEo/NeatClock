@@ -7,7 +7,8 @@ NeatClock monetizes **around the export moment** — not by paywalling the core 
 ### 1. NeatClock Prints — start here
 
 **What:** PDF print packs ($4 each, ~$9 bundle) matching each preset.  
-**Where in app:** Export success modal, footer CTA.  
+**Where in app:** Export success modal, footer CTA.
+**Where on web:** Secondary CTAs on three preset landing pages (`/home-maintenance-calendar`, `/car-maintenance-schedule-ics`, `/freelancer-quarterly-tax-reminders`).  
 **Flag:** `VITE_FEATURE_NEATCLOCK_PRINTS=true`
 
 **Setup (Gumroad — simplest):**

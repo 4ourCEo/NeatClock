@@ -16,6 +16,24 @@ describe('monetization', () => {
     expect(printProducts.map((p) => p.id)).toContain('prints-bundle');
   });
 
+  it('print products have expected Gumroad URLs', async () => {
+    vi.stubEnv('VITE_PRINTS_HOME_URL', 'https://gorillamotors.gumroad.com/l/oikeyi');
+    vi.stubEnv('VITE_PRINTS_CAR_URL', 'https://gorillamotors.gumroad.com/l/undcqo');
+    vi.stubEnv('VITE_PRINTS_CFO_URL', 'https://gorillamotors.gumroad.com/l/zdwmy');
+    vi.stubEnv('VITE_PRINTS_BUNDLE_URL', 'https://gorillamotors.gumroad.com/l/qyyoe');
+    const { printProducts } = await import('./monetization.js');
+    
+    const homeProduct = printProducts.find((p) => p.id === 'prints-homeowner');
+    const carProduct = printProducts.find((p) => p.id === 'prints-gearhead');
+    const cfoProduct = printProducts.find((p) => p.id === 'prints-cfo');
+    const bundleProduct = printProducts.find((p) => p.id === 'prints-bundle');
+    
+    expect(homeProduct.url).toBe('https://gorillamotors.gumroad.com/l/oikeyi');
+    expect(carProduct.url).toBe('https://gorillamotors.gumroad.com/l/undcqo');
+    expect(cfoProduct.url).toBe('https://gorillamotors.gumroad.com/l/zdwmy');
+    expect(bundleProduct.url).toBe('https://gorillamotors.gumroad.com/l/qyyoe');
+  });
+
   it('getPrintProductForPreset falls back to the first product for an unknown preset', async () => {
     const { getPrintProductForPreset, printProducts } = await import('./monetization.js');
     expect(getPrintProductForPreset('Nonexistent')).toBe(printProducts[0]);
