@@ -34,7 +34,7 @@
           "name": "Is Subscription Audit Reminder free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core presets and .ics export are free. No account — your schedule stays on your device."
+            "text": "Yes. Core presets and .ics export are free. No account — your schedule stays on your device. Optional print packs are available for purchase if you want physical Letter-sized checklists."
           }
         },
         {
@@ -70,10 +70,23 @@
       ul { color: var(--muted); }
       .cta { display: inline-block; margin-top: 1.5rem; padding: 0.85rem 1.75rem; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; border-radius: 9999px; transition: background .15s; }
       .cta:hover { background: var(--accent-hover); }
+      .cta-secondary { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: transparent; border: 2px solid var(--accent); color: var(--accent); font-weight: 600; text-decoration: none; border-radius: 9999px; transition: all .15s; }
+      .cta-secondary:hover { background: var(--accent); color: #fff; }
+      .print-cta { margin-top: 1.5rem; padding: 1rem; background: rgba(224,122,95,.06); border-left: 3px solid var(--accent); border-radius: 0.5rem; }
+      .print-cta h3 { font-size: 1rem; margin-bottom: 0.35rem; font-weight: 600; }
+      .print-cta p { font-size: 0.875rem; color: var(--muted); margin-bottom: 0.75rem; }
+      .print-cta .bundle-link { display: block; margin-top: 0.5rem; font-size: 0.8rem; color: var(--muted); }
+      .print-cta .bundle-link:hover { color: var(--accent); }
       .related { text-align: center; margin: 2rem 0 0; padding-top: 1.5rem; border-top: 1px solid rgba(28,28,28,.08); }
       .related p { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; }
       .related a { color: var(--accent); text-decoration: none; font-size: 0.875rem; margin: 0 0.35rem; }
       .related a:hover { text-decoration: underline; }
+
+      .faq { margin-top: 0.5rem; }
+      .faq details { border-bottom: 1px solid rgba(28,28,28,.08); padding: 0.85rem 0; }
+      .faq summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
     <!-- Privacy-friendly analytics by GoatCounter -->
     <script data-goatcounter="https://neatclock.goatcounter.com/count"
@@ -97,6 +110,13 @@
           <li>No account — data stays on your device</li>
         </ul>
         <a class="cta" href="/?preset=cfo&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=subscription_audit" onclick="window.goatcounter&&window.goatcounter.count({path:'landing_cta',title:'campaign:subscription_audit',event:true})">Open NeatClock →</a>
+        
+        <div class="print-cta">
+          <h3>Prefer a printable Letter pack?</h3>
+          <p>Get a desk-ready tax deadline tracker — quarterly tax + bookkeeping checklist for solopreneurs.</p>
+          <a class="cta-secondary" href="https://gorillamotors.gumroad.com/l/zdwmy?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=subscription_audit&amp;utm_content=print_pack" target="_blank" rel="noopener noreferrer" onclick="window.goatcounter&&window.goatcounter.count({path:'print_cta_click',title:'source:landing campaign:subscription_audit',event:true})">View Finance Print Pack ($6.99) →</a>
+          <a class="bundle-link" href="https://gorillamotors.gumroad.com/l/qyyoe?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=subscription_audit&amp;utm_content=bundle" target="_blank" rel="noopener noreferrer">or get all three packs for $14.99</a>
+        </div>
       </div>
 
       <div class="card">
@@ -109,7 +129,7 @@
         <h2>FAQ</h2>
         <details>
           <summary>Is Subscription Audit Reminder free?</summary>
-          <p>Yes. Core presets and .ics export are free. No account — your schedule stays on your device.</p>
+          <p>Yes. Core presets and .ics export are free. No account — your schedule stays on your device. Optional print packs are available for purchase if you want physical Letter-sized checklists.</p>
         </details>
         <details>
           <summary>Can I import this into Google Calendar?</summary>

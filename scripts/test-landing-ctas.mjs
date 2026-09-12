@@ -41,6 +41,72 @@ const presetLandings = [
     bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
     campaign: 'freelancer_taxes',
   },
+  // Home pack long-tail pages
+  {
+    file: 'public/hvac-filter-reminder-calendar.html',
+    primaryCTA: 'Open Home Sentinel preset',
+    printURL: 'gorillamotors.gumroad.com/l/oikeyi',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'hvac_filter',
+  },
+  {
+    file: 'public/smoke-detector-reminder-calendar.html',
+    primaryCTA: 'Open Home Sentinel preset',
+    printURL: 'gorillamotors.gumroad.com/l/oikeyi',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'smoke_detector',
+  },
+  {
+    file: 'public/gutter-cleaning-calendar.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/oikeyi',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'gutters',
+  },
+  {
+    file: 'public/water-heater-flush-reminder.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/oikeyi',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'water_heater',
+  },
+  {
+    file: 'public/dryer-vent-cleaning-reminder.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/oikeyi',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'dryer_vent',
+  },
+  // Vehicle pack long-tail pages
+  {
+    file: 'public/oil-change-reminder-calendar.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/undcqo',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'oil_change',
+  },
+  {
+    file: 'public/tire-rotation-schedule-ics.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/undcqo',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'tire_rotation',
+  },
+  // Finance pack long-tail pages
+  {
+    file: 'public/quarterly-estimated-tax-calendar.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/zdwmy',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'quarterly_tax',
+  },
+  {
+    file: 'public/subscription-audit-reminder.html',
+    primaryCTA: 'Open NeatClock',
+    printURL: 'gorillamotors.gumroad.com/l/zdwmy',
+    bundleURL: 'gorillamotors.gumroad.com/l/qyyoe',
+    campaign: 'subscription_audit',
+  },
 ];
 
 for (const landing of presetLandings) {
