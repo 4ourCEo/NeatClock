@@ -52,6 +52,16 @@ export function ExportExtras({ onPrint, activePreset }) {
   if (!hasExportExtras()) return null;
 
   const matchedProduct = getPrintProductForPreset(activePreset);
+  const featuredBundle = printProducts.find((p) => p.featured);
+  const showBundle =
+    featuredBundle &&
+    featuredBundle.id !== matchedProduct.id &&
+    featuredBundle.url &&
+    featuredBundle.url !== '#';
+
+  const alreadyShownIds = new Set([matchedProduct.id]);
+  if (showBundle) alreadyShownIds.add(featuredBundle.id);
+  const otherProducts = printProducts.filter((p) => !alreadyShownIds.has(p.id));
 
   return (
     <div className="mt-6 pt-6 border-t border-theme-border/60 space-y-5">
@@ -64,12 +74,13 @@ export function ExportExtras({ onPrint, activePreset }) {
             {matchedProduct.description}
           </p>
           <ProductCard product={matchedProduct} />
+          {showBundle && <ProductCard product={featuredBundle} />}
           <details className="text-xs">
             <summary className="cursor-pointer text-theme-text-muted hover:text-theme-text transition-colors py-1">
               View all print packs
             </summary>
             <div className="mt-2 space-y-2 max-h-40 overflow-y-auto">
-              {printProducts.map((p) => (
+              {otherProducts.map((p) => (
                 <ProductCard key={p.id} product={p} compact />
               ))}
             </div>
