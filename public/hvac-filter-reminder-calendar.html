@@ -81,13 +81,10 @@
       .faq summary::-webkit-details-marker { display: none; }
       .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js"></script>
-    <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      // Domain baked into the pa- script was mistyped as neatclok.pro — force the real site.
-      plausible.init({ domain: 'neatclock.pro' })
-    </script>
+    <!-- Privacy-friendly analytics by GoatCounter -->
+    <script data-goatcounter="https://neatclock.goatcounter.com/count"
+            async src="https://gc.zgo.at/count.js"></script>
+    
   </head>
   <body>
     <div class="wrap">
@@ -105,7 +102,7 @@
           <li>Export a standard .ics for Google, Apple, or Outlook</li>
           <li>No account — schedule stays on your device</li>
         </ul>
-        <a class="cta" href="/?preset=home&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=hvac_filter" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'hvac_filter'}})">Open Home Sentinel preset →</a>
+        <a class="cta" href="/?preset=home&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=hvac_filter" onclick="window.goatcounter&&window.goatcounter.count({path:'landing_cta',title:'campaign:hvac_filter',event:true})">Open Home Sentinel preset →</a>
       </div>
 
       <div class="card">

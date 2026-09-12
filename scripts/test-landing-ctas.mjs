@@ -63,7 +63,7 @@ for (const landing of presetLandings) {
   check(
     landing.file,
     'Primary CTA has landing_cta event',
-    html.includes("plausible('landing_cta'") && html.includes(`campaign:'${landing.campaign}'`),
+    html.includes("goatcounter.count({path:'landing_cta'") && html.includes(`campaign:${landing.campaign}`),
     'missing landing_cta tracking or campaign prop'
   );
 
@@ -77,7 +77,7 @@ for (const landing of presetLandings) {
   check(
     landing.file,
     'Print CTA has print_cta_click event',
-    html.includes("plausible('print_cta_click'"),
+    html.includes("goatcounter.count({path:'print_cta_click'"),
     'missing print_cta_click tracking'
   );
 

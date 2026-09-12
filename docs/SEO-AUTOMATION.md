@@ -30,14 +30,14 @@ npm run seo:landing -- \
 PLAUSIBLE_API_KEY=xxx npm run seo:scoreboard
 ```
 
-## GitHub secrets (recommended)
+## GitHub secrets (optional)
 
 In the repo → **Settings → Secrets and variables → Actions**:
 
-- `PLAUSIBLE_API_KEY` — from Plausible → Settings → API keys (Stats API)
+- `PLAUSIBLE_API_KEY` — deprecated after GoatCounter migration; scoreboard auto-fill script `seo:scoreboard` will need updating for GoatCounter export API when available
 - `OPS_WEBHOOK_URL` — Zapier Catch Hook → Notion Ops (see [`OPS-AUTOMATION.md`](./OPS-AUTOMATION.md))
 
-Without `PLAUSIBLE_API_KEY`, weekly automation still runs live SEO checks + IndexNow; scoreboard auto-fill is skipped. Without `OPS_WEBHOOK_URL`, Zapier/Notion notify steps no-op.
+Without these secrets, weekly automation still runs live SEO checks + IndexNow; scoreboard auto-fill is skipped. Without `OPS_WEBHOOK_URL`, Zapier/Notion notify steps no-op.
 
 ## LLM discovery (public, indexable)
 
@@ -50,7 +50,7 @@ Regenerate after landings change: `npm run seo:llms` (also inside `seo:auto` / `
 
 ## Still human (cannot fully automate)
 
-1. Enable Plausible **Custom events / goals** once (`docs/TRAFFIC-SCOREBOARD.md`)
+1. ~~Enable Plausible Custom events / goals once~~ — migrated to GoatCounter (events tracked automatically, no goal setup needed)
 2. Google Search Console: sitemap ownership + URL Inspection for brand-new URLs
 3. Actually posting to Reddit / Pinterest / Shorts — checklist is the weekly GitHub Issue (`seo-weekly`)
 

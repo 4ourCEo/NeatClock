@@ -88,13 +88,9 @@
       .faq summary::-webkit-details-marker { display: none; }
       .faq p { color: var(--muted); margin: 0.6rem 0 0; font-size: 0.95rem; }
     </style>
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://plausible.io/js/pa-7V3YfWxV7OYX_X9davuMm.js"></script>
-    <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      // Domain baked into the pa- script was mistyped as neatclok.pro — force the real site.
-      plausible.init({ domain: 'neatclock.pro' })
-    </script>
+    <!-- Privacy-friendly analytics by GoatCounter -->
+    <script data-goatcounter="https://neatclock.goatcounter.com/count"
+            async src="https://gc.zgo.at/count.js"></script>
   </head>
   <body>
     <div class="wrap">
@@ -112,12 +108,12 @@
           <li>Air filter, wiper blades, brake fluid inspection</li>
           <li>Customize intervals or add your own service items</li>
         </ul>
-        <a class="cta" href="/?preset=gearhead&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=car_maintenance" onclick="window.plausible&&window.plausible('landing_cta',{props:{campaign:'car_maintenance'}})">Open Gearhead preset →</a>
+        <a class="cta" href="/?preset=gearhead&amp;utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=car_maintenance" onclick="window.goatcounter&&window.goatcounter.count({path:'landing_cta',title:'campaign:car_maintenance',event:true})">Open Gearhead preset →</a>
         
         <div class="print-cta">
           <h3>Prefer a printable Letter pack?</h3>
           <p>Get a garage-ready checklist with mileage tracker column — physical backup for preventive car maintenance.</p>
-          <a class="cta-secondary" href="https://gorillamotors.gumroad.com/l/undcqo?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=car_maintenance&amp;utm_content=print_pack" target="_blank" rel="noopener noreferrer" onclick="window.plausible&&window.plausible('print_cta_click',{props:{source:'landing',campaign:'car_maintenance'}})">View Vehicle Print Pack ($6.99) →</a>
+          <a class="cta-secondary" href="https://gorillamotors.gumroad.com/l/undcqo?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=car_maintenance&amp;utm_content=print_pack" target="_blank" rel="noopener noreferrer" onclick="window.goatcounter&&window.goatcounter.count({path:'print_cta_click',title:'source:landing campaign:car_maintenance',event:true})">View Vehicle Print Pack ($6.99) →</a>
           <a class="bundle-link" href="https://gorillamotors.gumroad.com/l/qyyoe?utm_source=landing&amp;utm_medium=seo&amp;utm_campaign=car_maintenance&amp;utm_content=bundle" target="_blank" rel="noopener noreferrer">or get all three packs for $14.99</a>
         </div>
       </div>
