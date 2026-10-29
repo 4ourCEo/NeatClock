@@ -7,15 +7,19 @@ export const BUSINESS_PRODUCT = Object.freeze({
   deliveryType: 'business_calendar_share_and_qr',
 });
 
-function config(env) {
-  const amountMinor = Number(env.NEATCLOCK_BUSINESS_PRICE_CENTS);
+function verificationConfig(env) {
   const secretKey = env.STRIPE_SECRET_KEY || '';
   const entitlementSecret = env.NEATCLOCK_ENTITLEMENT_SECRET || '';
-  const enabled = env.NEATCLOCK_BUSINESS_CHECKOUT_ENABLED === 'true';
-  const valid = enabled && Number.isSafeInteger(amountMinor) && amountMinor > 0
-    && Boolean(secretKey) && entitlementSecret.length >= 32;
   const previewKeySafe = env.VERCEL_ENV !== 'preview' || secretKey.startsWith('sk_test_');
-  return { amountMinor, secretKey, enabled: valid && previewKeySafe, previewKeySafe };
+  return { secretKey, entitlementSecret, previewKeySafe, ready: Boolean(secretKey) && entitlementSecret.length >= 32 && previewKeySafe };
+}
+
+function config(env) {
+  const amountMinor = Number(env.NEATCLOCK_BUSINESS_PRICE_CENTS);
+  const verification = verificationConfig(env);
+  const salesEnabled = env.NEATCLOCK_BUSINESS_CHECKOUT_ENABLED === 'true';
+  const priceValid = Number.isSafeInteger(amountMinor) && amountMinor > 0;
+  return { ...verification, amountMinor, enabled: salesEnabled && priceValid && verification.ready };
 }
 
 function send(res, status, body) {
@@ -113,7 +117,6 @@ export async function businessCheckout(req, res, { env = process.env, fetchImpl 
 }
 
 function signedEntitlement(session, env) {
-  const issuedAt = Number(session.created) || Math.floor(Date.now() / 1000);
   const payload = {
     productId: BUSINESS_PRODUCT.productId,
     productVersion: BUSINESS_PRODUCT.version,
@@ -124,8 +127,7 @@ function signedEntitlement(session, env) {
     amountMinor: session.amount_total,
     currency: session.currency,
     verifiedPaymentEvent: 'checkout.session.payment_status=paid',
-    issuedAt,
-    expiresAt: issuedAt + (365 * 24 * 60 * 60),
+    issuedAt: Number(session.created) || Math.floor(Date.now() / 1000),
     usageLimit: null,
   };
   const encoded = Buffer.from(JSON.stringify(payload)).toString('base64url');
@@ -135,8 +137,8 @@ function signedEntitlement(session, env) {
 
 export async function businessEntitlement(req, res, { env = process.env, fetchImpl = fetch } = {}) {
   if (req.method !== 'GET') return send(res, 405, { error: 'method_not_allowed' });
-  const settings = config(env);
-  if (!settings.enabled) return send(res, 503, { error: 'entitlement_verification_unavailable' });
+  const settings = verificationConfig(env);
+  if (!settings.ready) return send(res, 503, { error: 'entitlement_verification_unavailable' });
   const sessionId = new URL(req.url, `https://${req.headers?.host || 'localhost'}`).searchParams.get('session_id');
   const expectedPrefix = settings.secretKey.startsWith('sk_test_') ? 'cs_test_' : 'cs_live_';
   if (!sessionId?.startsWith(expectedPrefix)) return send(res, 400, { error: 'invalid_checkout_session' });
@@ -165,9 +167,6 @@ export async function businessEntitlement(req, res, { env = process.env, fetchIm
   if (!matches) return send(res, 402, { error: 'payment_not_eligible_for_entitlement' });
 
   const entitlement = signedEntitlement(session, env);
-  if (entitlement.claims.expiresAt <= Math.floor(Date.now() / 1000)) {
-    return send(res, 410, { error: 'business_license_expired' });
-  }
   return send(res, 200, {
     product: BUSINESS_PRODUCT,
     checkout: {

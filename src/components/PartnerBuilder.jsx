@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Check, Copy, Download, ExternalLink, QrCode, Sparkles } from 'lucide-react';
 import QRCode from 'qrcode';
-import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, normalizeBusinessBrand } from '../lib/businessCalendar.js';
+import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, createBusinessIdentityId, normalizeBusinessBrand } from '../lib/businessCalendar.js';
 import { PRESETS } from '../config/presets.js';
 import {
   createBusinessCheckout,
@@ -21,9 +21,12 @@ const DEFAULT_BRAND = { brandName: '', brandLogo: '', brandPhone: '', brandEmail
 function readDraft() {
   try {
     const saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
-    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand } };
+    const businessId = typeof saved.businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(saved.businessId)
+      ? saved.businessId
+      : createBusinessIdentityId();
+    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand }, businessId };
   } catch {
-    return { industry: 'hvac', brand: DEFAULT_BRAND };
+    try { return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: createBusinessIdentityId() }; } catch { return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: '' }; }
   }
 }
 
@@ -34,6 +37,7 @@ function formatPrice(price) {
 
 export default function PartnerBuilder() {
   const [draft] = useState(readDraft);
+  const businessId = draft.businessId;
   const [industry, setIndustry] = useState(draft.industry);
   const [brand, setBrand] = useState(draft.brand);
   const [checkoutConfig, setCheckoutConfig] = useState(null);
@@ -50,11 +54,11 @@ export default function PartnerBuilder() {
   const generatedUrl = useMemo(() => {
     if (!brand.brandName.trim()) return '';
     try {
-      return buildBusinessShareUrl({ origin: window.location.origin, industry, brand });
+      return buildBusinessShareUrl({ origin: window.location.origin, industry, brand, businessId });
     } catch {
       return '';
     }
-  }, [brand, industry]);
+  }, [brand, businessId, industry]);
   const preset = BUSINESS_INDUSTRIES[industry].preset;
   const tasks = PRESETS[preset];
   const qrDataUrl = qrResult.url === generatedUrl ? qrResult.dataUrl : '';
@@ -84,8 +88,8 @@ export default function PartnerBuilder() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand }));
-  }, [brand, industry]);
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand, businessId }));
+  }, [brand, businessId, industry]);
 
   useEffect(() => {
     let active = true;

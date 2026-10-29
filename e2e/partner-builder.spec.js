@@ -24,6 +24,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
 
     const link = new URL(await page.getByLabel('Customer share link').inputValue());
     expect(link.searchParams.get('preset')).toBe('plumbing-business');
+    expect(link.searchParams.get('business_id')).toMatch(/^[0-9a-f-]{36}$/i);
     expect(link.searchParams.has('fresh')).toBe(false);
     expect(link.searchParams.get('brandName')).toBe('North & Main Plumbing');
     expect(link.searchParams.get('brandPhone')).toBe('555-0199');
@@ -38,7 +39,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
   test('opening a business link displays its preset and preserves an existing customer schedule', async ({ page }) => {
     const saved = [{ id: 'customer-custom-task', name: 'My custom reminder', interval: 2, unit: 'months' }];
     await page.addInitScript((tasks) => localStorage.setItem('neatclock_tasks', JSON.stringify(tasks)), saved);
-    await page.goto('/?preset=hvac-business&brandName=North+Heating&brandPhone=555-0100');
+    await page.goto('/?preset=hvac-business&business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112&brandName=North+Heating&brandPhone=555-0100');
     await page.waitForTimeout(400);
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('neatclock_tasks')));
     expect(stored.map((task) => task.name)).toContain('My custom reminder');

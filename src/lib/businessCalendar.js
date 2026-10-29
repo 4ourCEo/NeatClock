@@ -33,14 +33,16 @@ export function normalizeBusinessBrand(input = {}) {
   };
 }
 
-export function buildBusinessShareUrl({ origin, industry, brand }) {
+export function buildBusinessShareUrl({ origin, industry, brand, businessId }) {
   if (!BUSINESS_INDUSTRIES[industry]) throw new Error('Choose HVAC or plumbing.');
+  if (typeof businessId !== 'string' || !/^[0-9a-f-]{16,64}$/i.test(businessId)) throw new Error('Business calendar identity is unavailable.');
   const cleanBrand = normalizeBusinessBrand(brand);
   if (!cleanBrand.brandName) throw new Error('Add your business name.');
 
   const base = origin || (typeof window !== 'undefined' ? window.location.origin : 'https://neatclock.pro');
   const url = new URL('/', base);
   url.searchParams.set('preset', `${industry}-business`);
+  url.searchParams.set('business_id', businessId);
   url.searchParams.set('utm_source', 'neatclock');
   url.searchParams.set('utm_medium', 'business_qr');
   url.searchParams.set('utm_campaign', industry);
@@ -59,6 +61,16 @@ export function businessBrandFromSearch(search = typeof window !== 'undefined' ?
     brandPhone: params.get('brandPhone'), brandEmail: params.get('brandEmail'),
     brandWeb: params.get('brandWeb'), brandColor: params.get('brandColor'),
   });
+}
+
+export function businessIdFromSearch(search = typeof window !== 'undefined' ? window.location.search : '') {
+  const id = new URLSearchParams(search).get('business_id');
+  return typeof id === 'string' && /^[0-9a-f-]{16,64}$/i.test(id) ? id : null;
+}
+
+export function createBusinessIdentityId(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {
+  if (!randomUUID) throw new Error('Business calendar identity is unavailable in this browser.');
+  return randomUUID();
 }
 
 export function businessOrderReference(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {

@@ -4,12 +4,12 @@ import { PRESETS } from '../config/presets.js';
 import { buildIcsContent } from '../lib/buildIcs.js';
 import { downloadText } from '../lib/download.js';
 
-export default function SharedBusinessCalendar({ industry, brand }) {
+export default function SharedBusinessCalendar({ industry, brand, businessId }) {
   const preset = BUSINESS_INDUSTRIES[industry]?.preset;
   const tasks = preset ? PRESETS[preset] : [];
 
   const downloadCalendar = () => {
-    const content = buildIcsContent(tasks, { businessBrand: brand });
+    const content = buildIcsContent(tasks, { businessBrand: brand, businessId });
     if (content) downloadText(content, `${industry}-customer-care.ics`, 'text/calendar;charset=utf-8');
   };
 

@@ -25,7 +25,7 @@ import { useScheduleState } from './hooks/useScheduleState.js';
 import { useExportActions } from './hooks/useExportActions.js';
 import { getDeepLinkBootstrap } from './lib/deepLink.js';
 import { trackEvent } from './lib/analytics.js';
-import { businessBrandFromSearch } from './lib/businessCalendar.js';
+import { businessBrandFromSearch, businessIdFromSearch } from './lib/businessCalendar.js';
 import SharedBusinessCalendar from './components/SharedBusinessCalendar.jsx';
 
 function getCurrentPage() {
@@ -43,7 +43,7 @@ function App() {
   const industry = presetParam === 'hvac-business' ? 'hvac' : presetParam === 'plumbing-business' ? 'plumbing' : null;
   const businessBrand = businessBrandFromSearch();
   if (industry && businessBrand?.brandName) {
-    return <SharedBusinessCalendar industry={industry} brand={businessBrand} />;
+    return <SharedBusinessCalendar industry={industry} brand={businessBrand} businessId={businessIdFromSearch()} />;
   }
   return <GeneratorApp />;
 }

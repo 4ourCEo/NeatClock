@@ -106,6 +106,20 @@ describe('NeatClock Business commercial contract', () => {
     expect(res.body.payment.amountMinor).toBe(4900);
   });
 
+  it('verifies existing paid sessions after sales are disabled or the current price is removed', async () => {
+    for (const overrides of [
+      { NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'false' },
+      { NEATCLOCK_BUSINESS_PRICE_CENTS: '' },
+    ]) {
+      const session = paidSession();
+      const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
+      const res = response();
+      await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env: { ...env, ...overrides }, fetchImpl });
+      expect(res.statusCode).toBe(200);
+      expect(res.body.entitlement.claims.expiresAt).toBeUndefined();
+    }
+  });
+
   it('rejects unpaid, wrong-amount, wrong-product, and replay-mismatched sessions', async () => {
     const cases = [
       { payment_status: 'unpaid' },

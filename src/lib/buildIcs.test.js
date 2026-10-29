@@ -37,6 +37,17 @@ describe('buildIcsContent', () => {
     expect(content).toContain('X-WR-CALNAME:North Heating Customer Care');
     expect(content).toContain('Customer care calendar from North Heating. Call 555-0100. Email service@example.com. Website https://north.example.');
   });
+
+  it('uses distinct stable event UIDs for separate business calendars', () => {
+    const tasks = [{ id: 'hvac-1', name: 'Replace filter', interval: 3, unit: 'months' }];
+    const brand = { brandName: 'North Heating' };
+    const first = buildIcsContent(tasks, { businessBrand: brand, businessId: 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112' });
+    const sameBusiness = buildIcsContent(tasks, { businessBrand: brand, businessId: 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112' });
+    const second = buildIcsContent(tasks, { businessBrand: { brandName: 'South Heating' }, businessId: 'a7d1c4e2-5b69-4bd3-91d0-02e1af78b221' });
+    expect(first.match(/UID:[^\r\n]+/)[0]).toBe('UID:task-b8a1c7d2-4f65-4cc3-a239-01c0ef89a112-hvac-1@neatclock.pro');
+    expect(sameBusiness.match(/UID:[^\r\n]+/)[0]).toBe(first.match(/UID:[^\r\n]+/)[0]);
+    expect(second.match(/UID:[^\r\n]+/)[0]).not.toBe(first.match(/UID:[^\r\n]+/)[0]);
+  });
 });
 
 describe('escapeIcalText', () => {

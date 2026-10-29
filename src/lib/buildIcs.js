@@ -25,7 +25,10 @@ function freqForUnit(unit) {
 }
 
 export function buildIcsContent(tasks, options = {}) {
-  const { startOffsetWeeks = 0, includeAffiliateHints = false, businessBrand = null } = options;
+  const { startOffsetWeeks = 0, includeAffiliateHints = false, businessBrand = null, businessId = null } = options;
+  const businessUid = businessBrand?.brandName && typeof businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(businessId)
+    ? `${businessId}-`
+    : '';
 
   if (!tasks.length) {
     return null;
@@ -71,7 +74,7 @@ export function buildIcsContent(tasks, options = {}) {
     }
 
     lines.push('BEGIN:VEVENT');
-    lines.push(`UID:task-${task.id}@neatclock.pro`);
+    lines.push(`UID:task-${businessUid}${task.id}@neatclock.pro`);
     lines.push(`DTSTAMP:${dtStamp}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`SUMMARY:${escapeIcalText(task.name)}`);

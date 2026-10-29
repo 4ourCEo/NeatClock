@@ -30,9 +30,10 @@ describe('calendarProviders', () => {
   });
 
   it('includes business identity in a single-task Apple calendar export', () => {
-    const search = '?preset=hvac-business&brandName=North+Heating&brandPhone=555-0100';
+    const search = '?preset=hvac-business&business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112&brandName=North+Heating&brandPhone=555-0100';
     downloadAppleTaskIcs(task, search);
     expect(downloadText.mock.calls[0][0]).toContain('North Heating Customer Care');
     expect(downloadText.mock.calls[0][0]).toContain('Call 555-0100');
+    expect(downloadText.mock.calls[0][0]).toContain('UID:task-b8a1c7d2-4f65-4cc3-a239-01c0ef89a112-t1@neatclock.pro');
   });
 });
