@@ -39,6 +39,7 @@ function paidSession(overrides = {}) {
       product_version: BUSINESS_PRODUCT.version,
       delivery_type: BUSINESS_PRODUCT.deliveryType,
       order_reference: orderReference,
+      amount_minor: '4900',
       industry: 'hvac',
     },
     ...overrides,
@@ -74,6 +75,7 @@ describe('NeatClock Business commercial contract', () => {
     const params = new URLSearchParams(options.body);
     expect(params.get('metadata[product_id]')).toBe(BUSINESS_PRODUCT.productId);
     expect(params.get('metadata[industry]')).toBe('plumbing');
+    expect(params.get('metadata[amount_minor]')).toBe('4900');
     expect(params.get('line_items[0][price_data][unit_amount]')).toBe('4900');
   });
 
@@ -93,6 +95,15 @@ describe('NeatClock Business commercial contract', () => {
     expect(res.body.entitlement.claims).toMatchObject({ productId: BUSINESS_PRODUCT.productId, industry: 'hvac', authorizedRecipient: 'owner@example.com', usageLimit: null });
     expect(res.body.fulfillment).toMatchObject({ status: 'delivered' });
     expect(res.body.entitlement.token.split('.')).toHaveLength(2);
+  });
+
+  it('verifies an earlier purchase after the current configured price changes', async () => {
+    const session = paidSession();
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
+    const res = response();
+    await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env: { ...env, NEATCLOCK_BUSINESS_PRICE_CENTS: '5900' }, fetchImpl });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.payment.amountMinor).toBe(4900);
   });
 
   it('rejects unpaid, wrong-amount, wrong-product, and replay-mismatched sessions', async () => {

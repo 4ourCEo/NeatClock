@@ -76,6 +76,7 @@ export async function businessCheckout(req, res, { env = process.env, fetchImpl 
   fields.set('metadata[delivery_type]', BUSINESS_PRODUCT.deliveryType);
   fields.set('metadata[order_reference]', orderReference);
   fields.set('metadata[industry]', industry);
+  fields.set('metadata[amount_minor]', String(settings.amountMinor));
   fields.set('success_url', `${origin}/?page=partner&purchase=complete&session_id={CHECKOUT_SESSION_ID}`);
   fields.set('cancel_url', `${origin}/?page=partner&purchase=cancelled`);
 
@@ -154,7 +155,7 @@ export async function businessEntitlement(req, res, { env = process.env, fetchIm
     && session.mode === 'payment'
     && session.status === 'complete'
     && session.payment_status === 'paid'
-    && session.amount_total === settings.amountMinor
+    && session.metadata?.amount_minor === String(session.amount_total)
     && session.currency === BUSINESS_PRODUCT.currency
     && session.client_reference_id === session.metadata?.order_reference
     && session.metadata?.product_id === BUSINESS_PRODUCT.productId

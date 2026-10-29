@@ -3,7 +3,8 @@ export const BUSINESS_INDUSTRIES = Object.freeze({
   plumbing: Object.freeze({ label: 'Plumbing', preset: 'Plumbing Customer Care' }),
 });
 
-const LIMITS = { brandName: 80, logoUrl: 500, phone: 40, email: 120, website: 200 };
+// Keep branded links short enough to fit reliably in downloadable QR codes.
+const LIMITS = { brandName: 60, logoUrl: 250, phone: 24, email: 80, website: 120 };
 
 function text(value, limit) {
   return String(value || '').trim().slice(0, limit);
@@ -40,7 +41,6 @@ export function buildBusinessShareUrl({ origin, industry, brand }) {
   const base = origin || (typeof window !== 'undefined' ? window.location.origin : 'https://neatclock.pro');
   const url = new URL('/', base);
   url.searchParams.set('preset', `${industry}-business`);
-  url.searchParams.set('fresh', '1');
   url.searchParams.set('utm_source', 'neatclock');
   url.searchParams.set('utm_medium', 'business_qr');
   url.searchParams.set('utm_campaign', industry);
@@ -48,6 +48,17 @@ export function buildBusinessShareUrl({ origin, industry, brand }) {
     if (value) url.searchParams.set(key, value);
   }
   return url.toString();
+}
+
+export function businessBrandFromSearch(search = typeof window !== 'undefined' ? window.location.search : '') {
+  const params = new URLSearchParams(search);
+  const preset = params.get('preset')?.toLowerCase();
+  if (!['hvac-business', 'plumbing-business'].includes(preset)) return null;
+  return normalizeBusinessBrand({
+    brandName: params.get('brandName'), brandLogo: params.get('brandLogo'),
+    brandPhone: params.get('brandPhone'), brandEmail: params.get('brandEmail'),
+    brandWeb: params.get('brandWeb'), brandColor: params.get('brandColor'),
+  });
 }
 
 export function businessOrderReference(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {

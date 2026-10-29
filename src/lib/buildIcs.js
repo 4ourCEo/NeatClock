@@ -25,7 +25,7 @@ function freqForUnit(unit) {
 }
 
 export function buildIcsContent(tasks, options = {}) {
-  const { startOffsetWeeks = 0, includeAffiliateHints = false } = options;
+  const { startOffsetWeeks = 0, includeAffiliateHints = false, businessBrand = null } = options;
 
   if (!tasks.length) {
     return null;
@@ -46,11 +46,22 @@ export function buildIcsContent(tasks, options = {}) {
     'METHOD:PUBLISH',
   ];
 
+  if (businessBrand?.brandName) {
+    lines.push(`X-WR-CALNAME:${escapeIcalText(`${businessBrand.brandName} Customer Care`)}`);
+  }
+
   tasks.forEach((task) => {
     const unit = normalizeUnit(task.unit);
     const interval = clampInterval(task.interval);
     const freq = freqForUnit(unit);
     let description = `Recurring NeatClock task. Repeats every ${interval} ${unit}.`;
+
+    if (businessBrand?.brandName) {
+      description += ` Customer care calendar from ${businessBrand.brandName}.`;
+      if (businessBrand.brandPhone) description += ` Call ${businessBrand.brandPhone}.`;
+      if (businessBrand.brandEmail) description += ` Email ${businessBrand.brandEmail}.`;
+      if (businessBrand.brandWeb) description += ` Website ${businessBrand.brandWeb}.`;
+    }
 
     if (includeAffiliateHints) {
       const hint = getAffiliateHint(task.name);

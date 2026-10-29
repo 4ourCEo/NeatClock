@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Check, Copy, Download, ExternalLink, QrCode, Sparkles } from 'lucide-react';
 import QRCode from 'qrcode';
 import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, normalizeBusinessBrand } from '../lib/businessCalendar.js';
@@ -6,10 +6,12 @@ import { PRESETS } from '../config/presets.js';
 import {
   createBusinessCheckout,
   getBusinessCheckoutConfig,
+  readPendingBusinessCheckout,
   readSavedBusinessEntitlement,
   saveBusinessEntitlement,
+  savePendingBusinessCheckout,
+  clearPendingBusinessCheckout,
   verifyBusinessEntitlement,
-  BUSINESS_ENTITLEMENT_STORAGE_KEY,
 } from '../lib/businessPurchase.js';
 import { trackEvent } from '../lib/analytics.js';
 
@@ -39,10 +41,10 @@ export default function PartnerBuilder() {
   const [purchaseState, setPurchaseState] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('purchase') === 'cancelled') return 'cancelled';
-    return params.has('session_id') || readSavedBusinessEntitlement() ? 'verifying' : 'idle';
+    return params.has('session_id') || readPendingBusinessCheckout() || readSavedBusinessEntitlement() ? 'verifying' : 'idle';
   });
   const [entitlement, setEntitlement] = useState(null);
-  const [qrResult, setQrResult] = useState({ url: '', dataUrl: '' });
+  const [qrResult, setQrResult] = useState({ url: '', dataUrl: '', error: false });
   const [copied, setCopied] = useState(false);
 
   const generatedUrl = useMemo(() => {
@@ -56,7 +58,30 @@ export default function PartnerBuilder() {
   const preset = BUSINESS_INDUSTRIES[industry].preset;
   const tasks = PRESETS[preset];
   const qrDataUrl = qrResult.url === generatedUrl ? qrResult.dataUrl : '';
+  const qrError = qrResult.url === generatedUrl && qrResult.error;
   const entitled = purchaseState === 'verified' && Boolean(entitlement?.token);
+
+  const verifyPurchase = useCallback(async (sessionId) => {
+    if (!sessionId) return;
+    setPurchaseState('verifying');
+    setCheckoutError('');
+    try {
+      const result = await verifyBusinessEntitlement(sessionId);
+      const saved = saveBusinessEntitlement(result);
+      clearPendingBusinessCheckout();
+      setEntitlement(saved);
+      setPurchaseState('verified');
+      trackEvent('business_calendar_payment_verified', { industry: result.entitlement.claims.industry });
+      trackEvent('business_calendar_fulfillment_completed', { product: result.product.productId });
+      const url = new URL(window.location.href);
+      url.searchParams.delete('purchase');
+      url.searchParams.delete('session_id');
+      window.history.replaceState({}, '', url);
+    } catch {
+      setPurchaseState('failed');
+      setCheckoutError('Payment verification is temporarily unavailable or incomplete. No license was issued. Retry verification; your Checkout session is saved.');
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand }));
@@ -74,38 +99,24 @@ export default function PartnerBuilder() {
 
   useEffect(() => {
     let active = true;
+    if (new URLSearchParams(window.location.search).get('purchase') === 'cancelled') {
+      clearPendingBusinessCheckout();
+      return () => { active = false; };
+    }
     const sessionId = new URLSearchParams(window.location.search).get('session_id')
+      || readPendingBusinessCheckout()?.checkoutSessionId
       || readSavedBusinessEntitlement()?.checkoutSessionId;
     if (!sessionId) return () => { active = false; };
-
-    Promise.resolve().then(() => verifyBusinessEntitlement(sessionId)).then((result) => {
-      if (!active) return;
-      const saved = saveBusinessEntitlement(result);
-      setEntitlement(saved);
-      setPurchaseState('verified');
-      setCheckoutError('');
-      trackEvent('business_calendar_payment_verified', { industry: result.entitlement.claims.industry });
-      trackEvent('business_calendar_fulfillment_completed', { product: result.product.productId });
-      const url = new URL(window.location.href);
-      url.searchParams.delete('purchase');
-      url.searchParams.delete('session_id');
-      window.history.replaceState({}, '', url);
-    }).catch(() => {
-      if (!active) return;
-      localStorage.removeItem(BUSINESS_ENTITLEMENT_STORAGE_KEY);
-      setEntitlement(null);
-      setPurchaseState('failed');
-      setCheckoutError('We could not verify a completed payment. Your calendar is still available; no license was issued.');
-    });
+    Promise.resolve().then(() => { if (active) return verifyPurchase(sessionId); });
     return () => { active = false; };
-  }, []);
+  }, [verifyPurchase]);
 
   useEffect(() => {
     let active = true;
     if (!generatedUrl) return () => { active = false; };
     QRCode.toDataURL(generatedUrl, { width: 360, margin: 2, errorCorrectionLevel: 'M' })
-      .then((dataUrl) => { if (active) setQrResult({ url: generatedUrl, dataUrl }); })
-      .catch(() => { if (active) setQrResult({ url: generatedUrl, dataUrl: '' }); });
+      .then((dataUrl) => { if (active) setQrResult({ url: generatedUrl, dataUrl, error: false }); })
+      .catch(() => { if (active) setQrResult({ url: generatedUrl, dataUrl: '', error: true }); });
     return () => { active = false; };
   }, [generatedUrl]);
 
@@ -129,6 +140,7 @@ export default function PartnerBuilder() {
     trackEvent('business_calendar_checkout_initiated', { industry });
     try {
       const result = await createBusinessCheckout(industry);
+      savePendingBusinessCheckout(result.checkout);
       window.location.assign(result.checkoutUrl);
     } catch {
       setPurchaseState('idle');
@@ -233,18 +245,20 @@ export default function PartnerBuilder() {
               {entitled && qrDataUrl ? (
                 <a href={qrDataUrl} download="neatclock-business-calendar-qr.png" className="inline-flex items-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg bg-theme-accent text-white"><Download className="w-3.5 h-3.5" /> Download QR PNG</a>
               ) : (
-                <button type="button" disabled={!generatedUrl || !checkoutConfig?.available || purchaseState === 'starting' || purchaseState === 'verifying'} onClick={handleCheckout} className="text-xs font-bold py-2 px-3 rounded-lg border border-theme-border bg-theme-card text-theme-text disabled:opacity-40 disabled:cursor-not-allowed">
+                <button type="button" disabled={!generatedUrl || !qrDataUrl || !checkoutConfig?.available || purchaseState === 'starting' || purchaseState === 'verifying'} onClick={handleCheckout} className="text-xs font-bold py-2 px-3 rounded-lg border border-theme-border bg-theme-card text-theme-text disabled:opacity-40 disabled:cursor-not-allowed">
                   {purchaseState === 'starting' ? 'Opening secure checkout…' : checkoutConfig?.available ? `Purchase QR license · ${formatPrice(checkoutConfig.price)}` : 'QR download checkout unavailable'}
                 </button>
               )}
               {entitled && <p className="text-xs text-green-700 mt-2" role="status">Payment verified. QR download is ready.</p>}
+              {qrError && <p className="text-xs text-red-700 mt-2" role="alert">This share link could not be encoded. Shorten the branding details before purchase.</p>}
               {checkoutConfig && !checkoutConfig.available && <p className="text-xs text-theme-text-muted mt-2">Preview purchase settings are not configured. Calendar, share link, and QR preview remain available.</p>}
             </div>
           </div>
 
-          {checkoutError && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
+          {checkoutError && purchaseState !== 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
           {purchaseState === 'cancelled' && <p role="status" className="text-sm text-theme-text-muted">Checkout was cancelled. No payment was taken.</p>}
           {purchaseState === 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
+          {purchaseState === 'failed' && (readPendingBusinessCheckout() || new URLSearchParams(window.location.search).get('session_id')) && <button type="button" onClick={() => verifyPurchase(new URLSearchParams(window.location.search).get('session_id') || readPendingBusinessCheckout()?.checkoutSessionId)} className="self-start text-xs font-bold underline">Retry payment verification</button>}
           <p className="text-[11px] leading-relaxed text-theme-text-muted">Your customers can add the calendar to Google, Apple, or Outlook. Schedule choices are a general reminder template, not a substitute for manufacturer instructions or a technician’s advice.</p>
         </section>
       </div>

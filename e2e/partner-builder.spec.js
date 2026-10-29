@@ -24,7 +24,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
 
     const link = new URL(await page.getByLabel('Customer share link').inputValue());
     expect(link.searchParams.get('preset')).toBe('plumbing-business');
-    expect(link.searchParams.get('fresh')).toBe('1');
+    expect(link.searchParams.has('fresh')).toBe(false);
     expect(link.searchParams.get('brandName')).toBe('North & Main Plumbing');
     expect(link.searchParams.get('brandPhone')).toBe('555-0199');
     expect(link.searchParams.get('brandWeb')).toBe('https://northmain.example/');
@@ -33,6 +33,16 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     await expect(qr).toBeVisible();
     await expect.poll(async () => qr.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
     await expect(page.getByRole('button', { name: /QR download checkout unavailable/i })).toBeDisabled();
+  });
+
+  test('opening a business link preserves an existing customer schedule', async ({ page }) => {
+    const saved = [{ id: 'customer-custom-task', name: 'My custom reminder', interval: 2, unit: 'months' }];
+    await page.addInitScript((tasks) => localStorage.setItem('neatclock_tasks', JSON.stringify(tasks)), saved);
+    await page.goto('/?preset=hvac-business&brandName=North+Heating&brandPhone=555-0100');
+    await page.waitForTimeout(400);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('neatclock_tasks')));
+    expect(stored.map((task) => task.name)).toContain('My custom reminder');
+    await expect(page.getByText('North Heating', { exact: true }).first()).toBeVisible();
   });
 
   test('simulated paid return verifies entitlement before delivering the QR download', async ({ page }) => {

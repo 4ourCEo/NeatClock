@@ -28,6 +28,15 @@ describe('buildIcsContent', () => {
     );
     expect(content).toContain('filter size');
   });
+
+  it('includes business identity and contact details in branded calendar exports', () => {
+    const content = buildIcsContent(
+      [{ id: 't1', name: 'Replace filter', interval: 3, unit: 'months' }],
+      { businessBrand: { brandName: 'North Heating', brandPhone: '555-0100', brandEmail: 'service@example.com', brandWeb: 'https://north.example' } },
+    );
+    expect(content).toContain('X-WR-CALNAME:North Heating Customer Care');
+    expect(content).toContain('Customer care calendar from North Heating. Call 555-0100. Email service@example.com. Website https://north.example.');
+  });
 });
 
 describe('escapeIcalText', () => {

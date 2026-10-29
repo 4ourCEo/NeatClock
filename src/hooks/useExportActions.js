@@ -5,6 +5,7 @@ import { downloadText } from '../lib/download.js';
 import { ALLOWED_THEMES } from '../lib/themes.js';
 import { features } from '../config/features.js';
 import { trackEvent } from '../lib/analytics.js';
+import { businessBrandFromSearch } from '../lib/businessCalendar.js';
 
 export const MAX_BACKUP_BYTES = 512 * 1024;
 
@@ -36,6 +37,7 @@ export function useExportActions({
     const icsContent = buildIcsContent(tasks, {
       startOffsetWeeks,
       includeAffiliateHints: features.affiliateLinks,
+      businessBrand: businessBrandFromSearch(),
     });
 
     if (!icsContent) {
