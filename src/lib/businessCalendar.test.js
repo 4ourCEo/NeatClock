@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PRESETS } from '../config/presets.js';
-import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, businessBrandFromSearch, businessIdFromSearch, normalizeBusinessBrand } from './businessCalendar.js';
+import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, businessBrandFromSearch, businessIdForSearch, businessIdFromSearch, createBusinessIdentityId, normalizeBusinessBrand } from './businessCalendar.js';
 
 describe('NeatClock Business calendars', () => {
   it('provides distinct HVAC and plumbing schedules', () => {
@@ -44,5 +44,22 @@ describe('NeatClock Business calendars', () => {
     expect(businessBrandFromSearch('?preset=hvac-business&brandName=North+Heating&brandPhone=555-0100')).toMatchObject({ brandName: 'North Heating', brandPhone: '555-0100' });
     expect(businessBrandFromSearch('?preset=gearhead&brandName=North+Heating')).toBeNull();
     expect(businessIdFromSearch('?business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112')).toBe('b8a1c7d2-4f65-4cc3-a239-01c0ef89a112');
+  });
+
+  it('derives stable, distinct identities when business details change in the same browser', () => {
+    const first = createBusinessIdentityId({ brandName: 'North Heating', brandPhone: '555-0100' }, 'hvac');
+    const same = createBusinessIdentityId({ brandName: 'North Heating', brandPhone: '5550100' }, 'hvac');
+    const second = createBusinessIdentityId({ brandName: 'South Heating', brandPhone: '555-0200' }, 'hvac');
+    expect(first).toMatch(/^[0-9a-f]{32}$/);
+    expect(same).toBe(first);
+    expect(second).not.toBe(first);
+  });
+
+  it('assigns distinct deterministic identities to older share links without business_id', () => {
+    const north = businessIdForSearch('?preset=hvac-business&brandName=North+Heating');
+    const south = businessIdForSearch('?preset=hvac-business&brandName=South+Heating');
+    expect(north).not.toBeNull();
+    expect(south).not.toBe(north);
+    expect(businessIdForSearch('?preset=hvac-business&brandName=North+Heating')).toBe(north);
   });
 });

@@ -21,12 +21,9 @@ const DEFAULT_BRAND = { brandName: '', brandLogo: '', brandPhone: '', brandEmail
 function readDraft() {
   try {
     const saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
-    const businessId = typeof saved.businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(saved.businessId)
-      ? saved.businessId
-      : createBusinessIdentityId();
-    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand }, businessId };
+    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand } };
   } catch {
-    try { return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: createBusinessIdentityId() }; } catch { return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: '' }; }
+    return { industry: 'hvac', brand: DEFAULT_BRAND };
   }
 }
 
@@ -37,9 +34,11 @@ function formatPrice(price) {
 
 export default function PartnerBuilder() {
   const [draft] = useState(readDraft);
-  const businessId = draft.businessId;
   const [industry, setIndustry] = useState(draft.industry);
   const [brand, setBrand] = useState(draft.brand);
+  const businessId = useMemo(() => {
+    try { return createBusinessIdentityId(brand, industry); } catch { return ''; }
+  }, [brand, industry]);
   const [checkoutConfig, setCheckoutConfig] = useState(null);
   const [checkoutError, setCheckoutError] = useState('');
   const [purchaseState, setPurchaseState] = useState(() => {
@@ -88,8 +87,8 @@ export default function PartnerBuilder() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand, businessId }));
-  }, [brand, businessId, industry]);
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand }));
+  }, [brand, industry]);
 
   useEffect(() => {
     let active = true;

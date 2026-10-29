@@ -48,6 +48,17 @@ describe('buildIcsContent', () => {
     expect(sameBusiness.match(/UID:[^\r\n]+/)[0]).toBe(first.match(/UID:[^\r\n]+/)[0]);
     expect(second.match(/UID:[^\r\n]+/)[0]).not.toBe(first.match(/UID:[^\r\n]+/)[0]);
   });
+
+  it('generates non-colliding UIDs when legacy branded exports have no explicit business ID', () => {
+    const tasks = [{ id: 'hvac-1', name: 'Replace filter', interval: 3, unit: 'months' }];
+    const first = buildIcsContent(tasks, { businessBrand: { brandName: 'North Heating' } });
+    const sameBusiness = buildIcsContent(tasks, { businessBrand: { brandName: 'North Heating' } });
+    const second = buildIcsContent(tasks, { businessBrand: { brandName: 'South Heating' } });
+    const firstUid = first.match(/UID:[^\r\n]+/)[0];
+    expect(firstUid).toMatch(/^UID:task-[0-9a-f]{32}-hvac-1@neatclock\.pro$/);
+    expect(sameBusiness.match(/UID:[^\r\n]+/)[0]).toBe(firstUid);
+    expect(second.match(/UID:[^\r\n]+/)[0]).not.toBe(firstUid);
+  });
 });
 
 describe('escapeIcalText', () => {

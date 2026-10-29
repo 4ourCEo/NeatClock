@@ -1,6 +1,6 @@
 import { buildIcsContent } from './buildIcs.js';
 import { downloadText } from './download.js';
-import { businessBrandFromSearch, businessIdFromSearch } from './businessCalendar.js';
+import { businessBrandFromSearch, businessIdForSearch } from './businessCalendar.js';
 
 function businessEventDetails(search) {
   const brand = businessBrandFromSearch(search);
@@ -31,7 +31,7 @@ export function getOutlookCalLink(task, search) {
 
 /** Apple Calendar has no web compose URL — download a one-task .ics file instead. */
 export function downloadAppleTaskIcs(task, search) {
-  const content = buildIcsContent([task], { businessBrand: businessBrandFromSearch(search), businessId: businessIdFromSearch(search) });
+  const content = buildIcsContent([task], { businessBrand: businessBrandFromSearch(search), businessId: businessIdForSearch(search) });
   if (!content) return;
 
   const slug =

@@ -68,9 +68,38 @@ export function businessIdFromSearch(search = typeof window !== 'undefined' ? wi
   return typeof id === 'string' && /^[0-9a-f-]{16,64}$/i.test(id) ? id : null;
 }
 
-export function createBusinessIdentityId(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {
-  if (!randomUUID) throw new Error('Business calendar identity is unavailable in this browser.');
-  return randomUUID();
+function hashIdentity(value, seed) {
+  let hash = BigInt(seed);
+  const mask = 0xffffffffffffffffn;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= BigInt(value.charCodeAt(index));
+    hash = (hash * 0x100000001b3n) & mask;
+  }
+  return hash.toString(16).padStart(16, '0');
+}
+
+export function createBusinessIdentityId(brand = {}, industry = 'business') {
+  const cleanBrand = normalizeBusinessBrand(brand);
+  if (!cleanBrand.brandName) throw new Error('Add your business name to create a calendar identity.');
+  const identity = [
+    industry,
+    cleanBrand.brandName.toLowerCase(),
+    cleanBrand.brandPhone.replace(/\D/g, ''),
+    cleanBrand.brandEmail.toLowerCase(),
+    cleanBrand.brandWeb.toLowerCase(),
+  ].join('|');
+  return `${hashIdentity(identity, '14695981039346656037')}${hashIdentity(identity, '7809847782465536322')}`;
+}
+
+export function businessIdForSearch(search = typeof window !== 'undefined' ? window.location.search : '') {
+  const explicitId = businessIdFromSearch(search);
+  if (explicitId) return explicitId;
+  const params = new URLSearchParams(search);
+  const preset = params.get('preset')?.toLowerCase();
+  const industry = preset === 'hvac-business' ? 'hvac' : preset === 'plumbing-business' ? 'plumbing' : null;
+  const brand = businessBrandFromSearch(search);
+  if (!industry || !brand?.brandName) return null;
+  return createBusinessIdentityId(brand, industry);
 }
 
 export function businessOrderReference(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {
