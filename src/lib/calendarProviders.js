@@ -1,23 +1,37 @@
 import { buildIcsContent } from './buildIcs.js';
 import { downloadText } from './download.js';
+import { businessBrandFromSearch } from './businessCalendar.js';
 
-export function getGoogleCalLink(task) {
-  let freq = 'MONTHLY';
-  if (task.unit === 'weeks') freq = 'WEEKLY';
-  if (task.unit === 'years') freq = 'YEARLY';
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(task.name)}&recur=RRULE:FREQ=${freq};INTERVAL=${task.interval}`;
+function businessEventDetails(search) {
+  const brand = businessBrandFromSearch(search);
+  if (!brand?.brandName) return '';
+  return [
+    `Customer care calendar from ${brand.brandName}.`,
+    brand.brandPhone && `Call ${brand.brandPhone}.`,
+    brand.brandEmail && `Email ${brand.brandEmail}.`,
+    brand.brandWeb && `Website ${brand.brandWeb}.`,
+  ].filter(Boolean).join(' ');
 }
 
-export function getOutlookCalLink(task) {
+export function getGoogleCalLink(task, search) {
   let freq = 'MONTHLY';
   if (task.unit === 'weeks') freq = 'WEEKLY';
   if (task.unit === 'years') freq = 'YEARLY';
-  return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(task.name)}&rrule=FREQ=${freq};INTERVAL=${task.interval}`;
+  const params = new URLSearchParams({ action: 'TEMPLATE', text: task.name, details: businessEventDetails(search), recur: `RRULE:FREQ=${freq};INTERVAL=${task.interval}` });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}
+
+export function getOutlookCalLink(task, search) {
+  let freq = 'MONTHLY';
+  if (task.unit === 'weeks') freq = 'WEEKLY';
+  if (task.unit === 'years') freq = 'YEARLY';
+  const params = new URLSearchParams({ subject: task.name, body: businessEventDetails(search), rrule: `FREQ=${freq};INTERVAL=${task.interval}` });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params}`;
 }
 
 /** Apple Calendar has no web compose URL — download a one-task .ics file instead. */
-export function downloadAppleTaskIcs(task) {
-  const content = buildIcsContent([task]);
+export function downloadAppleTaskIcs(task, search) {
+  const content = buildIcsContent([task], { businessBrand: businessBrandFromSearch(search) });
   if (!content) return;
 
   const slug =

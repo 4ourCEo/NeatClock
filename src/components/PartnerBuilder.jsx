@@ -176,26 +176,26 @@ export default function PartnerBuilder() {
           </div>
           <div>
             <label htmlFor="business-name" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Business name *</label>
-            <input id="business-name" value={brand.brandName} onChange={updateBrand('brandName')} maxLength={80} placeholder="e.g. Northside Heating & Air" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+            <input id="business-name" value={brand.brandName} onChange={updateBrand('brandName')} maxLength={60} placeholder="e.g. Northside Heating & Air" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
           </div>
           <div>
             <label htmlFor="business-logo" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Logo URL (optional)</label>
-            <input id="business-logo" type="url" value={brand.brandLogo} onChange={updateBrand('brandLogo')} maxLength={500} placeholder="https://example.com/logo.png" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+            <input id="business-logo" type="url" value={brand.brandLogo} onChange={updateBrand('brandLogo')} maxLength={250} placeholder="https://example.com/logo.png" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="business-phone" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Phone (optional)</label>
-              <input id="business-phone" type="tel" value={brand.brandPhone} onChange={updateBrand('brandPhone')} maxLength={40} placeholder="555-0100" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+              <input id="business-phone" type="tel" value={brand.brandPhone} onChange={updateBrand('brandPhone')} maxLength={24} placeholder="555-0100" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
             <div>
               <label htmlFor="business-email" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Email (optional)</label>
-              <input id="business-email" type="email" value={brand.brandEmail} onChange={updateBrand('brandEmail')} maxLength={120} placeholder="service@example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+              <input id="business-email" type="email" value={brand.brandEmail} onChange={updateBrand('brandEmail')} maxLength={80} placeholder="service@example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
           </div>
           <div className="grid grid-cols-[1fr_auto] gap-4 items-end">
             <div>
               <label htmlFor="business-website" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Website (optional)</label>
-              <input id="business-website" type="url" value={brand.brandWeb} onChange={updateBrand('brandWeb')} maxLength={200} placeholder="example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+              <input id="business-website" type="url" value={brand.brandWeb} onChange={updateBrand('brandWeb')} maxLength={120} placeholder="example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
             <div>
               <label htmlFor="business-color" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Brand color</label>
@@ -258,7 +258,7 @@ export default function PartnerBuilder() {
           {checkoutError && purchaseState !== 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
           {purchaseState === 'cancelled' && <p role="status" className="text-sm text-theme-text-muted">Checkout was cancelled. No payment was taken.</p>}
           {purchaseState === 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
-          {purchaseState === 'failed' && (readPendingBusinessCheckout() || new URLSearchParams(window.location.search).get('session_id')) && <button type="button" onClick={() => verifyPurchase(new URLSearchParams(window.location.search).get('session_id') || readPendingBusinessCheckout()?.checkoutSessionId)} className="self-start text-xs font-bold underline">Retry payment verification</button>}
+          {purchaseState === 'failed' && (readPendingBusinessCheckout() || readSavedBusinessEntitlement() || new URLSearchParams(window.location.search).get('session_id')) && <button type="button" onClick={() => verifyPurchase(new URLSearchParams(window.location.search).get('session_id') || readPendingBusinessCheckout()?.checkoutSessionId || readSavedBusinessEntitlement()?.checkoutSessionId)} className="self-start text-xs font-bold underline">Retry payment verification</button>}
           <p className="text-[11px] leading-relaxed text-theme-text-muted">Your customers can add the calendar to Google, Apple, or Outlook. Schedule choices are a general reminder template, not a substitute for manufacturer instructions or a technician’s advice.</p>
         </section>
       </div>

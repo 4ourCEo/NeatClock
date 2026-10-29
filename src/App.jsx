@@ -25,6 +25,8 @@ import { useScheduleState } from './hooks/useScheduleState.js';
 import { useExportActions } from './hooks/useExportActions.js';
 import { getDeepLinkBootstrap } from './lib/deepLink.js';
 import { trackEvent } from './lib/analytics.js';
+import { businessBrandFromSearch } from './lib/businessCalendar.js';
+import SharedBusinessCalendar from './components/SharedBusinessCalendar.jsx';
 
 function getCurrentPage() {
   if (typeof window === 'undefined') return 'generator';
@@ -35,6 +37,18 @@ function getCurrentPage() {
 }
 
 function App() {
+  if (typeof window === 'undefined') return <GeneratorApp />;
+  const params = new URLSearchParams(window.location.search);
+  const presetParam = params.get('preset')?.toLowerCase();
+  const industry = presetParam === 'hvac-business' ? 'hvac' : presetParam === 'plumbing-business' ? 'plumbing' : null;
+  const businessBrand = businessBrandFromSearch();
+  if (industry && businessBrand?.brandName) {
+    return <SharedBusinessCalendar industry={industry} brand={businessBrand} />;
+  }
+  return <GeneratorApp />;
+}
+
+function GeneratorApp() {
   const [printPreview, setPrintPreview] = useState(false);
   const [includePrintNotes, setIncludePrintNotes] = useState(false);
   const [includePrintBranding, setIncludePrintBranding] = useState(true);

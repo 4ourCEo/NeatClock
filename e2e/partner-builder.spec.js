@@ -35,14 +35,19 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     await expect(page.getByRole('button', { name: /QR download checkout unavailable/i })).toBeDisabled();
   });
 
-  test('opening a business link preserves an existing customer schedule', async ({ page }) => {
+  test('opening a business link displays its preset and preserves an existing customer schedule', async ({ page }) => {
     const saved = [{ id: 'customer-custom-task', name: 'My custom reminder', interval: 2, unit: 'months' }];
     await page.addInitScript((tasks) => localStorage.setItem('neatclock_tasks', JSON.stringify(tasks)), saved);
     await page.goto('/?preset=hvac-business&brandName=North+Heating&brandPhone=555-0100');
     await page.waitForTimeout(400);
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('neatclock_tasks')));
     expect(stored.map((task) => task.name)).toContain('My custom reminder');
+    await expect(page.getByText('Replace HVAC air filter')).toBeVisible();
+    await expect(page.getByText('Flush water heater')).toHaveCount(0);
     await expect(page.getByText('North Heating', { exact: true }).first()).toBeVisible();
+    const calendarDownload = page.waitForEvent('download');
+    await page.getByRole('button', { name: /Download branded calendar/i }).click();
+    expect((await calendarDownload).suggestedFilename()).toBe('hvac-customer-care.ics');
   });
 
   test('simulated paid return verifies entitlement before delivering the QR download', async ({ page }) => {
@@ -76,5 +81,31 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     const download = page.waitForEvent('download');
     await page.getByRole('link', { name: /Download QR PNG/i }).click();
     expect((await download).suggestedFilename()).toBe('neatclock-business-calendar-qr.png');
+  });
+
+  test('retry remains available when a saved entitlement cannot be rechecked temporarily', async ({ page }) => {
+    let unavailable = true;
+    const sessionId = 'cs_test_neatclock_saved_retry';
+    await page.addInitScript(({ session, draft }) => {
+      localStorage.setItem('neatclock_business_entitlement_v1', JSON.stringify({ checkoutSessionId: session, token: 'previously-issued-token' }));
+      localStorage.setItem('neatclock_business_draft_v1', JSON.stringify(draft));
+    }, { session: sessionId, draft: { industry: 'hvac', brand: { brandName: 'North Heating', brandPhone: '', brandEmail: '', brandWeb: '', brandLogo: '', brandColor: 'e07a5f' } } });
+    await page.route('**/api/business-checkout', (route) => route.fulfill({ json: { available: false } }));
+    await page.route('**/api/business-entitlement?session_id=*', (route) => {
+      if (unavailable) return route.fulfill({ status: 503, json: { error: 'payment_verification_unavailable' } });
+      return route.fulfill({ json: {
+        checkout: { checkoutSessionId: sessionId, orderReference: 'saved_order_ref_123456' },
+        payment: { verified: true, amountMinor: 4900, currency: 'usd' },
+        product: { productId: 'neatclock.business-calendar-qr' },
+        entitlement: { token: 'test.signed-entitlement', claims: { industry: 'hvac' } },
+        fulfillment: { status: 'delivered' },
+      } });
+    });
+
+    await page.goto('/?page=partner');
+    await expect(page.getByRole('button', { name: 'Retry payment verification' })).toBeVisible();
+    unavailable = false;
+    await page.getByRole('button', { name: 'Retry payment verification' }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Payment verified' })).toBeVisible();
   });
 });
