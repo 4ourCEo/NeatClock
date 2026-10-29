@@ -9,6 +9,8 @@ export const PRESET_DEEP_LINKS = {
   'honda-civic-2018': 'Preventive Gearhead',
   cfo: 'Automated CFO',
   'sole-proprietor-tax': 'Automated CFO',
+  'hvac-business': 'HVAC Customer Care',
+  'plumbing-business': 'Plumbing Customer Care',
 };
 
 export function getDeepLinkSearch() {

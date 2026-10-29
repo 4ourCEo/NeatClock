@@ -1,248 +1,252 @@
-import { useState } from 'react';
-import { Copy, ExternalLink, Sparkles, Check, ArrowLeft } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, Check, Copy, Download, ExternalLink, QrCode, Sparkles } from 'lucide-react';
+import QRCode from 'qrcode';
+import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, normalizeBusinessBrand } from '../lib/businessCalendar.js';
+import { PRESETS } from '../config/presets.js';
+import {
+  createBusinessCheckout,
+  getBusinessCheckoutConfig,
+  readSavedBusinessEntitlement,
+  saveBusinessEntitlement,
+  verifyBusinessEntitlement,
+  BUSINESS_ENTITLEMENT_STORAGE_KEY,
+} from '../lib/businessPurchase.js';
 import { trackEvent } from '../lib/analytics.js';
 
+const DRAFT_STORAGE_KEY = 'neatclock_business_draft_v1';
+const DEFAULT_BRAND = { brandName: '', brandLogo: '', brandPhone: '', brandEmail: '', brandWeb: '', brandColor: 'e07a5f' };
+
+function readDraft() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
+    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand } };
+  } catch {
+    return { industry: 'hvac', brand: DEFAULT_BRAND };
+  }
+}
+
+function formatPrice(price) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: price.currency.toUpperCase() })
+    .format(price.amountMinor / 100);
+}
+
 export default function PartnerBuilder() {
-  const [brandName, setBrandName] = useState('');
-  const [brandLogo, setBrandLogo] = useState('');
-  const [brandPhone, setBrandPhone] = useState('');
-  const [brandEmail, setBrandEmail] = useState('');
-  const [brandWeb, setBrandWeb] = useState('');
-  const [brandColor, setBrandColor] = useState('e07a5f'); // Default theme accent
+  const [draft] = useState(readDraft);
+  const [industry, setIndustry] = useState(draft.industry);
+  const [brand, setBrand] = useState(draft.brand);
+  const [checkoutConfig, setCheckoutConfig] = useState(null);
+  const [checkoutError, setCheckoutError] = useState('');
+  const [purchaseState, setPurchaseState] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('purchase') === 'cancelled') return 'cancelled';
+    return params.has('session_id') || readSavedBusinessEntitlement() ? 'verifying' : 'idle';
+  });
+  const [entitlement, setEntitlement] = useState(null);
+  const [qrResult, setQrResult] = useState({ url: '', dataUrl: '' });
   const [copied, setCopied] = useState(false);
 
-  const getGeneratedUrl = () => {
-    if (typeof window === 'undefined') return '';
-    const base = window.location.origin;
-    const params = new URLSearchParams();
-    
-    if (brandName.trim()) params.set('brandName', brandName.trim());
-    if (brandLogo.trim()) params.set('brandLogo', brandLogo.trim());
-    if (brandPhone.trim()) params.set('brandPhone', brandPhone.trim());
-    if (brandEmail.trim()) params.set('brandEmail', brandEmail.trim());
-    if (brandWeb.trim()) params.set('brandWeb', brandWeb.trim());
-    if (brandColor.trim() && brandColor !== 'e07a5f') params.set('brandColor', brandColor.trim().replace('#', ''));
+  const generatedUrl = useMemo(() => {
+    if (!brand.brandName.trim()) return '';
+    try {
+      return buildBusinessShareUrl({ origin: window.location.origin, industry, brand });
+    } catch {
+      return '';
+    }
+  }, [brand, industry]);
+  const preset = BUSINESS_INDUSTRIES[industry].preset;
+  const tasks = PRESETS[preset];
+  const qrDataUrl = qrResult.url === generatedUrl ? qrResult.dataUrl : '';
+  const entitled = purchaseState === 'verified' && Boolean(entitlement?.token);
 
-    // Force default preset to let partners seed their templates
-    params.set('preset', 'home');
+  useEffect(() => {
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand }));
+  }, [brand, industry]);
 
-    return params.toString() ? `${base}/?${params.toString()}` : base;
-  };
+  useEffect(() => {
+    let active = true;
+    getBusinessCheckoutConfig().then((config) => {
+      if (active) setCheckoutConfig(config);
+    }).catch(() => {
+      if (active) setCheckoutConfig({ available: false });
+    });
+    return () => { active = false; };
+  }, []);
 
-  const generatedUrl = getGeneratedUrl();
+  useEffect(() => {
+    let active = true;
+    const sessionId = new URLSearchParams(window.location.search).get('session_id')
+      || readSavedBusinessEntitlement()?.checkoutSessionId;
+    if (!sessionId) return () => { active = false; };
+
+    Promise.resolve().then(() => verifyBusinessEntitlement(sessionId)).then((result) => {
+      if (!active) return;
+      const saved = saveBusinessEntitlement(result);
+      setEntitlement(saved);
+      setPurchaseState('verified');
+      setCheckoutError('');
+      trackEvent('business_calendar_payment_verified', { industry: result.entitlement.claims.industry });
+      trackEvent('business_calendar_fulfillment_completed', { product: result.product.productId });
+      const url = new URL(window.location.href);
+      url.searchParams.delete('purchase');
+      url.searchParams.delete('session_id');
+      window.history.replaceState({}, '', url);
+    }).catch(() => {
+      if (!active) return;
+      localStorage.removeItem(BUSINESS_ENTITLEMENT_STORAGE_KEY);
+      setEntitlement(null);
+      setPurchaseState('failed');
+      setCheckoutError('We could not verify a completed payment. Your calendar is still available; no license was issued.');
+    });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    if (!generatedUrl) return () => { active = false; };
+    QRCode.toDataURL(generatedUrl, { width: 360, margin: 2, errorCorrectionLevel: 'M' })
+      .then((dataUrl) => { if (active) setQrResult({ url: generatedUrl, dataUrl }); })
+      .catch(() => { if (active) setQrResult({ url: generatedUrl, dataUrl: '' }); });
+    return () => { active = false; };
+  }, [generatedUrl]);
+
+  const updateBrand = (key) => (event) => setBrand((current) => ({ ...current, [key]: event.target.value }));
 
   const handleCopy = async () => {
+    if (!generatedUrl) return;
     try {
       await navigator.clipboard.writeText(generatedUrl);
       setCopied(true);
-      trackEvent('partner_link_copy', { hasLogo: Boolean(brandLogo.trim()) });
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy link', err);
+      trackEvent('business_calendar_share_link_copied', { industry });
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCheckoutError('Copy was unavailable. Select the share link and copy it manually.');
+    }
+  };
+
+  const handleCheckout = async () => {
+    setCheckoutError('');
+    setPurchaseState('starting');
+    trackEvent('business_calendar_checkout_initiated', { industry });
+    try {
+      const result = await createBusinessCheckout(industry);
+      window.location.assign(result.checkoutUrl);
+    } catch {
+      setPurchaseState('idle');
+      setCheckoutError('Checkout is not configured for this Preview yet. The calendar and share link still work.');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-8 bg-theme-card/30 border border-theme-border/60 rounded-2xl shadow-sm">
+    <div className="max-w-5xl mx-auto p-4 sm:p-8 bg-theme-card/30 border border-theme-border/60 rounded-2xl shadow-sm">
       <div className="mb-6 flex items-center justify-between">
-        <a 
-          href="/" 
-          className="inline-flex items-center gap-1.5 text-xs text-theme-text-muted hover:text-theme-text transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Back to Generator
+        <a href="/" className="inline-flex items-center gap-1.5 text-xs text-theme-text-muted hover:text-theme-text transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Generator
         </a>
         <span className="flex items-center gap-1 text-xs font-semibold text-theme-accent uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5" />
-          Partner Dashboard
+          <Sparkles className="w-3.5 h-3.5" /> NeatClock Business
         </span>
       </div>
 
-      <div className="text-center sm:text-left mb-8">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-theme-text mb-2">
-          Co-Brand neatclock.pro
-        </h1>
-        <p className="text-sm text-theme-text-muted max-w-xl leading-relaxed">
-          Create a personalized, co-branded calendar tool to share with your clients. Perfect for real estate agents gifting upkeep guides or auto mechanics sharing checkup lists.
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-theme-text mb-2">A branded maintenance calendar for your customers</h1>
+        <p className="text-sm text-theme-text-muted max-w-2xl leading-relaxed">
+          Choose an HVAC or plumbing schedule, add your business details, then share a ready-to-use customer calendar link or QR code.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* Form Fields */}
-        <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section className="space-y-4" aria-label="Business calendar setup">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-              Business Name *
-            </label>
-            <input 
-              type="text" 
-              placeholder="e.g. Gilbert Real Estate" 
-              value={brandName} 
-              onChange={(e) => setBrandName(e.target.value)}
-              className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-            />
+            <label htmlFor="business-industry" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Industry preset</label>
+            <select id="business-industry" value={industry} onChange={(event) => setIndustry(event.target.value)} className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text">
+              {Object.entries(BUSINESS_INDUSTRIES).map(([key, value]) => <option key={key} value={key}>{value.label}</option>)}
+            </select>
           </div>
-
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-              Logo Image URL (Optional)
-            </label>
-            <input 
-              type="url" 
-              placeholder="e.g. https://domain.com/logo.png" 
-              value={brandLogo} 
-              onChange={(e) => setBrandLogo(e.target.value)}
-              className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-            />
+            <label htmlFor="business-name" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Business name *</label>
+            <input id="business-name" value={brand.brandName} onChange={updateBrand('brandName')} maxLength={80} placeholder="e.g. Northside Heating & Air" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="business-logo" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Logo URL (optional)</label>
+            <input id="business-logo" type="url" value={brand.brandLogo} onChange={updateBrand('brandLogo')} maxLength={500} placeholder="https://example.com/logo.png" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-                Phone (Optional)
-              </label>
-              <input 
-                type="text" 
-                placeholder="123-456-7890" 
-                value={brandPhone} 
-                onChange={(e) => setBrandPhone(e.target.value)}
-                className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-              />
+              <label htmlFor="business-phone" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Phone (optional)</label>
+              <input id="business-phone" type="tel" value={brand.brandPhone} onChange={updateBrand('brandPhone')} maxLength={40} placeholder="555-0100" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-                Website (Optional)
-              </label>
-              <input 
-                type="text" 
-                placeholder="gilbert.com" 
-                value={brandWeb} 
-                onChange={(e) => setBrandWeb(e.target.value)}
-                className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-              />
+              <label htmlFor="business-email" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Email (optional)</label>
+              <input id="business-email" type="email" value={brand.brandEmail} onChange={updateBrand('brandEmail')} maxLength={120} placeholder="service@example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-[1fr_auto] gap-4 items-end">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-                Email (Optional)
-              </label>
-              <input 
-                type="email" 
-                placeholder="contact@gilbert.com" 
-                value={brandEmail} 
-                onChange={(e) => setBrandEmail(e.target.value)}
-                className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text focus:outline-none focus:border-theme-accent transition-colors"
-              />
+              <label htmlFor="business-website" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Website (optional)</label>
+              <input id="business-website" type="url" value={brand.brandWeb} onChange={updateBrand('brandWeb')} maxLength={200} placeholder="example.com" className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text" />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">
-                Brand Accent Color
-              </label>
-              <div className="flex gap-2">
-                <input 
-                  type="color" 
-                  value={brandColor.startsWith('#') ? brandColor : `#${brandColor}`} 
-                  onChange={(e) => setBrandColor(e.target.value.replace('#', ''))}
-                  className="w-10 h-10 border border-theme-border rounded-lg cursor-pointer bg-transparent"
-                />
-                <input 
-                  type="text" 
-                  value={brandColor} 
-                  onChange={(e) => setBrandColor(e.target.value)}
-                  className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text uppercase focus:outline-none focus:border-theme-accent transition-colors"
-                  maxLength={6}
-                />
-              </div>
+              <label htmlFor="business-color" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Brand color</label>
+              <input id="business-color" aria-label="Brand color" type="color" value={`#${normalizeBusinessBrand(brand).brandColor}`} onChange={(event) => setBrand((current) => ({ ...current, brandColor: event.target.value.slice(1) }))} className="w-12 h-10 border border-theme-border rounded-lg cursor-pointer bg-transparent" />
             </div>
           </div>
-        </div>
+          <div className="rounded-xl border border-theme-border/70 bg-theme-bg/30 p-4">
+            <h2 className="font-serif font-bold text-theme-text mb-2">{BUSINESS_INDUSTRIES[industry].label} customer schedule</h2>
+            <ul className="space-y-1 text-sm text-theme-text-muted">
+              {tasks.map((task) => <li key={task.id}>• {task.name} — every {task.interval} {task.unit}</li>)}
+            </ul>
+          </div>
+        </section>
 
-        {/* Live Preview & URL Link Output */}
-        <div className="flex flex-col justify-between p-5 bg-theme-bg/40 border border-theme-border rounded-xl">
-          <div className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-theme-text-muted">
-              Live Preview
-            </h3>
-            <div className="p-4 border border-theme-border/60 bg-theme-card/50 rounded-lg min-h-[90px] flex items-center justify-center">
-              {brandName.trim() ? (
-                <div className="w-full">
-                  {/* Inline implementation of BrandBanner structure utilizing the local inputs */}
-                  <div 
-                    className="w-full pb-2 border-b flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] text-theme-text-muted"
-                    style={{ borderBottomColor: `#${brandColor}` }}
-                  >
-                    <div className="flex items-center gap-2">
-                      {brandLogo.trim() ? (
-                        <img src={brandLogo} alt="" className="h-8 w-auto object-contain rounded" onError={(e) => { e.target.style.display = 'none'; }} />
-                      ) : (
-                        <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: `#${brandColor}` }} />
-                      )}
-                      <div className="text-left">
-                        <p className="text-[8px] uppercase tracking-wider opacity-60">Brought to you by</p>
-                        <h4 className="text-xs font-bold text-theme-text">{brandName}</h4>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {brandPhone && <span>{brandPhone}</span>}
-                      {brandWeb && <span className="underline">{brandWeb}</span>}
-                    </div>
-                  </div>
+        <section className="rounded-xl border border-theme-border bg-theme-bg/30 p-5 flex flex-col gap-4" aria-label="Share and purchase">
+          <div className="rounded-lg border border-theme-border/60 bg-theme-card/50 min-h-24 p-4 flex items-center justify-center">
+            {brand.brandName.trim() ? (
+              <div className="w-full flex items-center gap-3 border-b pb-3" style={{ borderColor: `#${normalizeBusinessBrand(brand).brandColor}` }}>
+                {brand.brandLogo && <img src={normalizeBusinessBrand(brand).brandLogo} alt={`${brand.brandName} logo`} className="h-10 max-w-24 object-contain" />}
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-theme-text-muted">Customer calendar from</p>
+                  <h2 className="font-serif font-bold text-theme-text">{normalizeBusinessBrand(brand).brandName}</h2>
+                  {brand.brandPhone && <p className="text-xs text-theme-text-muted">{normalizeBusinessBrand(brand).brandPhone}</p>}
                 </div>
-              ) : (
-                <p className="text-xs text-theme-text-muted italic">
-                  Enter a Business Name to view preview
-                </p>
-              )}
-            </div>
+              </div>
+            ) : <p className="text-sm text-theme-text-muted italic">Add your business name to preview the branding.</p>}
           </div>
 
-          <div className="space-y-3 mt-6">
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1.5">
-                Your Co-Branded URL
-              </h3>
-              <textarea 
-                readOnly
-                value={generatedUrl}
-                className="w-full text-xs bg-theme-bg/80 border border-theme-border rounded-lg p-2.5 text-theme-text-muted resize-none focus:outline-none min-h-[60px]"
-                rows={2}
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleCopy}
-                disabled={!brandName.trim()}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-lg border border-theme-border bg-theme-card hover:bg-theme-bg/80 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-theme-accent" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    Copy Share Link
-                  </>
-                )}
+          <div>
+            <label htmlFor="business-share-link" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1.5">Customer share link</label>
+            <textarea id="business-share-link" readOnly value={generatedUrl} placeholder="Your branded calendar link appears here" className="w-full text-xs bg-theme-bg/80 border border-theme-border rounded-lg p-2.5 text-theme-text-muted resize-y min-h-[76px]" rows={3} />
+            <div className="flex flex-wrap gap-2 mt-2">
+              <button type="button" onClick={handleCopy} disabled={!generatedUrl} className="inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-lg border border-theme-border bg-theme-card hover:bg-theme-bg/80 disabled:opacity-40 disabled:cursor-not-allowed">
+                {copied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy link</>}
               </button>
-              
-              <a
-                href={generatedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-lg bg-theme-accent text-white hover:bg-theme-accent-hover transition-all text-center ${!brandName.trim() ? 'opacity-40 pointer-events-none' : ''}`}
-              >
-                Test Scheduler
-                <ExternalLink className="w-3.5 h-3.5" />
+              <a href={generatedUrl || undefined} target="_blank" rel="noopener noreferrer" aria-disabled={!generatedUrl} className="inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-lg bg-theme-accent text-white hover:bg-theme-accent-hover aria-disabled:opacity-40 aria-disabled:pointer-events-none">
+                Test calendar <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
-        </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 rounded-lg border border-theme-border/60 bg-theme-card/40 p-4">
+            {qrDataUrl ? <img src={qrDataUrl} alt="QR code for customer calendar" className="w-36 h-36 rounded bg-white p-2" /> : <div className="w-36 h-36 rounded border border-dashed border-theme-border flex items-center justify-center text-theme-text-muted"><QrCode aria-hidden="true" /></div>}
+            <div className="flex-1">
+              <h2 className="font-serif font-bold text-theme-text">Calendar QR code</h2>
+              <p className="text-xs text-theme-text-muted mt-1 mb-3">Scan to open this {BUSINESS_INDUSTRIES[industry].label.toLowerCase()} calendar on a phone.</p>
+              {entitled && qrDataUrl ? (
+                <a href={qrDataUrl} download="neatclock-business-calendar-qr.png" className="inline-flex items-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg bg-theme-accent text-white"><Download className="w-3.5 h-3.5" /> Download QR PNG</a>
+              ) : (
+                <button type="button" disabled={!generatedUrl || !checkoutConfig?.available || purchaseState === 'starting' || purchaseState === 'verifying'} onClick={handleCheckout} className="text-xs font-bold py-2 px-3 rounded-lg border border-theme-border bg-theme-card text-theme-text disabled:opacity-40 disabled:cursor-not-allowed">
+                  {purchaseState === 'starting' ? 'Opening secure checkout…' : checkoutConfig?.available ? `Purchase QR license · ${formatPrice(checkoutConfig.price)}` : 'QR download checkout unavailable'}
+                </button>
+              )}
+              {entitled && <p className="text-xs text-green-700 mt-2" role="status">Payment verified. QR download is ready.</p>}
+              {checkoutConfig && !checkoutConfig.available && <p className="text-xs text-theme-text-muted mt-2">Preview purchase settings are not configured. Calendar, share link, and QR preview remain available.</p>}
+            </div>
+          </div>
+
+          {checkoutError && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
+          {purchaseState === 'cancelled' && <p role="status" className="text-sm text-theme-text-muted">Checkout was cancelled. No payment was taken.</p>}
+          {purchaseState === 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
+          <p className="text-[11px] leading-relaxed text-theme-text-muted">Your customers can add the calendar to Google, Apple, or Outlook. Schedule choices are a general reminder template, not a substitute for manufacturer instructions or a technician’s advice.</p>
+        </section>
       </div>
     </div>
   );

@@ -1,36 +1,70 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Partner Builder Dashboard', () => {
+test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => localStorage.clear());
+    await page.addInitScript(() => {
+      if (sessionStorage.getItem('neatclock-test-storage-cleared')) return;
+      localStorage.clear();
+      sessionStorage.setItem('neatclock-test-storage-cleared', '1');
+    });
   });
 
-  test('loads partner builder and generates co-branded URL link', async ({ page }) => {
+  test('generates a plumbing customer calendar with business branding, share link, and QR', async ({ page }) => {
+    await page.route('**/api/business-checkout', (route) => route.fulfill({ json: { available: false } }));
     await page.goto('/?page=partner');
 
-    // Verify builder title is visible
-    await expect(page.getByRole('heading', { name: 'Co-Brand neatclock.pro' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /branded maintenance calendar/i })).toBeVisible();
+    await page.getByLabel('Industry preset').selectOption('plumbing');
+    await page.getByLabel('Business name *').fill('North & Main Plumbing');
+    await page.getByLabel('Phone (optional)').fill('555-0199');
+    await page.getByLabel('Website (optional)').fill('northmain.example');
 
-    // Fill form details
-    const nameInput = page.locator('label:has-text("Business Name") + input');
-    await nameInput.fill('Bloodsaw Realty');
+    await expect(page.getByText('Flush water heater')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'North & Main Plumbing' })).toBeVisible();
 
-    const phoneInput = page.locator('label:has-text("Phone") + input');
-    await phoneInput.fill('555-0199');
+    const link = new URL(await page.getByLabel('Customer share link').inputValue());
+    expect(link.searchParams.get('preset')).toBe('plumbing-business');
+    expect(link.searchParams.get('fresh')).toBe('1');
+    expect(link.searchParams.get('brandName')).toBe('North & Main Plumbing');
+    expect(link.searchParams.get('brandPhone')).toBe('555-0199');
+    expect(link.searchParams.get('brandWeb')).toBe('https://northmain.example/');
 
-    const webInput = page.locator('label:has-text("Website") + input');
-    await webInput.fill('bloodsaw.com');
+    const qr = page.getByRole('img', { name: 'QR code for customer calendar' });
+    await expect(qr).toBeVisible();
+    await expect.poll(async () => qr.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
+    await expect(page.getByRole('button', { name: /QR download checkout unavailable/i })).toBeDisabled();
+  });
 
-    // Verify live preview is rendered
-    await expect(page.getByText('Brought to you by')).toBeVisible();
-    await expect(page.locator('h4:has-text("Bloodsaw Realty")')).toBeVisible();
+  test('simulated paid return verifies entitlement before delivering the QR download', async ({ page }) => {
+    const sessionId = 'cs_test_neatclock_e2e';
+    let checkoutCreated = false;
+    await page.route('**/api/business-checkout', async (route) => {
+      if (route.request().method() === 'GET') {
+        return route.fulfill({ json: { available: true, price: { amountMinor: 4900, currency: 'usd' } } });
+      }
+      checkoutCreated = true;
+      return route.fulfill({ json: {
+        checkout: { checkoutSessionId: sessionId, orderReference: 'test_order_ref_12345678' },
+        checkoutUrl: `${new URL(route.request().url()).origin}/?page=partner&purchase=complete&session_id=${sessionId}`,
+      } });
+    });
+    await page.route('**/api/business-entitlement?session_id=*', (route) => route.fulfill({ json: {
+      product: { productId: 'neatclock.business-calendar-qr' },
+      checkout: { checkoutSessionId: sessionId },
+      payment: { verified: true, amountMinor: 4900, currency: 'usd' },
+      entitlement: { token: 'test.signed-entitlement', claims: { expiresAt: Math.floor(Date.now() / 1000) + 3600 } },
+      fulfillment: { status: 'delivered' },
+    } }));
 
-    // Verify generated URL matches values
-    const urlTextArea = page.locator('textarea');
-    const generatedUrl = await urlTextArea.inputValue();
-    expect(generatedUrl).toContain('brandName=Bloodsaw+Realty');
-    expect(generatedUrl).toContain('brandPhone=555-0199');
-    expect(generatedUrl).toContain('brandWeb=bloodsaw.com');
-    expect(generatedUrl).toContain('preset=home');
+    await page.goto('/?page=partner');
+    await page.getByLabel('Business name *').fill('Northstar Heating');
+    await page.getByRole('button', { name: /purchase QR license/i }).click();
+    await expect(page).toHaveURL(/purchase=complete/);
+    await expect(page.getByRole('status').filter({ hasText: 'Payment verified' })).toBeVisible();
+    expect(checkoutCreated).toBe(true);
+
+    const download = page.waitForEvent('download');
+    await page.getByRole('link', { name: /Download QR PNG/i }).click();
+    expect((await download).suggestedFilename()).toBe('neatclock-business-calendar-qr.png');
   });
 });

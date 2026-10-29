@@ -1,4 +1,18 @@
 export const PRESETS = {
+  'HVAC Customer Care': [
+    { id: 'hvac-business-1', name: 'Replace HVAC air filter', interval: 3, unit: 'months' },
+    { id: 'hvac-business-2', name: 'Schedule heating system tune-up', interval: 12, unit: 'months' },
+    { id: 'hvac-business-3', name: 'Schedule cooling system tune-up', interval: 12, unit: 'months' },
+    { id: 'hvac-business-4', name: 'Clear condensate drain line', interval: 6, unit: 'months' },
+    { id: 'hvac-business-5', name: 'Check outdoor unit clearance', interval: 3, unit: 'months' },
+  ],
+  'Plumbing Customer Care': [
+    { id: 'plumbing-business-1', name: 'Flush water heater', interval: 12, unit: 'months' },
+    { id: 'plumbing-business-2', name: 'Check under-sink supply lines', interval: 6, unit: 'months' },
+    { id: 'plumbing-business-3', name: 'Test main water shutoff valve', interval: 12, unit: 'months' },
+    { id: 'plumbing-business-4', name: 'Inspect visible drain connections', interval: 6, unit: 'months' },
+    { id: 'plumbing-business-5', name: 'Check water pressure', interval: 12, unit: 'months' },
+  ],
   "Homeowner's Sentinel": [
     { id: 'hs-1', name: 'HVAC Filter Replacement', interval: 3, unit: 'months' },
     { id: 'hs-2', name: 'Smoke Detector Check', interval: 6, unit: 'months' },

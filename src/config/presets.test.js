@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { PRESET_CARD_LABELS, PRESETS, presetCardLabel } from './presets.js';
 
 describe('PRESETS', () => {
-  it('defines the three known preset schedules with 5 tasks each', () => {
+  it('defines the known schedules with 5 tasks each', () => {
     expect(Object.keys(PRESETS)).toEqual([
+      'HVAC Customer Care',
+      'Plumbing Customer Care',
       "Homeowner's Sentinel",
       'Preventive Gearhead',
       'Automated CFO',
