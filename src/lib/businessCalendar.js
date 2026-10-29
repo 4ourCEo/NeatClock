@@ -78,7 +78,7 @@ function hashIdentity(value, seed) {
   return hash.toString(16).padStart(16, '0');
 }
 
-export function createBusinessIdentityId(brand = {}, industry = 'business') {
+export function legacyBusinessIdentityId(brand = {}, industry = 'business') {
   const cleanBrand = normalizeBusinessBrand(brand);
   if (!cleanBrand.brandName) throw new Error('Add your business name to create a calendar identity.');
   const identity = [
@@ -91,6 +91,11 @@ export function createBusinessIdentityId(brand = {}, industry = 'business') {
   return `${hashIdentity(identity, '14695981039346656037')}${hashIdentity(identity, '7809847782465536322')}`;
 }
 
+export function createBusinessIdentityId(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {
+  if (!randomUUID) throw new Error('Business calendar identity is unavailable in this browser.');
+  return randomUUID();
+}
+
 export function businessIdForSearch(search = typeof window !== 'undefined' ? window.location.search : '') {
   const explicitId = businessIdFromSearch(search);
   if (explicitId) return explicitId;
@@ -99,7 +104,7 @@ export function businessIdForSearch(search = typeof window !== 'undefined' ? win
   const industry = preset === 'hvac-business' ? 'hvac' : preset === 'plumbing-business' ? 'plumbing' : null;
   const brand = businessBrandFromSearch(search);
   if (!industry || !brand?.brandName) return null;
-  return createBusinessIdentityId(brand, industry);
+  return legacyBusinessIdentityId(brand, industry);
 }
 
 export function businessOrderReference(randomUUID = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {

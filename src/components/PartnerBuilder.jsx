@@ -21,9 +21,12 @@ const DEFAULT_BRAND = { brandName: '', brandLogo: '', brandPhone: '', brandEmail
 function readDraft() {
   try {
     const saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
-    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand } };
+    const businessId = typeof saved.businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(saved.businessId)
+      ? saved.businessId
+      : createBusinessIdentityId();
+    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand }, businessId };
   } catch {
-    return { industry: 'hvac', brand: DEFAULT_BRAND };
+    return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: createBusinessIdentityId() };
   }
 }
 
@@ -36,9 +39,7 @@ export default function PartnerBuilder() {
   const [draft] = useState(readDraft);
   const [industry, setIndustry] = useState(draft.industry);
   const [brand, setBrand] = useState(draft.brand);
-  const businessId = useMemo(() => {
-    try { return createBusinessIdentityId(brand, industry); } catch { return ''; }
-  }, [brand, industry]);
+  const [businessId, setBusinessId] = useState(draft.businessId);
   const [checkoutConfig, setCheckoutConfig] = useState(null);
   const [checkoutError, setCheckoutError] = useState('');
   const [purchaseState, setPurchaseState] = useState(() => {
@@ -87,8 +88,8 @@ export default function PartnerBuilder() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand }));
-  }, [brand, industry]);
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand, businessId }));
+  }, [brand, businessId, industry]);
 
   useEffect(() => {
     let active = true;
@@ -124,6 +125,18 @@ export default function PartnerBuilder() {
   }, [generatedUrl]);
 
   const updateBrand = (key) => (event) => setBrand((current) => ({ ...current, [key]: event.target.value }));
+
+  const startNewBusinessProfile = () => {
+    try {
+      setBusinessId(createBusinessIdentityId());
+      setBrand(DEFAULT_BRAND);
+      setIndustry('hvac');
+      setQrResult({ url: '', dataUrl: '', error: false });
+      setCheckoutError('');
+    } catch (error) {
+      setCheckoutError(error.message);
+    }
+  };
 
   const handleCopy = async () => {
     if (!generatedUrl) return;
@@ -167,6 +180,10 @@ export default function PartnerBuilder() {
         <p className="text-sm text-theme-text-muted max-w-2xl leading-relaxed">
           Choose an HVAC or plumbing schedule, add your business details, then share a ready-to-use customer calendar link or QR code.
         </p>
+        <button type="button" onClick={startNewBusinessProfile} className="mt-3 text-xs font-bold text-theme-accent underline underline-offset-2">
+          Start a different business profile
+        </button>
+        <p className="mt-1 text-xs text-theme-text-muted">This profile keeps its calendar event IDs when you edit its details. Start a different profile to give another business separate event IDs.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -24,16 +24,24 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
 
     const link = new URL(await page.getByLabel('Customer share link').inputValue());
     expect(link.searchParams.get('preset')).toBe('plumbing-business');
-    expect(link.searchParams.get('business_id')).toMatch(/^[0-9a-f]{32}$/i);
+    expect(link.searchParams.get('business_id')).toMatch(/^[0-9a-f-]{36}$/i);
     expect(link.searchParams.has('fresh')).toBe(false);
     expect(link.searchParams.get('brandName')).toBe('North & Main Plumbing');
     expect(link.searchParams.get('brandPhone')).toBe('555-0199');
     expect(link.searchParams.get('brandWeb')).toBe('https://northmain.example/');
 
+    await page.reload();
+    const restoredLink = new URL(await page.getByLabel('Customer share link').inputValue());
+    expect(restoredLink.searchParams.get('business_id')).toBe(link.searchParams.get('business_id'));
+
     await page.getByLabel('Business name *').fill('South & Main Plumbing');
+    const editedLink = new URL(await page.getByLabel('Customer share link').inputValue());
+    expect(editedLink.searchParams.get('business_id')).toBe(link.searchParams.get('business_id'));
+    await page.getByRole('button', { name: 'Start a different business profile' }).click();
+    await page.getByLabel('Business name *').fill('North & Main Plumbing');
     const secondLink = new URL(await page.getByLabel('Customer share link').inputValue());
     expect(secondLink.searchParams.get('business_id')).not.toBe(link.searchParams.get('business_id'));
-    expect(secondLink.searchParams.get('brandName')).toBe('South & Main Plumbing');
+    expect(secondLink.searchParams.get('brandName')).toBe('North & Main Plumbing');
 
     const qr = page.getByRole('img', { name: 'QR code for customer calendar' });
     await expect(qr).toBeVisible();

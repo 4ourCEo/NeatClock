@@ -1,6 +1,6 @@
 import { getAffiliateHint } from '../config/affiliateHints.js';
 import { clampInterval, normalizeUnit } from './tasks.js';
-import { createBusinessIdentityId } from './businessCalendar.js';
+import { legacyBusinessIdentityId } from './businessCalendar.js';
 
 export function escapeIcalText(text) {
   return String(text)
@@ -29,7 +29,7 @@ export function buildIcsContent(tasks, options = {}) {
   const { startOffsetWeeks = 0, includeAffiliateHints = false, businessBrand = null, businessId = null } = options;
   const validBusinessId = typeof businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(businessId) ? businessId : null;
   const businessUid = businessBrand?.brandName
-    ? `${validBusinessId || createBusinessIdentityId(businessBrand)}-`
+    ? `${validBusinessId || legacyBusinessIdentityId(businessBrand)}-`
     : '';
 
   if (!tasks.length) {

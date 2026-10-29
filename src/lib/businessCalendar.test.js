@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PRESETS } from '../config/presets.js';
-import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, businessBrandFromSearch, businessIdForSearch, businessIdFromSearch, createBusinessIdentityId, normalizeBusinessBrand } from './businessCalendar.js';
+import { BUSINESS_INDUSTRIES, buildBusinessShareUrl, businessBrandFromSearch, businessIdForSearch, businessIdFromSearch, createBusinessIdentityId, legacyBusinessIdentityId, normalizeBusinessBrand } from './businessCalendar.js';
 
 describe('NeatClock Business calendars', () => {
   it('provides distinct HVAC and plumbing schedules', () => {
@@ -46,13 +46,15 @@ describe('NeatClock Business calendars', () => {
     expect(businessIdFromSearch('?business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112')).toBe('b8a1c7d2-4f65-4cc3-a239-01c0ef89a112');
   });
 
-  it('derives stable, distinct identities when business details change in the same browser', () => {
-    const first = createBusinessIdentityId({ brandName: 'North Heating', brandPhone: '555-0100' }, 'hvac');
-    const same = createBusinessIdentityId({ brandName: 'North Heating', brandPhone: '5550100' }, 'hvac');
-    const second = createBusinessIdentityId({ brandName: 'South Heating', brandPhone: '555-0200' }, 'hvac');
-    expect(first).toMatch(/^[0-9a-f]{32}$/);
-    expect(same).toBe(first);
+  it('creates distinct profile IDs and keeps legacy-link identities deterministic', () => {
+    const first = createBusinessIdentityId(() => 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112');
+    const second = createBusinessIdentityId(() => 'a7d1c4e2-5b69-4bd3-91d0-02e1af78b221');
+    expect(first).toMatch(/^[0-9a-f-]{36}$/);
     expect(second).not.toBe(first);
+    expect(legacyBusinessIdentityId({ brandName: 'North Heating' }, 'hvac'))
+      .toBe(legacyBusinessIdentityId({ brandName: 'North Heating' }, 'hvac'));
+    expect(legacyBusinessIdentityId({ brandName: 'South Heating' }, 'hvac'))
+      .not.toBe(legacyBusinessIdentityId({ brandName: 'North Heating' }, 'hvac'));
   });
 
   it('assigns distinct deterministic identities to older share links without business_id', () => {
