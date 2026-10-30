@@ -57,6 +57,10 @@ describe('NeatClock Business calendars', () => {
       .not.toBe(legacyBusinessIdentityId({ brandName: 'North Heating' }, 'hvac'));
   });
 
+  it('creates a valid profile ID when randomUUID is unavailable', () => {
+    expect(createBusinessIdentityId(null)).toMatch(/^[0-9a-f-]{36}$/i);
+  });
+
   it('assigns distinct deterministic identities to older share links without business_id', () => {
     const north = businessIdForSearch('?preset=hvac-business&brandName=North+Heating');
     const south = businessIdForSearch('?preset=hvac-business&brandName=South+Heating');

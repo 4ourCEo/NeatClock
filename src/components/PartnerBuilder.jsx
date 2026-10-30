@@ -42,6 +42,7 @@ export default function PartnerBuilder() {
   const [businessId, setBusinessId] = useState(draft.businessId);
   const [checkoutConfig, setCheckoutConfig] = useState(null);
   const [checkoutError, setCheckoutError] = useState('');
+  const [draftSaveError, setDraftSaveError] = useState('');
   const [purchaseState, setPurchaseState] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('purchase') === 'cancelled') return 'cancelled';
@@ -88,10 +89,6 @@ export default function PartnerBuilder() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand, businessId }));
-  }, [brand, businessId, industry]);
-
-  useEffect(() => {
     let active = true;
     getBusinessCheckoutConfig().then((config) => {
       if (active) setCheckoutConfig(config);
@@ -124,15 +121,42 @@ export default function PartnerBuilder() {
     return () => { active = false; };
   }, [generatedUrl]);
 
-  const updateBrand = (key) => (event) => setBrand((current) => ({ ...current, [key]: event.target.value }));
+  const persistDraft = useCallback((nextIndustry, nextBrand, nextBusinessId) => {
+    try {
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry: nextIndustry, brand: nextBrand, businessId: nextBusinessId }));
+      setDraftSaveError('');
+    } catch {
+      setDraftSaveError('This browser could not save the business profile. Keep this page open; reloading may lose these details and create a different calendar link.');
+    }
+  }, []);
+
+  const updateBrand = (key) => (event) => {
+    const nextBrand = { ...brand, [key]: event.target.value };
+    setBrand(nextBrand);
+    persistDraft(industry, nextBrand, businessId);
+  };
+
+  const updateIndustry = (event) => {
+    const nextIndustry = event.target.value;
+    setIndustry(nextIndustry);
+    persistDraft(nextIndustry, brand, businessId);
+  };
+
+  const updateBrandColor = (event) => {
+    const nextBrand = { ...brand, brandColor: event.target.value.slice(1) };
+    setBrand(nextBrand);
+    persistDraft(industry, nextBrand, businessId);
+  };
 
   const startNewBusinessProfile = () => {
     try {
-      setBusinessId(createBusinessIdentityId());
+      const nextBusinessId = createBusinessIdentityId();
+      setBusinessId(nextBusinessId);
       setBrand(DEFAULT_BRAND);
       setIndustry('hvac');
       setQrResult({ url: '', dataUrl: '', error: false });
       setCheckoutError('');
+      persistDraft('hvac', DEFAULT_BRAND, nextBusinessId);
     } catch (error) {
       setCheckoutError(error.message);
     }
@@ -184,13 +208,14 @@ export default function PartnerBuilder() {
           Start a different business profile
         </button>
         <p className="mt-1 text-xs text-theme-text-muted">This profile keeps its calendar event IDs when you edit its details. Start a different profile to give another business separate event IDs.</p>
+        {draftSaveError && <p role="status" className="mt-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-theme-text">{draftSaveError}</p>}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section className="space-y-4" aria-label="Business calendar setup">
           <div>
             <label htmlFor="business-industry" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Industry preset</label>
-            <select id="business-industry" value={industry} onChange={(event) => setIndustry(event.target.value)} className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text">
+            <select id="business-industry" value={industry} onChange={updateIndustry} className="w-full text-sm bg-theme-bg/50 border border-theme-border rounded-lg p-2.5 text-theme-text">
               {Object.entries(BUSINESS_INDUSTRIES).map(([key, value]) => <option key={key} value={key}>{value.label}</option>)}
             </select>
           </div>
@@ -219,7 +244,7 @@ export default function PartnerBuilder() {
             </div>
             <div>
               <label htmlFor="business-color" className="block text-xs font-bold uppercase tracking-wider text-theme-text-muted mb-1">Brand color</label>
-              <input id="business-color" aria-label="Brand color" type="color" value={`#${normalizeBusinessBrand(brand).brandColor}`} onChange={(event) => setBrand((current) => ({ ...current, brandColor: event.target.value.slice(1) }))} className="w-12 h-10 border border-theme-border rounded-lg cursor-pointer bg-transparent" />
+              <input id="business-color" aria-label="Brand color" type="color" value={`#${normalizeBusinessBrand(brand).brandColor}`} onChange={updateBrandColor} className="w-12 h-10 border border-theme-border rounded-lg cursor-pointer bg-transparent" />
             </div>
           </div>
           <div className="rounded-xl border border-theme-border/70 bg-theme-bg/30 p-4">

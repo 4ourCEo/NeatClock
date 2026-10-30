@@ -64,6 +64,18 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     expect((await calendarDownload).suggestedFilename()).toBe('hvac-customer-care.ics');
   });
 
+  test('continues working and reports a recoverable error when local draft writes fail', async ({ page }) => {
+    await page.addInitScript(() => {
+      Storage.prototype.setItem = () => { throw new DOMException('Storage quota exceeded', 'QuotaExceededError'); };
+    });
+    await page.route('**/api/business-checkout', (route) => route.fulfill({ json: { available: false } }));
+    await page.goto('/?page=partner');
+    await page.getByLabel('Business name *').fill('North Heating');
+    await expect(page.getByRole('status')).toContainText('This browser could not save the business profile');
+    await expect(page.getByRole('heading', { name: 'North Heating' })).toBeVisible();
+    await expect(page.getByLabel('Customer share link')).toHaveValue(/business_id=/);
+  });
+
   test('simulated paid return verifies entitlement before delivering the QR download', async ({ page }) => {
     const sessionId = 'cs_test_neatclock_e2e';
     let checkoutCreated = false;
