@@ -1,139 +1,63 @@
+import { createHmac } from 'node:crypto';
+import { Buffer } from 'node:buffer';
 import { describe, expect, it, vi } from 'vitest';
-import { BUSINESS_PRODUCT, businessCheckout, businessEntitlement } from '../../server/businessCommerce.js';
+import { BUSINESS_PRODUCT, businessCheckout, businessEntitlement, businessRecovery, businessWebhook } from '../../server/businessCommerce.js';
+import { hashOrderProof } from '../../server/businessStore.js';
 
-const env = {
-  NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'true',
-  NEATCLOCK_BUSINESS_PRICE_CENTS: '4900',
-  NEATCLOCK_ENTITLEMENT_SECRET: 'test-only-signing-secret-32-bytes',
-  STRIPE_SECRET_KEY: 'sk_test_neatclock_fixture',
-  VERCEL_ENV: 'preview',
-};
+const proof = 'a'.repeat(64);
+const artifactUrl = 'https://neatclock-preview.example/?preset=hvac-business&business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112&brandName=North';
+const env = { NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'true', NEATCLOCK_BUSINESS_PRICE_CENTS: '4900', NEATCLOCK_ENTITLEMENT_SECRET: 'test-only-signing-secret-32-bytes', NEATCLOCK_STRIPE_WEBHOOK_SECRET: 'whsec_fixture', NEATCLOCK_SUPABASE_URL: 'https://fixture.supabase.co', NEATCLOCK_SUPABASE_SERVICE_ROLE_KEY: 'service-fixture', NEATCLOCK_SUPABASE_PUBLISHABLE_KEY: 'publishable-fixture', STRIPE_SECRET_KEY: 'sk_test_neatclock_fixture', VERCEL_ENV: 'preview' };
+function response() { return { statusCode: null, body: null, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } }; }
+function request(method, { body, url = '/', origin = 'https://neatclock-preview.example', host = 'neatclock-preview.example', headers = {} } = {}) { return { method, body, url, headers: { host, origin, ...headers } }; }
+function paidSession(overrides = {}) { const orderReference = 'order_reference_123456'; return { id: 'cs_test_neatclock_123', mode: 'payment', status: 'complete', payment_status: 'paid', amount_total: 4900, currency: 'usd', client_reference_id: orderReference, customer_details: { email: 'owner@example.com' }, created: 1_800_000_000, metadata: { product_id: BUSINESS_PRODUCT.productId, product_version: BUSINESS_PRODUCT.version, delivery_type: BUSINESS_PRODUCT.deliveryType, order_reference: orderReference, amount_minor: '4900', industry: 'hvac' }, ...overrides }; }
+function purchase(overrides = {}) { return { order_reference: 'order_reference_123456', checkout_session_id: 'cs_test_neatclock_123', purchaser_email: 'owner@example.com', product_id: BUSINESS_PRODUCT.productId, product_version: BUSINESS_PRODUCT.version, industry: 'hvac', amount_minor: 4900, currency: 'usd', artifact_url: artifactUrl, order_proof_hash: hashOrderProof(proof), stripe_event_id: 'evt_paid', fulfillment_status: 'ready', ...overrides }; }
+function signature(rawBody, timestamp = 1_800_000_000) { return `t=${timestamp},v1=${createHmac('sha256', env.NEATCLOCK_STRIPE_WEBHOOK_SECRET).update(`${timestamp}.${rawBody}`).digest('hex')}`; }
 
-function response() {
-  return {
-    statusCode: null,
-    body: null,
-    status(code) { this.statusCode = code; return this; },
-    json(body) { this.body = body; return this; },
-  };
-}
-
-function request(method, { body, url = '/', origin = 'https://neatclock-preview.example', host = 'neatclock-preview.example' } = {}) {
-  return { method, body, url, headers: { host, origin } };
-}
-
-function paidSession(overrides = {}) {
-  const orderReference = 'order_reference_123456';
-  return {
-    id: 'cs_test_neatclock_123',
-    mode: 'payment',
-    status: 'complete',
-    payment_status: 'paid',
-    amount_total: 4900,
-    currency: 'usd',
-    client_reference_id: orderReference,
-    customer_details: { email: 'owner@example.com' },
-    created: 1_800_000_000,
-    metadata: {
-      product_id: BUSINESS_PRODUCT.productId,
-      product_version: BUSINESS_PRODUCT.version,
-      delivery_type: BUSINESS_PRODUCT.deliveryType,
-      order_reference: orderReference,
-      amount_minor: '4900',
-      industry: 'hvac',
-    },
-    ...overrides,
-  };
-}
-
-describe('NeatClock Business commercial contract', () => {
-  it('fails closed when Preview has not been configured for checkout', async () => {
-    const res = response();
-    await businessCheckout(request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac' } }), res, { env: { ...env, NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'false' } });
-    expect(res.statusCode).toBe(503);
-    expect(res.body.error).toBe('checkout_unavailable');
-  });
-
-  it('rejects cross-origin checkout requests', async () => {
-    const fetchImpl = vi.fn();
-    const res = response();
-    await businessCheckout(request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac' }, origin: 'https://attacker.example' }), res, { env, fetchImpl });
-    expect(res.statusCode).toBe(403);
-    expect(fetchImpl).not.toHaveBeenCalled();
-  });
-
-  it('creates an idempotent Stripe Checkout with the approved commercial fields', async () => {
+describe('NeatClock durable commercial contract', () => {
+  it('creates a pending durable order before an idempotent Stripe Checkout and omits fixed payment methods', async () => {
+    const store = { createPending: vi.fn(), bindCheckout: vi.fn() };
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ id: 'cs_test_neatclock_123', url: 'https://checkout.stripe.com/c/pay/test_session' }) });
-    const res = response();
-    const orderReference = 'order_reference_123456';
-    await businessCheckout(request('POST', { body: { orderReference, industry: 'plumbing' } }), res, { env, fetchImpl });
-    expect(res.statusCode).toBe(200);
-    expect(res.body.checkout).toMatchObject({ paymentProvider: 'stripe', checkoutSessionId: 'cs_test_neatclock_123', orderReference });
-    const [, options] = fetchImpl.mock.calls[0];
-    expect(options.headers['Idempotency-Key']).toContain(orderReference);
-    expect(options.headers.Authorization).toBe('Bearer sk_test_neatclock_fixture');
-    const params = new URLSearchParams(options.body);
-    expect(params.get('metadata[product_id]')).toBe(BUSINESS_PRODUCT.productId);
-    expect(params.get('metadata[industry]')).toBe('plumbing');
-    expect(params.get('metadata[amount_minor]')).toBe('4900');
-    expect(params.get('line_items[0][price_data][unit_amount]')).toBe('4900');
+    const res = response(); await businessCheckout(request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac', orderProof: proof, artifactUrl, businessId: 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112' } }), res, { env, fetchImpl, store });
+    expect(res.statusCode).toBe(200); expect(store.createPending).toHaveBeenCalledBefore(fetchImpl); expect(store.bindCheckout).toHaveBeenCalledWith('order_reference_123456', 'cs_test_neatclock_123');
+    const params = new URLSearchParams(fetchImpl.mock.calls[0][1].body); expect(params.has('payment_method_types[]')).toBe(false); expect(params.get('customer_creation')).toBe('always'); expect(res.body.checkout.orderProof).toBe(proof);
   });
 
-  it('refuses live Stripe credentials on Preview', async () => {
-    const res = response();
-    await businessCheckout(request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac' } }), res, { env: { ...env, STRIPE_SECRET_KEY: 'sk_live_forbidden' } });
-    expect(res.statusCode).toBe(503);
+  it('fails closed on cross-origin, invalid artifact, missing storage, and live Preview key', async () => {
+    for (const [req, changedEnv, expected] of [
+      [request('POST', { origin: 'https://attacker.example', body: {} }), env, 403],
+      [request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac', orderProof: proof, artifactUrl: 'https://attacker.example', businessId: 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112' } }), env, 400],
+      [request('POST', { body: {} }), { ...env, NEATCLOCK_SUPABASE_URL: '' }, 503],
+      [request('POST', { body: {} }), { ...env, STRIPE_SECRET_KEY: 'sk_live_forbidden' }, 503],
+    ]) { const res = response(); await businessCheckout(req, res, { env: changedEnv, fetchImpl: vi.fn() }); expect(res.statusCode).toBe(expected); }
   });
 
-  it('issues an entitlement only after Stripe confirms the matching paid session', async () => {
-    const session = paidSession();
-    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
-    const res = response();
-    await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env, fetchImpl });
-    expect(res.statusCode).toBe(200);
-    expect(res.body.payment).toMatchObject({ verified: true, amountMinor: 4900, currency: 'usd' });
-    expect(res.body.entitlement.claims).toMatchObject({ productId: BUSINESS_PRODUCT.productId, industry: 'hvac', authorizedRecipient: 'owner@example.com', usageLimit: null });
-    expect(res.body.fulfillment).toMatchObject({ status: 'delivered' });
-    expect(res.body.entitlement.token.split('.')).toHaveLength(2);
-  });
-
-  it('verifies an earlier purchase after the current configured price changes', async () => {
-    const session = paidSession();
-    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
-    const res = response();
-    await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env: { ...env, NEATCLOCK_BUSINESS_PRICE_CENTS: '5900' }, fetchImpl });
-    expect(res.statusCode).toBe(200);
-    expect(res.body.payment.amountMinor).toBe(4900);
-  });
-
-  it('verifies existing paid sessions after sales are disabled or the current price is removed', async () => {
-    for (const overrides of [
-      { NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'false' },
-      { NEATCLOCK_BUSINESS_PRICE_CENTS: '' },
-    ]) {
-      const session = paidSession();
-      const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
-      const res = response();
-      await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env: { ...env, ...overrides }, fetchImpl });
-      expect(res.statusCode).toBe(200);
-      expect(res.body.entitlement.claims.expiresAt).toBeUndefined();
+  it('does not grant from a redirect and requires both webhook-ready storage and the browser proof', async () => {
+    const store = { getReadyBySession: vi.fn().mockResolvedValue(purchase()) };
+    for (const [candidateProof, expected] of [[undefined, 400], ['b'.repeat(64), 404], [proof, 200]]) {
+      const res = response(); await businessEntitlement(request('GET', { url: '/?session_id=cs_test_neatclock_123', headers: candidateProof ? { 'x-neatclock-order-proof': candidateProof } : {} }), res, { env, store }); expect(res.statusCode).toBe(expected);
     }
   });
 
-  it('rejects unpaid, wrong-amount, wrong-product, and replay-mismatched sessions', async () => {
-    const cases = [
-      { payment_status: 'unpaid' },
-      { amount_total: 1 },
-      { metadata: { ...paidSession().metadata, product_id: 'another-product' } },
-      { client_reference_id: 'somebody-elses-order' },
-    ];
-    for (const overrides of cases) {
-      const session = paidSession(overrides);
-      const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => session });
-      const res = response();
-      await businessEntitlement(request('GET', { url: `/?session_id=${session.id}` }), res, { env, fetchImpl });
-      expect(res.statusCode).toBe(402);
-      expect(res.body.entitlement).toBeUndefined();
-    }
+  it('verifies raw Stripe signatures, authoritatively retrieves the paid session, and delegates idempotency to durable storage', async () => {
+    const event = { id: 'evt_paid', type: 'checkout.session.completed', created: 1_800_000_000, data: { object: { id: 'cs_test_neatclock_123', payment_status: 'paid' } } }; const raw = JSON.stringify(event);
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, json: async () => paidSession() }); const store = { fulfill: vi.fn().mockResolvedValueOnce({ outcome: 'fulfilled' }).mockResolvedValueOnce({ outcome: 'duplicate' }) };
+    for (const expected of ['fulfilled', 'duplicate']) { const res = response(); await businessWebhook(request('POST', { headers: { 'stripe-signature': signature(raw) } }), res, { env, fetchImpl, store, rawBody: Buffer.from(raw), now: 1_800_000_000_000 }); expect(res.statusCode).toBe(200); expect(res.body.outcome).toBe(expected); }
+    expect(store.fulfill).toHaveBeenCalledTimes(2);
+  });
+
+  it('rejects bad or expired signatures and safely ignores delayed unpaid and unrelated events', async () => {
+    const paidEvent = JSON.stringify({ id: 'evt_x', type: 'checkout.session.completed', created: 1_800_000_000, data: { object: { id: 'cs_test_neatclock_123' } } });
+    for (const header of ['t=1,v1=bad', signature(paidEvent, 1_799_999_000)]) { const res = response(); await businessWebhook(request('POST', { headers: { 'stripe-signature': header } }), res, { env, rawBody: Buffer.from(paidEvent), now: 1_800_000_000_000 }); expect(res.statusCode).toBe(400); }
+    const ignored = JSON.stringify({ id: 'evt_other', type: 'customer.created', created: 1_800_000_000, data: { object: {} } }); const ignoredRes = response(); await businessWebhook(request('POST', { headers: { 'stripe-signature': signature(ignored) } }), ignoredRes, { env, rawBody: Buffer.from(ignored), now: 1_800_000_000_000 }); expect(ignoredRes.body.outcome).toBe('ignored');
+    const unpaidRes = response(); await businessWebhook(request('POST', { headers: { 'stripe-signature': signature(paidEvent) } }), unpaidRes, { env, rawBody: Buffer.from(paidEvent), now: 1_800_000_000_000, fetchImpl: vi.fn().mockResolvedValue({ ok: true, json: async () => paidSession({ payment_status: 'unpaid' }) }), store: { fulfill: vi.fn() } }); expect(unpaidRes.body.outcome).toBe('not_paid_or_ineligible');
+  });
+
+  it('uses enumeration-safe email recovery and returns the same entitlement only to a verified email token', async () => {
+    const identity = { email: 'owner@example.com', sessionId: 'session-1', userId: 'user-1' };
+    const store = { requestRecovery: vi.fn(), verifiedIdentity: vi.fn().mockResolvedValue(identity), consumeRecovery: vi.fn().mockResolvedValue(true), getReadyByEmail: vi.fn().mockResolvedValue([purchase()]) };
+    const requestRes = response(); await businessRecovery(request('POST', { body: { email: 'owner@example.com' } }), requestRes, { env, store }); expect(requestRes.statusCode).toBe(202); expect(requestRes.body).not.toHaveProperty('purchase');
+    const recoverRes = response(); await businessRecovery(request('GET', { headers: { authorization: 'Bearer one-time-session' } }), recoverRes, { env, store }); expect(recoverRes.statusCode).toBe(200); expect(recoverRes.body.purchases[0].entitlement.claims.artifactUrl).toBe(artifactUrl);
+    store.consumeRecovery.mockResolvedValueOnce(false); const replay = response(); await businessRecovery(request('GET', { headers: { authorization: 'Bearer replayed' } }), replay, { env, store }); expect(replay.statusCode).toBe(410);
+    store.verifiedIdentity.mockResolvedValueOnce(null); const unauthorized = response(); await businessRecovery(request('GET', { headers: { authorization: 'Bearer expired' } }), unauthorized, { env, store }); expect(unauthorized.statusCode).toBe(401);
   });
 });

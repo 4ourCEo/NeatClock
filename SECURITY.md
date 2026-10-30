@@ -1,8 +1,10 @@
 # Security Policy
 
-NeatClock is a client-only static app — no backend, no database, no user
-accounts. Your schedule data lives only in your browser's `localStorage` and
-is never transmitted to any server. See [SCOPE.md](./SCOPE.md).
+NeatClock's free calendar generator stores schedules in browser `localStorage`.
+The optional Business purchase flow uses product-owned server endpoints, Stripe,
+and isolated durable storage for orders, purchaser email, entitlements, webhook
+idempotency, and recovery claims. Stripe secrets and database service credentials
+must remain server-only. See [SCOPE.md](./SCOPE.md).
 
 ## Reporting a vulnerability
 
@@ -19,7 +21,7 @@ reports within a few days.
 
 ## Scope
 
-In scope: neatclock.pro, this repository, and the build/deploy pipeline
+In scope: neatclock.pro, Business purchase/recovery endpoints, this repository, and the build/deploy pipeline
 (GitHub Actions, Vercel config).
 
 Out of scope: third-party services we integrate with (Formspree, Plausible,

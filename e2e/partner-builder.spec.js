@@ -105,7 +105,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
       }
       checkoutCreated = true;
       return route.fulfill({ json: {
-        checkout: { checkoutSessionId: sessionId, orderReference: 'test_order_ref_12345678' },
+        checkout: { checkoutSessionId: sessionId, orderReference: 'test_order_ref_12345678', orderProof: 'a'.repeat(64) },
         checkoutUrl: `${new URL(route.request().url()).origin}/?page=partner&purchase=complete&session_id=${sessionId}`,
       } });
     });
@@ -114,7 +114,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
       checkout: { checkoutSessionId: sessionId },
       payment: { verified: true, amountMinor: 4900, currency: 'usd' },
       entitlement: { token: 'test.signed-entitlement', claims: { expiresAt: Math.floor(Date.now() / 1000) + 3600 } },
-      fulfillment: { status: 'delivered' },
+      fulfillment: { status: 'ready' },
     } }));
 
     await page.goto('/?page=partner');
@@ -133,7 +133,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     let unavailable = true;
     const sessionId = 'cs_test_neatclock_saved_retry';
     await page.addInitScript(({ session, draft }) => {
-      localStorage.setItem('neatclock_business_entitlement_v1', JSON.stringify({ checkoutSessionId: session, token: 'previously-issued-token' }));
+      localStorage.setItem('neatclock_business_entitlement_v1', JSON.stringify({ checkoutSessionId: session, token: 'previously-issued-token', orderProof: 'a'.repeat(64) }));
       localStorage.setItem('neatclock_business_draft_v1', JSON.stringify(draft));
     }, { session: sessionId, draft: { industry: 'hvac', brand: { brandName: 'North Heating', brandPhone: '', brandEmail: '', brandWeb: '', brandLogo: '', brandColor: 'e07a5f' } } });
     await page.route('**/api/business-checkout', (route) => route.fulfill({ json: { available: false } }));
@@ -144,7 +144,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
         payment: { verified: true, amountMinor: 4900, currency: 'usd' },
         product: { productId: 'neatclock.business-calendar-qr' },
         entitlement: { token: 'test.signed-entitlement', claims: { industry: 'hvac' } },
-        fulfillment: { status: 'delivered' },
+        fulfillment: { status: 'ready' },
       } });
     });
 
