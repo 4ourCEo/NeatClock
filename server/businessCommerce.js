@@ -1,5 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { createBusinessStore, hashOrderProof } from './businessStore.js';
+import { createNeonStore } from './neonStore.js';
+import { createResendEmailer } from './resendEmail.js';
 
 export const BUSINESS_PRODUCT = Object.freeze({ productId: 'neatclock.business-calendar-qr', version: '1.0.0', currency: 'usd', deliveryType: 'business_calendar_share_and_qr' });
 
@@ -7,12 +9,15 @@ function settings(env) {
   const secretKey = env.STRIPE_SECRET_KEY || '';
   const entitlementSecret = env.NEATCLOCK_ENTITLEMENT_SECRET || '';
   const webhookSecret = env.NEATCLOCK_STRIPE_WEBHOOK_SECRET || '';
+  const recoverySecret = env.NEATCLOCK_RECOVERY_SECRET || '';
   const amountMinor = Number(env.NEATCLOCK_BUSINESS_PRICE_CENTS);
   const environmentKeySafe = env.VERCEL_ENV === 'preview' ? secretKey.startsWith('sk_test_')
     : env.VERCEL_ENV === 'production' ? secretKey.startsWith('sk_live_') : /^sk_(test|live)_/.test(secretKey);
-  const durableReady = Boolean(env.NEATCLOCK_SUPABASE_URL && env.NEATCLOCK_SUPABASE_SERVICE_ROLE_KEY && env.NEATCLOCK_SUPABASE_PUBLISHABLE_KEY);
+  const neonReady = Boolean(env.DATABASE_URL && recoverySecret.length >= 32);
+  const supabaseReady = Boolean(env.NEATCLOCK_SUPABASE_URL && env.NEATCLOCK_SUPABASE_SERVICE_ROLE_KEY && env.NEATCLOCK_SUPABASE_PUBLISHABLE_KEY);
+  const durableReady = neonReady || supabaseReady;
   const verificationReady = Boolean(secretKey) && entitlementSecret.length >= 32 && environmentKeySafe && durableReady;
-  return { secretKey, entitlementSecret, webhookSecret, amountMinor, verificationReady, enabled: env.NEATCLOCK_BUSINESS_CHECKOUT_ENABLED === 'true' && Number.isSafeInteger(amountMinor) && amountMinor > 0 && verificationReady };
+  return { secretKey, entitlementSecret, webhookSecret, recoverySecret, amountMinor, verificationReady, neonReady, supabaseReady, enabled: env.NEATCLOCK_BUSINESS_CHECKOUT_ENABLED === 'true' && Number.isSafeInteger(amountMinor) && amountMinor > 0 && verificationReady };
 }
 
 function send(res, status, body) { res.setHeader?.('Cache-Control', 'no-store'); return res.status(status).json(body); }
@@ -67,7 +72,7 @@ export async function businessCheckout(req, res, { env = process.env, fetchImpl 
   const origin = originFor(req); if (!origin) return send(res, 403, { error: 'origin_not_allowed' });
   const { orderReference, industry, orderProof, artifactUrl, businessId } = req.body || {};
   if (!validOrderReference(orderReference) || !['hvac', 'plumbing'].includes(industry) || !validProof(orderProof) || !validBusinessId(businessId) || !validArtifactUrl(artifactUrl, origin)) return send(res, 400, { error: 'invalid_checkout_request' });
-  const durable = store || createBusinessStore(env, fetchImpl);
+  const durable = store || (cfg.neonReady ? await createNeonStore(env) : createBusinessStore(env, fetchImpl));
   try { await durable.createPending({ order_reference: orderReference, product_id: BUSINESS_PRODUCT.productId, product_version: BUSINESS_PRODUCT.version, industry, amount_minor: cfg.amountMinor, currency: BUSINESS_PRODUCT.currency, artifact_url: artifactUrl, business_id: businessId, order_proof_hash: hashOrderProof(orderProof) }); } catch { return send(res, 503, { error: 'durable_checkout_unavailable' }); }
 
   const fields = new URLSearchParams();
@@ -81,6 +86,7 @@ export async function businessCheckout(req, res, { env = process.env, fetchImpl 
   const session = await response.json(); let checkoutOrigin = ''; try { checkoutOrigin = new URL(session.url).origin; } catch { /* invalid */ }
   if (!session.id || checkoutOrigin !== 'https://checkout.stripe.com') return send(res, 502, { error: 'checkout_provider_invalid_response' });
   try { await durable.bindCheckout(orderReference, session.id); } catch { return send(res, 503, { error: 'checkout_persistence_failed' }); }
+  if (cfg.neonReady && !store) await durable.close();
   return send(res, 200, { checkout: { paymentProvider: 'stripe', checkoutSessionId: session.id, orderReference, orderProof }, checkoutUrl: session.url });
 }
 
@@ -92,11 +98,12 @@ export async function businessEntitlement(req, res, { env = process.env, fetchIm
   const tokenClaims = verifiedEntitlementClaims(bearer, cfg.entitlementSecret);
   const prefix = cfg.secretKey.startsWith('sk_test_') ? 'cs_test_' : 'cs_live_';
   if (!sessionId?.startsWith(prefix) || (!validProof(proof) && !tokenClaims)) return send(res, 400, { error: 'invalid_entitlement_request' });
-  const durable = store || createBusinessStore(env, fetchImpl); let purchase;
+  const durable = store || (cfg.neonReady ? await createNeonStore(env) : createBusinessStore(env, fetchImpl)); let purchase;
   try { purchase = await durable.getReadyBySession(sessionId); } catch { return send(res, 503, { error: 'entitlement_verification_unavailable' }); }
   const proofMatches = validProof(proof) && purchase?.order_proof_hash === hashOrderProof(proof);
   const tokenMatches = tokenClaims && purchase && tokenClaims.checkoutSessionId === purchase.checkout_session_id && tokenClaims.orderReference === purchase.order_reference && tokenClaims.productId === purchase.product_id;
   if (!purchase || (!proofMatches && !tokenMatches)) return send(res, 404, { error: 'entitlement_not_found' });
+  if (cfg.neonReady && !store) await durable.close();
   return send(res, 200, fulfillmentResponse(purchase, env));
 }
 
@@ -117,27 +124,57 @@ export async function businessWebhook(req, res, { env = process.env, fetchImpl =
   if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(event.type)) return send(res, 200, { received: true, outcome: 'ignored' });
   let session; try { session = await stripeSession(event.data?.object?.id, cfg.secretKey, fetchImpl); } catch { return send(res, 503, { error: 'payment_verification_unavailable' }); }
   if (!sessionMatches(session)) return send(res, 200, { received: true, outcome: 'not_paid_or_ineligible' });
-  const durable = store || createBusinessStore(env, fetchImpl); let outcome; try { outcome = await durable.fulfill(event.id, event.created, session); } catch { return send(res, 503, { error: 'fulfillment_persistence_failed' }); }
+  const durable = store || (cfg.neonReady ? await createNeonStore(env) : createBusinessStore(env, fetchImpl)); let outcome; try { outcome = await durable.fulfill(event.id, event.created, session); } catch { return send(res, 503, { error: 'fulfillment_persistence_failed' }); }
+  if (cfg.neonReady && !store) await durable.close();
   return send(res, 200, { received: true, outcome: outcome?.outcome || 'processed' });
 }
 
 export async function businessRecovery(req, res, { env = process.env, fetchImpl = fetch, store } = {}) {
   const cfg = settings(env); if (!cfg.verificationReady) return send(res, 503, { error: 'recovery_unavailable' });
-  const origin = originFor(req); if (!origin) return send(res, 403, { error: 'origin_not_allowed' }); const durable = store || createBusinessStore(env, fetchImpl);
+  const origin = originFor(req); if (!origin) return send(res, 403, { error: 'origin_not_allowed' });
+  const durable = store || (cfg.neonReady ? await createNeonStore(env) : createBusinessStore(env, fetchImpl));
+  const emailer = cfg.neonReady ? await createResendEmailer(env) : null;
+
   if (req.method === 'POST') {
     const email = String(req.body?.email || '').trim().toLowerCase(); if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return send(res, 400, { error: 'invalid_recovery_request' });
     try {
       const purchases = await durable.getReadyByEmail(email);
-      if (purchases.length) await durable.requestRecovery(email, `${origin}/?page=partner&recovery=complete`);
+      if (purchases.length) {
+        if (cfg.neonReady) {
+          const recoveryResult = await durable.requestRecovery(email, `${origin}/?page=partner&recovery=complete`);
+          await emailer.sendRecoveryLink(email, recoveryResult.redirectTo);
+          if (cfg.neonReady && !store) await durable.close();
+          if (emailer) await emailer.close();
+          return send(res, 202, { accepted: true, message: 'If a matching purchase exists, a sign-in link will arrive shortly.' });
+        } else {
+          await durable.requestRecovery(email, `${origin}/?page=partner&recovery=complete`);
+        }
+      }
     } catch { /* enumeration-safe */ }
+    if (cfg.neonReady && !store) await durable.close();
+    if (emailer) await emailer.close();
     return send(res, 202, { accepted: true, message: 'If a matching purchase exists, a sign-in link will arrive shortly.' });
   }
+
   if (req.method === 'GET') {
-    const authorization = req.headers?.authorization || ''; if (!authorization.startsWith('Bearer ')) return send(res, 401, { error: 'recovery_authentication_required' });
-    const identity = await durable.verifiedIdentity(authorization.slice(7)); if (!identity) return send(res, 401, { error: 'recovery_authentication_required' });
-    const purchases = await durable.getReadyByEmail(identity.email); if (!purchases.length) return send(res, 404, { error: 'purchase_not_found' });
-    if (!await durable.consumeRecovery(identity)) return send(res, 410, { error: 'recovery_link_already_used' });
-    return send(res, 200, { purchases: purchases.map((purchase) => fulfillmentResponse(purchase, env)) });
+    const token = new URL(req.url, `https://${req.headers?.host || 'localhost'}`).searchParams.get('token');
+    if (cfg.neonReady) {
+      if (!token) return send(res, 400, { error: 'recovery_token_required' });
+      const identity = await durable.verifiedIdentity(token); if (!identity) return send(res, 401, { error: 'recovery_token_invalid_or_expired' });
+      const purchases = await durable.getReadyByEmail(identity.email); if (!purchases.length) return send(res, 404, { error: 'purchase_not_found' });
+      identity.rawToken = token;
+      if (!await durable.consumeRecovery(identity)) return send(res, 410, { error: 'recovery_link_already_used' });
+      if (cfg.neonReady && !store) await durable.close();
+      return send(res, 200, { purchases: purchases.map((purchase) => fulfillmentResponse(purchase, env)) });
+    } else {
+      const authorization = req.headers?.authorization || ''; if (!authorization.startsWith('Bearer ')) return send(res, 401, { error: 'recovery_authentication_required' });
+      const identity = await durable.verifiedIdentity(authorization.slice(7)); if (!identity) return send(res, 401, { error: 'recovery_authentication_required' });
+      const purchases = await durable.getReadyByEmail(identity.email); if (!purchases.length) return send(res, 404, { error: 'purchase_not_found' });
+      if (!await durable.consumeRecovery(identity)) return send(res, 410, { error: 'recovery_link_already_used' });
+      if (cfg.neonReady && !store) await durable.close();
+      return send(res, 200, { purchases: purchases.map((purchase) => fulfillmentResponse(purchase, env)) });
+    }
   }
+
   return send(res, 405, { error: 'method_not_allowed' });
 }

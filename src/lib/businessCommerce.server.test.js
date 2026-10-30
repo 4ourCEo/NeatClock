@@ -7,6 +7,7 @@ import { hashOrderProof } from '../../server/businessStore.js';
 const proof = 'a'.repeat(64);
 const artifactUrl = 'https://neatclock-preview.example/?preset=hvac-business&business_id=b8a1c7d2-4f65-4cc3-a239-01c0ef89a112&brandName=North';
 const env = { NEATCLOCK_BUSINESS_CHECKOUT_ENABLED: 'true', NEATCLOCK_BUSINESS_PRICE_CENTS: '4900', NEATCLOCK_ENTITLEMENT_SECRET: 'test-only-signing-secret-32-bytes', NEATCLOCK_STRIPE_WEBHOOK_SECRET: 'whsec_fixture', NEATCLOCK_SUPABASE_URL: 'https://fixture.supabase.co', NEATCLOCK_SUPABASE_SERVICE_ROLE_KEY: 'service-fixture', NEATCLOCK_SUPABASE_PUBLISHABLE_KEY: 'publishable-fixture', STRIPE_SECRET_KEY: 'sk_test_neatclock_fixture', VERCEL_ENV: 'preview' };
+const neonEnv = { ...env, DATABASE_URL: 'postgresql://user:pass@host:5432/db', NEATCLOCK_RECOVERY_SECRET: 'a'.repeat(32), NEATCLOCK_SUPABASE_URL: '', NEATCLOCK_SUPABASE_SERVICE_ROLE_KEY: '', NEATCLOCK_SUPABASE_PUBLISHABLE_KEY: '', SMTP_PASS: 'test-smtp-pass' };
 function response() { return { statusCode: null, body: null, status(code) { this.statusCode = code; return this; }, json(body) { this.body = body; return this; } }; }
 function request(method, { body, url = '/', origin = 'https://neatclock-preview.example', host = 'neatclock-preview.example', headers = {} } = {}) { return { method, body, url, headers: { host, origin, ...headers } }; }
 function paidSession(overrides = {}) { const orderReference = 'order_reference_123456'; return { id: 'cs_test_neatclock_123', mode: 'payment', status: 'complete', payment_status: 'paid', amount_total: 4900, currency: 'usd', client_reference_id: orderReference, customer_details: { email: 'owner@example.com' }, created: 1_800_000_000, metadata: { product_id: BUSINESS_PRODUCT.productId, product_version: BUSINESS_PRODUCT.version, delivery_type: BUSINESS_PRODUCT.deliveryType, order_reference: orderReference, amount_minor: '4900', industry: 'hvac' }, ...overrides }; }
@@ -28,6 +29,8 @@ describe('NeatClock durable commercial contract', () => {
       [request('POST', { body: { orderReference: 'order_reference_123456', industry: 'hvac', orderProof: proof, artifactUrl: 'https://attacker.example', businessId: 'b8a1c7d2-4f65-4cc3-a239-01c0ef89a112' } }), env, 400],
       [request('POST', { body: {} }), { ...env, NEATCLOCK_SUPABASE_URL: '' }, 503],
       [request('POST', { body: {} }), { ...env, STRIPE_SECRET_KEY: 'sk_live_forbidden' }, 503],
+      [request('POST', { body: {} }), { ...neonEnv, DATABASE_URL: '' }, 503],
+      [request('POST', { body: {} }), { ...neonEnv, NEATCLOCK_RECOVERY_SECRET: 'short' }, 503],
     ]) { const res = response(); await businessCheckout(req, res, { env: changedEnv, fetchImpl: vi.fn() }); expect(res.statusCode).toBe(expected); }
   });
 
