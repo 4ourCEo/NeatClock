@@ -43,9 +43,7 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     expect(secondLink.searchParams.get('business_id')).not.toBe(link.searchParams.get('business_id'));
     expect(secondLink.searchParams.get('brandName')).toBe('North & Main Plumbing');
 
-    const qr = page.getByRole('img', { name: 'QR code for customer calendar' });
-    await expect(qr).toBeVisible();
-    await expect.poll(async () => qr.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
+    await expect(page.getByRole('img', { name: 'QR code for customer calendar' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /QR download checkout unavailable/i })).toBeDisabled();
   });
 

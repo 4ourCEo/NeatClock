@@ -45,6 +45,16 @@ function signedEntitlement(purchase, env) {
   const signature = createHmac('sha256', env.NEATCLOCK_ENTITLEMENT_SECRET).update(encoded).digest('base64url');
   return { token: `${encoded}.${signature}`, claims: payload };
 }
+function verifiedEntitlementClaims(token, secret) {
+  const [encoded, signature, extra] = String(token || '').split('.');
+  if (!encoded || !signature || extra) return null;
+  const expected = createHmac('sha256', secret).update(encoded).digest('base64url');
+  try {
+    const a = Buffer.from(signature); const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+    return JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+  } catch { return null; }
+}
 function fulfillmentResponse(purchase, env) {
   return { product: BUSINESS_PRODUCT, checkout: { paymentProvider: 'stripe', checkoutSessionId: purchase.checkout_session_id, orderReference: purchase.order_reference }, payment: { verified: true, amountMinor: purchase.amount_minor, currency: purchase.currency }, entitlement: signedEntitlement(purchase, env), fulfillment: { deliveryReference: purchase.artifact_url, status: 'ready', idempotencyKey: `${BUSINESS_PRODUCT.productId}:${purchase.checkout_session_id}:artifact` } };
 }
@@ -78,10 +88,15 @@ export async function businessEntitlement(req, res, { env = process.env, fetchIm
   if (req.method !== 'GET') return send(res, 405, { error: 'method_not_allowed' });
   const cfg = settings(env); if (!cfg.verificationReady) return send(res, 503, { error: 'entitlement_verification_unavailable' });
   const sessionId = new URL(req.url, `https://${req.headers?.host || 'localhost'}`).searchParams.get('session_id'); const proof = req.headers?.['x-neatclock-order-proof'];
-  const prefix = cfg.secretKey.startsWith('sk_test_') ? 'cs_test_' : 'cs_live_'; if (!sessionId?.startsWith(prefix) || !validProof(proof)) return send(res, 400, { error: 'invalid_entitlement_request' });
+  const bearer = (req.headers?.authorization || '').startsWith('Bearer ') ? req.headers.authorization.slice(7) : '';
+  const tokenClaims = verifiedEntitlementClaims(bearer, cfg.entitlementSecret);
+  const prefix = cfg.secretKey.startsWith('sk_test_') ? 'cs_test_' : 'cs_live_';
+  if (!sessionId?.startsWith(prefix) || (!validProof(proof) && !tokenClaims)) return send(res, 400, { error: 'invalid_entitlement_request' });
   const durable = store || createBusinessStore(env, fetchImpl); let purchase;
   try { purchase = await durable.getReadyBySession(sessionId); } catch { return send(res, 503, { error: 'entitlement_verification_unavailable' }); }
-  if (!purchase || purchase.order_proof_hash !== hashOrderProof(proof)) return send(res, 404, { error: 'entitlement_not_found' });
+  const proofMatches = validProof(proof) && purchase?.order_proof_hash === hashOrderProof(proof);
+  const tokenMatches = tokenClaims && purchase && tokenClaims.checkoutSessionId === purchase.checkout_session_id && tokenClaims.orderReference === purchase.order_reference && tokenClaims.productId === purchase.product_id;
+  if (!purchase || (!proofMatches && !tokenMatches)) return send(res, 404, { error: 'entitlement_not_found' });
   return send(res, 200, fulfillmentResponse(purchase, env));
 }
 

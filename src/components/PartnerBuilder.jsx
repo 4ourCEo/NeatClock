@@ -74,6 +74,7 @@ export default function PartnerBuilder() {
   const [copied, setCopied] = useState(false);
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [recoveryState, setRecoveryState] = useState('idle');
+  const [recoveredPurchases, setRecoveredPurchases] = useState([]);
 
   const generatedUrl = useMemo(() => {
     if (!brand.brandName.trim()) return '';
@@ -88,14 +89,15 @@ export default function PartnerBuilder() {
   const deliveryUrl = entitlement?.claims?.artifactUrl || generatedUrl;
   const qrDataUrl = qrResult.url === deliveryUrl ? qrResult.dataUrl : '';
   const qrError = qrResult.url === deliveryUrl && qrResult.error;
+  const qrReady = qrResult.url === deliveryUrl && qrResult.valid;
   const entitled = purchaseState === 'verified' && Boolean(entitlement?.token);
 
-  const verifyPurchase = useCallback(async (sessionId, orderProof) => {
-    if (!sessionId || !orderProof) return;
+  const verifyPurchase = useCallback(async (sessionId, orderProof, entitlementToken = '') => {
+    if (!sessionId || (!orderProof && !entitlementToken)) return;
     setPurchaseState('verifying');
     setCheckoutError('');
     try {
-      const result = await verifyBusinessEntitlement(sessionId, orderProof);
+      const result = await verifyBusinessEntitlement(sessionId, orderProof, entitlementToken);
       const saved = saveBusinessEntitlement(result, orderProof);
       clearPendingBusinessCheckout();
       setEntitlement(saved);
@@ -132,29 +134,39 @@ export default function PartnerBuilder() {
     const saved = readSavedBusinessEntitlement();
     const sessionId = new URLSearchParams(window.location.search).get('session_id') || pending?.checkoutSessionId || saved?.checkoutSessionId;
     const orderProof = pending?.orderProof || saved?.orderProof;
-    if (!sessionId || !orderProof) return () => { active = false; };
-    Promise.resolve().then(() => { if (active) return verifyPurchase(sessionId, orderProof); });
+    if (!sessionId || (!orderProof && !saved?.token)) return () => { active = false; };
+    Promise.resolve().then(() => { if (active) return verifyPurchase(sessionId, orderProof, saved?.token); });
     return () => { active = false; };
   }, [verifyPurchase]);
 
   useEffect(() => {
     let active = true;
     if (!deliveryUrl) return () => { active = false; };
+    try {
+      QRCode.create(deliveryUrl, { errorCorrectionLevel: 'M' });
+      if (!entitled) Promise.resolve().then(() => { if (active) setQrResult({ url: deliveryUrl, dataUrl: '', error: false, valid: true }); });
+    } catch {
+      Promise.resolve().then(() => { if (active) setQrResult({ url: deliveryUrl, dataUrl: '', error: true, valid: false }); });
+      return () => { active = false; };
+    }
+    if (!entitled) return () => { active = false; };
     QRCode.toDataURL(deliveryUrl, { width: 360, margin: 2, errorCorrectionLevel: 'M' })
-      .then((dataUrl) => { if (active) setQrResult({ url: deliveryUrl, dataUrl, error: false }); })
-      .catch(() => { if (active) setQrResult({ url: deliveryUrl, dataUrl: '', error: true }); });
+      .then((dataUrl) => { if (active) setQrResult({ url: deliveryUrl, dataUrl, error: false, valid: true }); })
+      .catch(() => { if (active) setQrResult({ url: deliveryUrl, dataUrl: '', error: true, valid: false }); });
     return () => { active = false; };
-  }, [deliveryUrl]);
+  }, [deliveryUrl, entitled]);
 
   useEffect(() => {
     const accessToken = readRecoveryAccessToken();
     if (!accessToken) return;
+    window.history.replaceState({}, '', `${window.location.pathname}?page=partner`);
     Promise.resolve().then(() => setRecoveryState('verifying'));
-    recoverBusinessPurchases(accessToken).then(([result]) => {
+    recoverBusinessPurchases(accessToken).then((purchases) => {
+      const result = purchases[0];
+      setRecoveredPurchases(purchases);
       setEntitlement(saveBusinessEntitlement(result));
       setPurchaseState('verified');
       setRecoveryState('verified');
-      window.history.replaceState({}, '', `${window.location.pathname}?page=partner`);
     }).catch(() => setRecoveryState('failed'));
   }, []);
 
@@ -329,7 +341,7 @@ export default function PartnerBuilder() {
               {entitled && qrDataUrl ? (
                 <a href={qrDataUrl} download="neatclock-business-calendar-qr.png" className="inline-flex items-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg bg-theme-accent text-white"><Download className="w-3.5 h-3.5" /> Download QR PNG</a>
               ) : (
-                <button type="button" disabled={!generatedUrl || !qrDataUrl || !checkoutConfig?.available || purchaseState === 'starting' || purchaseState === 'verifying'} onClick={handleCheckout} className="text-xs font-bold py-2 px-3 rounded-lg border border-theme-border bg-theme-card text-theme-text disabled:opacity-40 disabled:cursor-not-allowed">
+              <button type="button" disabled={!generatedUrl || !qrReady || !checkoutConfig?.available || purchaseState === 'starting' || purchaseState === 'verifying'} onClick={handleCheckout} className="text-xs font-bold py-2 px-3 rounded-lg border border-theme-border bg-theme-card text-theme-text disabled:opacity-40 disabled:cursor-not-allowed">
                   {purchaseState === 'starting' ? 'Opening secure checkout…' : checkoutConfig?.available ? `Purchase QR license · ${formatPrice(checkoutConfig.price)}` : 'QR download checkout unavailable'}
                 </button>
               )}
@@ -342,7 +354,8 @@ export default function PartnerBuilder() {
           {checkoutError && purchaseState !== 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
           {purchaseState === 'cancelled' && <p role="status" className="text-sm text-theme-text-muted">Checkout was cancelled. No payment was taken.</p>}
           {purchaseState === 'failed' && <p role="alert" className="text-sm text-red-700">{checkoutError}</p>}
-          {purchaseState === 'failed' && (readPendingBusinessCheckout() || readSavedBusinessEntitlement()) && <button type="button" onClick={() => { const pending = readPendingBusinessCheckout(); const saved = readSavedBusinessEntitlement(); return verifyPurchase(new URLSearchParams(window.location.search).get('session_id') || pending?.checkoutSessionId || saved?.checkoutSessionId, pending?.orderProof || saved?.orderProof); }} className="self-start text-xs font-bold underline">Retry payment verification</button>}
+          {purchaseState === 'failed' && (readPendingBusinessCheckout() || readSavedBusinessEntitlement()) && <button type="button" onClick={() => { const pending = readPendingBusinessCheckout(); const saved = readSavedBusinessEntitlement(); return verifyPurchase(new URLSearchParams(window.location.search).get('session_id') || pending?.checkoutSessionId || saved?.checkoutSessionId, pending?.orderProof || saved?.orderProof, saved?.token); }} className="self-start text-xs font-bold underline">Retry payment verification</button>}
+          {recoveredPurchases.length > 1 && <div className="rounded-lg border border-theme-border/60 p-3"><p className="text-xs font-bold mb-2">Recovered business calendars</p><div className="flex flex-wrap gap-2">{recoveredPurchases.map((result) => <button key={result.checkout.checkoutSessionId} type="button" onClick={() => { setEntitlement(saveBusinessEntitlement(result)); setPurchaseState('verified'); }} className="text-xs underline">{result.entitlement.claims.industry} · {result.checkout.orderReference}</button>)}</div></div>}
           <form onSubmit={handleRecovery} className="rounded-lg border border-theme-border/60 p-3 space-y-2" aria-label="Recover a purchase">
             <label htmlFor="purchase-recovery-email" className="block text-xs font-bold">Recover a paid QR license on this device</label>
             <div className="flex gap-2">

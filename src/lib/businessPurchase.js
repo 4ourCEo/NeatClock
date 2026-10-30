@@ -28,9 +28,9 @@ export async function createBusinessCheckout({ industry, artifactUrl, businessId
   return result;
 }
 
-export async function verifyBusinessEntitlement(sessionId, orderProof, fetchImpl = fetch) {
+export async function verifyBusinessEntitlement(sessionId, orderProof, entitlementToken = '', fetchImpl = fetch) {
   const response = await fetchImpl(`/api/business-entitlement?session_id=${encodeURIComponent(sessionId)}`, {
-    headers: { Accept: 'application/json', 'X-NeatClock-Order-Proof': orderProof },
+    headers: { Accept: 'application/json', ...(orderProof ? { 'X-NeatClock-Order-Proof': orderProof } : {}), ...(entitlementToken ? { Authorization: `Bearer ${entitlementToken}` } : {}) },
   });
   const result = await response.json();
   if (!response.ok || result.payment?.verified !== true || !result.entitlement?.token) {
@@ -87,9 +87,10 @@ export async function requestBusinessRecovery(email, fetchImpl = fetch) {
   return result;
 }
 
-export function readRecoveryAccessToken(location = globalThis.location) {
-  const params = new URLSearchParams((location?.hash || '').replace(/^#/, ''));
-  return params.get('access_token') || '';
+export function readRecoveryAccessToken(location = globalThis.location, storage = globalThis.sessionStorage) {
+  const fragment = storage?.getItem('neatclock_recovery_fragment_v1') || (location?.hash || '').replace(/^#/, '');
+  try { storage?.removeItem('neatclock_recovery_fragment_v1'); } catch { /* already cleared from URL */ }
+  return new URLSearchParams(fragment).get('access_token') || '';
 }
 
 export async function recoverBusinessPurchases(accessToken, fetchImpl = fetch) {

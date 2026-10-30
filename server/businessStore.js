@@ -83,10 +83,10 @@ export function createBusinessStore(env = process.env, fetchImpl = fetch) {
       return await json(response);
     },
     async requestRecovery(email, redirectTo) {
-      const response = await fetchImpl(`${settings.url}/auth/v1/otp`, {
+      const response = await fetchImpl(`${settings.url}/auth/v1/otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
         method: 'POST',
         headers: { apikey: settings.publishableKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.toLowerCase(), create_user: true, gotrue_meta_security: {}, redirect_to: redirectTo }),
+        body: JSON.stringify({ email: email.toLowerCase(), create_user: true, gotrue_meta_security: {} }),
       });
       if (!response.ok && response.status !== 429) throw new Error('recovery_delivery_unavailable');
       return { accepted: true };
