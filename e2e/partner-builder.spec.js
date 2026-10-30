@@ -76,6 +76,26 @@ test.describe('NeatClock Business HVAC and plumbing calendar flow', () => {
     await expect(page.getByLabel('Customer share link')).toHaveValue(/business_id=/);
   });
 
+  test('persists a migrated legacy draft identity before the first edit', async ({ page }) => {
+    await page.addInitScript(() => {
+      if (sessionStorage.getItem('neatclock-legacy-profile-seeded')) return;
+      localStorage.setItem('neatclock_business_draft_v1', JSON.stringify({
+        industry: 'hvac',
+        brand: { brandName: 'North Heating', brandPhone: '', brandEmail: '', brandWeb: '', brandLogo: '', brandColor: 'e07a5f' },
+      }));
+      sessionStorage.setItem('neatclock-legacy-profile-seeded', '1');
+    });
+    await page.route('**/api/business-checkout', (route) => route.fulfill({ json: { available: false } }));
+    await page.goto('/?page=partner');
+    const firstId = new URL(await page.getByLabel('Customer share link').inputValue()).searchParams.get('business_id');
+    const savedId = await page.evaluate(() => JSON.parse(localStorage.getItem('neatclock_business_draft_v1')).businessId);
+    expect(savedId).toBe(firstId);
+
+    await page.reload();
+    const reloadedId = new URL(await page.getByLabel('Customer share link').inputValue()).searchParams.get('business_id');
+    expect(reloadedId).toBe(firstId);
+  });
+
   test('simulated paid return verifies entitlement before delivering the QR download', async ({ page }) => {
     const sessionId = 'cs_test_neatclock_e2e';
     let checkoutCreated = false;

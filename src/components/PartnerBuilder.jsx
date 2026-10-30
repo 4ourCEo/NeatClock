@@ -17,17 +17,35 @@ import { trackEvent } from '../lib/analytics.js';
 
 const DRAFT_STORAGE_KEY = 'neatclock_business_draft_v1';
 const DEFAULT_BRAND = { brandName: '', brandLogo: '', brandPhone: '', brandEmail: '', brandWeb: '', brandColor: 'e07a5f' };
+const DRAFT_SAVE_ERROR = 'This browser could not save the business profile. Keep this page open; reloading may lose these details and create a different calendar link.';
+
+function saveDraft(industry, brand, businessId) {
+  try {
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry, brand, businessId }));
+    return '';
+  } catch {
+    return DRAFT_SAVE_ERROR;
+  }
+}
 
 function readDraft() {
+  let saved;
   try {
-    const saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
-    const businessId = typeof saved.businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(saved.businessId)
-      ? saved.businessId
-      : createBusinessIdentityId();
-    return { industry: ['hvac', 'plumbing'].includes(saved.industry) ? saved.industry : 'hvac', brand: { ...DEFAULT_BRAND, ...saved.brand }, businessId };
+    saved = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}');
   } catch {
-    return { industry: 'hvac', brand: DEFAULT_BRAND, businessId: createBusinessIdentityId() };
+    const draft = { industry: 'hvac', brand: DEFAULT_BRAND, businessId: createBusinessIdentityId() };
+    return { ...draft, saveError: saveDraft(draft.industry, draft.brand, draft.businessId) || DRAFT_SAVE_ERROR };
   }
+
+  const source = saved && typeof saved === 'object' ? saved : {};
+  const industry = ['hvac', 'plumbing'].includes(source.industry) ? source.industry : 'hvac';
+  const brand = { ...DEFAULT_BRAND, ...source.brand };
+  const hasSavedIdentity = typeof source.businessId === 'string' && /^[0-9a-f-]{16,64}$/i.test(source.businessId);
+  const businessId = hasSavedIdentity
+    ? source.businessId
+    : createBusinessIdentityId();
+  const saveError = hasSavedIdentity ? '' : saveDraft(industry, brand, businessId);
+  return { industry, brand, businessId, saveError };
 }
 
 function formatPrice(price) {
@@ -42,7 +60,7 @@ export default function PartnerBuilder() {
   const [businessId, setBusinessId] = useState(draft.businessId);
   const [checkoutConfig, setCheckoutConfig] = useState(null);
   const [checkoutError, setCheckoutError] = useState('');
-  const [draftSaveError, setDraftSaveError] = useState('');
+  const [draftSaveError, setDraftSaveError] = useState(draft.saveError || '');
   const [purchaseState, setPurchaseState] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('purchase') === 'cancelled') return 'cancelled';
@@ -122,12 +140,7 @@ export default function PartnerBuilder() {
   }, [generatedUrl]);
 
   const persistDraft = useCallback((nextIndustry, nextBrand, nextBusinessId) => {
-    try {
-      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ industry: nextIndustry, brand: nextBrand, businessId: nextBusinessId }));
-      setDraftSaveError('');
-    } catch {
-      setDraftSaveError('This browser could not save the business profile. Keep this page open; reloading may lose these details and create a different calendar link.');
-    }
+    setDraftSaveError(saveDraft(nextIndustry, nextBrand, nextBusinessId));
   }, []);
 
   const updateBrand = (key) => (event) => {
