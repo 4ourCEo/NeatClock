@@ -111,7 +111,10 @@ export async function businessRecovery(req, res, { env = process.env, fetchImpl 
   const origin = originFor(req); if (!origin) return send(res, 403, { error: 'origin_not_allowed' }); const durable = store || createBusinessStore(env, fetchImpl);
   if (req.method === 'POST') {
     const email = String(req.body?.email || '').trim().toLowerCase(); if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return send(res, 400, { error: 'invalid_recovery_request' });
-    try { await durable.requestRecovery(email, `${origin}/?page=partner&recovery=complete`); } catch { /* enumeration-safe */ }
+    try {
+      const purchases = await durable.getReadyByEmail(email);
+      if (purchases.length) await durable.requestRecovery(email, `${origin}/?page=partner&recovery=complete`);
+    } catch { /* enumeration-safe */ }
     return send(res, 202, { accepted: true, message: 'If a matching purchase exists, a sign-in link will arrive shortly.' });
   }
   if (req.method === 'GET') {
